@@ -6,21 +6,15 @@ public class Usuario
 {
 ////Atributos
 
-	/**
-	 * Id del video
-	 */
+
 	@JsonProperty(value="id")
 	private int id;
 
-	/**
-	 * Nombre del video
-	 */
+
 	@JsonProperty(value="nombre")
 	private String nombre;
 
-	/**
-	 * Duración en minutos del video
-	 */
+
 	@JsonProperty(value="mail")
 	private String mail;
 	
@@ -30,13 +24,7 @@ public class Usuario
 	@JsonProperty(value="rol")
 	private String rol;
 
-	/**
-	 * Método constructor de la clase video
-	 * <b>post: </b> Crea el video con los valores que entran como parámetro
-	 * @param id - Id del video.
-	 * @param name - Nombre del video. name != null
-	 * @param duration - Duración en minutos del video.
-	 */
+
 	public Usuario(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre,@JsonProperty(value="mail") String mail,@JsonProperty(value="rol") String rol ) {
 		super();
 		this.id = id;
