@@ -42,10 +42,16 @@ public class Espectaculo {
 	
 	@JsonProperty(value="compañias")
 	private ListaCompañias compañias;
+	
+	@JsonProperty(value="categorias")
+	private ListaCategorias categorias;
+	
+	@JsonProperty(value="requerimientos")
+	private ListaRequerimientos requerimientos;
 
 	public Espectaculo(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="duracion")double duracion, @JsonProperty(value="intermedio")boolean intermedio, @JsonProperty(value="idioma")String idioma, @JsonProperty(value="clasificacion")String clasificacion,
 			@JsonProperty(value="costoRealizacion")double costoRealizacion, @JsonProperty(value="publicoActivo")boolean publicoActivo, @JsonProperty(value="traduccionSubtitulos")boolean traduccionSubtitulos, @JsonProperty(value="traduccionAudifonos")boolean traduccionAudifonos,
-			@JsonProperty(value="descripcion")String descripcion, @JsonProperty(value="publicoObjetivo")String publicoObjetivo, @JsonProperty(value="compañias")ListaCompañias compañias) {
+			@JsonProperty(value="descripcion")String descripcion, @JsonProperty(value="publicoObjetivo")String publicoObjetivo, @JsonProperty(value="compañias")ListaCompañias compañias, @JsonProperty(value="categorias")ListaCategorias categorias, @JsonProperty(value="requerimientos")ListaRequerimientos requerimientos ) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -60,10 +66,30 @@ public class Espectaculo {
 		this.descripcion = descripcion;
 		this.publicoObjetivo = publicoObjetivo;
 		this.compañias = compañias;
+		this.categorias = categorias;
+		this.requerimientos = requerimientos;
 	}
+
+	public ListaRequerimientos getRequerimientos() {
+		return requerimientos;
+	}
+
+
+	public void setRequerimientos(ListaRequerimientos requerimientos) {
+		this.requerimientos = requerimientos;
+	}
+
 
 	public int getId() {
 		return id;
+	}
+
+	public ListaCategorias getCategorias() {
+		return categorias;
+	}
+
+	public void setCategorias(ListaCategorias categorias) {
+		this.categorias = categorias;
 	}
 
 	public void setId(int id) {

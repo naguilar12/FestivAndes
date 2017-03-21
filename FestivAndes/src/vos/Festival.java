@@ -27,11 +27,14 @@ public class Festival {
 	@JsonProperty(value="compañias")
 	private ListaCompañias compañias;	
 	
-	@JsonProperty(value="organizador")
-	private Organizador organizador;	
+	@JsonProperty(value="organizadores")
+	private ListaOrganizadores organizadores;
+	
+	@JsonProperty(value="clientes")
+	private ListaClientes clientes;	
 		
 	public Festival(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre,@JsonProperty(value="año")int año, @JsonProperty(value="pais")String pais, @JsonProperty(value="fechaInicio")Date fechaInicio, @JsonProperty(value="fechaFin")Date fechaFin,
-			@JsonProperty(value="compañias")ListaCompañias compañias, @JsonProperty(value="organizados")Organizador organizador) {
+			@JsonProperty(value="compañias")ListaCompañias compañias, @JsonProperty(value="organizadores")ListaOrganizadores organizadores, @JsonProperty(value="clientes")ListaClientes clientes) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -40,7 +43,24 @@ public class Festival {
 		this.fechaInicio = fechaInicio;
 		this.fechaFin = fechaFin;
 		this.compañias = compañias;
-		this.organizador = organizador;
+		this.organizadores = organizadores;
+		this.clientes = clientes;
+	}
+
+	public ListaClientes getClientes() {
+		return clientes;
+	}
+
+	public void setClientes(ListaClientes clientes) {
+		this.clientes = clientes;
+	}
+
+	public ListaOrganizadores getOrganizadores() {
+		return organizadores;
+	}
+
+	public void setOrganizadores(ListaOrganizadores organizadores) {
+		this.organizadores = organizadores;
 	}
 
 	public ListaCompañias getCompañias() {
@@ -49,14 +69,6 @@ public class Festival {
 
 	public void setCompañias(ListaCompañias compañias) {
 		this.compañias = compañias;
-	}
-
-	public Organizador getOrganizador() {
-		return organizador;
-	}
-
-	public void setOrganizador(Organizador organizador) {
-		this.organizador = organizador;
 	}
 
 	public int getId() {
