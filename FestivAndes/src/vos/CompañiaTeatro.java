@@ -10,7 +10,7 @@ public class CompañiaTeatro {
 	private int id;
 	
 	@JsonProperty(value="nombre")
-	private int nombre;
+	private String nombre;
 	
 	@JsonProperty(value="fechaLlegada")
 	private Date fechaLlegada;
@@ -20,22 +20,31 @@ public class CompañiaTeatro {
 
 	@JsonProperty(value="festivales")
 	private ListaFestivales festivales;
+	
+	@JsonProperty(value="representante")
+	private Representante representante;
+	
+	@JsonProperty(value="espectaculos")
+	private ListaEspectaculos espectaculos;	
 
-	public CompañiaTeatro(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")int nombre, @JsonProperty(value="fechaLlegada")Date fechaLlegada, @JsonProperty(value="fechaSalida")Date fechaSalida) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.fechaLlegada = fechaLlegada;
-		this.fechaSalida = fechaSalida;
-	}
-
-	public CompañiaTeatro(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")int nombre, @JsonProperty(value="fechaLlegada")Date fechaLlegada, @JsonProperty(value="fechaSalida")Date fechaSalida,@JsonProperty(value="festivales") ListaFestivales festivales) {
+	public CompañiaTeatro(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="fechaLlegada")Date fechaLlegada, @JsonProperty(value="fechaSalida")Date fechaSalida,@JsonProperty(value="festivales") ListaFestivales festivales,
+			@JsonProperty(value="representante") Representante representante, @JsonProperty(value="espectaculos") ListaEspectaculos espectaculos) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.fechaLlegada = fechaLlegada;
 		this.fechaSalida = fechaSalida;
 		this.festivales = festivales;
+		this.representante = representante;
+		this.espectaculos = espectaculos;		
+	}
+
+	public ListaEspectaculos getEspectaculos() {
+		return espectaculos;
+	}
+
+	public void setEspectaculos(ListaEspectaculos espectaculos) {
+		this.espectaculos = espectaculos;
 	}
 
 	public ListaFestivales getFestivales() {
@@ -54,11 +63,11 @@ public class CompañiaTeatro {
 		this.id = id;
 	}
 
-	public int getNombre() {
+	public String getNombre() {
 		return nombre;
 	}
 
-	public void setNombre(int nombre) {
+	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
 
@@ -76,6 +85,14 @@ public class CompañiaTeatro {
 
 	public void setFechaSalida(Date fechaSalida) {
 		this.fechaSalida = fechaSalida;
+	}
+
+	public Representante getRepresentante() {
+		return representante;
+	}
+
+	public void setRepresentante(Representante representante) {
+		this.representante = representante;
 	}
 	
 	
