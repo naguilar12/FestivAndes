@@ -5,6 +5,7 @@
  *
  * Materia: Sistemas Transaccionales
  * Ejercicio: VideoAndes
+ * Autor: Juan Felipe García - jf.garcia268@uniandes.edu.co
  * -------------------------------------------------------------------
  */
 package rest;
