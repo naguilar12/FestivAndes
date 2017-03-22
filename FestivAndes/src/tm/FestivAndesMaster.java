@@ -231,6 +231,38 @@ public class FestivAndesMaster {
 		}
 		return new ListaPreferencias(preferencias);
 	}
+	
+	public ListaPreferencias darPreferencias() throws Exception {
+		ArrayList<Preferencia> preferencias;
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			preferencias = daoUsuario.darPreferencias();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaPreferencias(preferencias);
+	}
 
 
 }
