@@ -17,7 +17,7 @@ import vos.ListaEspectaculos;
 import vos.ListaPreferencias;
 import vos.ListaVideos;
 
-@Path("")
+@Path("espectaculos")
 public class FestivAndesEspectaculosServices {
 
 	
@@ -41,7 +41,6 @@ public class FestivAndesEspectaculosServices {
 	}
 
 	@GET
-	@Path("espectaculos")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getEspectaculos() {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
@@ -55,7 +54,7 @@ public class FestivAndesEspectaculosServices {
 	}
 	
 	@GET
-	@Path("espectaculos/{id}/funciones/{idF}/realizarFuncion")
+	@Path("{id}/funciones/{idF}/realizarFuncion")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response realizarFuncion(@javax.ws.rs.PathParam("id") int id, @javax.ws.rs.PathParam("idF") int idF) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
@@ -68,6 +67,20 @@ public class FestivAndesEspectaculosServices {
 		return Response.status(200).entity(funcion).build();
 	}
 
-	
+	////////////////////////////////////////RFC1////////////////////////////////////////////////////////////////
+
+	@GET
+	@Path("/{id}/funciones/idioma/{idioma}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getEspectaculosI(@javax.ws.rs.PathParam("id") int id, @javax.ws.rs.PathParam("idioma") String idioma) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaEspectaculos espectaculos;
+		try {
+			espectaculos = tm.darEspectaculosIdioma(idioma);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(espectaculos).build();
+	}
 	
 }

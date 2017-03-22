@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import dao.DAOTablaEspectaculos;
-import dao.DAOTablaUsuarios;
 import dao.DAOTablaEspectaculos;
-import dao.DAOTablaUsuarios;
+import dao.DAOTablaEspectaculos;
+import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
 import vos.Espectaculo;
 import vos.Funcion;
@@ -142,7 +142,7 @@ public class FestivAndesMaster {
 	//////////////////////////////////////////////////////////////////////////
 
 	public void addPreferencia(Preferencia preferencia, int idUsuario) throws Exception {
-		DAOTablaUsuarios daoUsuarios = new DAOTablaUsuarios();
+		DAOTablaEspectaculos daoUsuarios = new DAOTablaEspectaculos();
 		try 
 		{
 			//////Transacción
@@ -173,7 +173,7 @@ public class FestivAndesMaster {
 	}
 
 	public void deletePreferencia(Preferencia preferencia, int idUsuario) throws Exception {
-		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		DAOTablaEspectaculos daoUsuario = new DAOTablaEspectaculos();
 		try 
 		{
 			//////Transacción
@@ -204,7 +204,7 @@ public class FestivAndesMaster {
 	
 	public ListaPreferencias buscarPreferenciasPorUsuario(int idUsuario) throws Exception {
 		ArrayList<Preferencia> preferencias;
-		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		DAOTablaEspectaculos daoUsuario = new DAOTablaEspectaculos();
 		try 
 		{
 			//////Transacción
@@ -236,7 +236,7 @@ public class FestivAndesMaster {
 	
 	public ListaPreferencias darPreferencias() throws Exception {
 		ArrayList<Preferencia> preferencias;
-		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		DAOTablaEspectaculos daoUsuario = new DAOTablaEspectaculos();
 		try 
 		{
 			//////Transacción
@@ -296,6 +296,39 @@ public class FestivAndesMaster {
 			}
 		}
 		return funcion;
+	}
+	
+	public ListaEspectaculos darEspectaculosIdioma(String idioma) throws Exception
+	{
+		ArrayList<Espectaculo> espectaculos;
+		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoEspectaculos.setConn(conn);
+			espectaculos = daoEspectaculos.darEspectaculosIdioma(idioma);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoEspectaculos.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaEspectaculos(espectaculos);		
 	}
 
 
