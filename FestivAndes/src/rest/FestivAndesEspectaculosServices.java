@@ -2,6 +2,7 @@ package rest;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -11,10 +12,12 @@ import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
 import tm.VideoAndesMaster;
+import vos.Funcion;
 import vos.ListaEspectaculos;
+import vos.ListaPreferencias;
 import vos.ListaVideos;
 
-@Path("espectaculos")
+@Path("")
 public class FestivAndesEspectaculosServices {
 
 	
@@ -38,6 +41,7 @@ public class FestivAndesEspectaculosServices {
 	}
 
 	@GET
+	@Path("espectaculos")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getEspectaculos() {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
@@ -48,4 +52,22 @@ public class FestivAndesEspectaculosServices {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(espectaculos).build();
-	}}
+	}
+	
+	@GET
+	@Path("espectaculos/{id}/funciones/{idF}/realizarFuncion")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response realizarFuncion(@javax.ws.rs.PathParam("id") int id, @javax.ws.rs.PathParam("idF") int idF) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		Funcion funcion;
+		try {
+			funcion = tm.realizarFuncion(idF);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(funcion).build();
+	}
+
+	
+	
+}

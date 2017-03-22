@@ -10,9 +10,11 @@ import java.util.Properties;
 
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaUsuarios;
+import dao.DAOTablaEspectaculos;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaEspectaculos;
 import vos.Espectaculo;
+import vos.Funcion;
 import vos.ListaEspectaculos;
 import vos.ListaPreferencias;
 import vos.ListaVideos;
@@ -262,6 +264,38 @@ public class FestivAndesMaster {
 			}
 		}
 		return new ListaPreferencias(preferencias);
+	}
+	
+	public Funcion realizarFuncion(int idF) throws Exception {
+		Funcion funcion;
+		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoEspectaculos.setConn(conn);
+			funcion = daoEspectaculos.realizarFuncion(idF);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoEspectaculos.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return funcion;
 	}
 
 
