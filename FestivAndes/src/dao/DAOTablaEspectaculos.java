@@ -12,8 +12,6 @@ import vos.Funcion;
 import vos.ListaCategorias;
 import vos.ListaCompañias;
 import vos.ListaRequerimientos;
-import vos.Preferencia;
-import vos.Video;
 
 public class DAOTablaEspectaculos {	
 
@@ -130,6 +128,42 @@ public class DAOTablaEspectaculos {
 		}
 		return funcion;
 	}
+	
+	////////////////////////////////////////RFC1////////////////////////////////////////////////////////////////
+	
+	public ArrayList<Espectaculo>darEspectaculosIdioma(String idioma) throws SQLException, Exception {
+		ArrayList<Espectaculo> espectaculos = new ArrayList<Espectaculo>();
+
+		//String sql = "SELECT * FROM ISIS2304MO11620.VIDEOS";
+		String sql = "SELECT * FROM ISIS2304A021720.ESPECTACULO";
+			   sql+= "WHERE idioma='"+idioma+"'";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			String nombre = rs.getString("nombre");
+			int id = Integer.parseInt(rs.getString("id"));
+			double duracion= Double.parseDouble(rs.getString("duracion"));
+			boolean intermedio = rs.getBoolean("intermedio");
+			String clasificacion = rs.getString("clasificacion");
+			double costoRealizacion= Double.parseDouble(rs.getString("costo_realizacion"));
+			boolean publicoActivo = rs.getBoolean("publico_activo");
+			boolean traduccionSubtitulos = rs.getBoolean("traduccion_subtitulos");
+			boolean traduccionAudifonos = rs.getBoolean("audifonos");
+			String descripcion= rs.getString("descripcion");
+			String publicoObjetivo= rs.getString("publico_objetivo");
+			ListaCompañias compañias = null;
+			ListaCategorias categorias = null;
+			ListaRequerimientos requerimientos = null;
+			
+			espectaculos.add(new Espectaculo(id, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compañias, categorias, requerimientos));
+		}
+		return espectaculos;
+	}
+	
+
 	
 	
 	
