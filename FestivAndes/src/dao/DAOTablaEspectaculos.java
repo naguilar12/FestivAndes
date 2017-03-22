@@ -1,15 +1,19 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import vos.Espectaculo;
+import vos.Funcion;
 import vos.ListaCategorias;
 import vos.ListaCompañias;
 import vos.ListaRequerimientos;
+import vos.Preferencia;
+import vos.Video;
 
 public class DAOTablaEspectaculos {	
 
@@ -85,4 +89,48 @@ public class DAOTablaEspectaculos {
 		}
 		return espectaculos;
 	}
+	
+	////////////////////////////////////////RF9////////////////////////////////////////////////////////////////
+	
+	public Funcion realizarFuncion(int idF) throws SQLException, Exception {
+
+		String sql = "UPDATE ISIS2304A021720.FUNCION SET ";
+		sql += "ya_se_realizo='" + "true',";
+		sql += " WHERE id = " + idF;
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+		
+		return darFuncion(idF);
+	}
+	
+	public Funcion darFuncion(int idF) throws SQLException, Exception {
+		Funcion funcion = null;
+
+		String sql = "SELECT * FROM ISIS2304A021720.FUNCION WHERE id = '" + idF + "'";
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			
+			int id = Integer.parseInt(rs.getString("id"));
+			Date fechaHora =  rs.getDate("fecha_hora");
+			double costo = Double.parseDouble(rs.getString("costo"));
+			int sillasreservadas = Integer.parseInt(rs.getString("sillas_reservadas"));
+			boolean realizada = rs.getBoolean("ya_se_realizo");
+			Espectaculo espectaculo = null;
+			funcion = new Funcion(id, fechaHora, costo, sillasreservadas, realizada, espectaculo);
+		}
+		return funcion;
+	}
+	
+	
+	
 }
