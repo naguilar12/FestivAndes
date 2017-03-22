@@ -15,7 +15,8 @@ import tm.FestivAndesMaster;
 import vos.ListaPreferencias;
 import vos.Preferencia;
 
-public class FestivAndesUsuariosServices {
+@Path("")
+public class FestivAndesClienteServices {
 
 	@Context
 	private ServletContext context;
@@ -33,14 +34,30 @@ public class FestivAndesUsuariosServices {
 		return "{ \"ERROR\": \""+ e.getMessage() + "\"}" ;
 	}
 	
+	////////////////////////////////////////RF7///////////////////////////////////////////
+	
 	@GET
 	@Path("/clientes/{id}/preferencias")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getPreferencias(@javax.ws.rs.PathParam("id") int id) {
+	public Response getPreferenciasUsuario(@javax.ws.rs.PathParam("id") int id) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		ListaPreferencias preferencias;
 		try {
 			preferencias = tm.buscarPreferenciasPorUsuario(id);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(preferencias).build();
+	}
+	
+	@GET
+	@Path("/preferencias")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getPreferencias() {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaPreferencias preferencias;
+		try {
+			preferencias = tm.darPreferencias();
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
@@ -74,4 +91,7 @@ public class FestivAndesUsuariosServices {
 		}
 		return Response.status(200).entity(preferencia).build();
 	}
+	
+	////////////////////////////////////////RF8///////////////////////////////////////////
+	
 }

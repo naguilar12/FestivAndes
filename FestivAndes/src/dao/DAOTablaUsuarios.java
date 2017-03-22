@@ -16,6 +16,7 @@ import vos.Video;
 public class DAOTablaUsuarios {
 
 	
+	
 
 	/**
 	 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
@@ -57,13 +58,15 @@ public class DAOTablaUsuarios {
 	public void setConn(Connection con){
 		this.conn = con;
 	}
+	
+	////////////////////////////////////////RF7////////////////////////////////////////////////////////////////
 
 	public void addPreferenciaCliente(Preferencia preferencia, int idUsuario) throws SQLException, Exception {
 
-		String sql = "INSERT INTO PREFERENCIA VALUES (";
+		String sql = "INSERT INTO ISIS2304A021720.PREFERENCIA VALUES (";
 		sql += idUsuario + ",'";
 		sql += preferencia.getTipo() + "',";
-		sql += preferencia.getPreferencia() + ")";
+		sql += "'"+preferencia.getPreferencia() + "')";
 
 		System.out.println("SQL stmt:" + sql);
 
@@ -76,7 +79,7 @@ public class DAOTablaUsuarios {
 
 		String sql = "DELETE FROM PREFERENCIA";
 		sql += " WHERE id = " + idUsuario;
-		sql += " AND preferencia = " + preferencia.getPreferencia();
+		sql += " AND preferencia = '" + preferencia.getPreferencia()+"'";
 
 		System.out.println("SQL stmt:" + sql);
 
@@ -104,4 +107,30 @@ public class DAOTablaUsuarios {
 
 		return preferencias;
 	}
+	
+	
+	public ArrayList<Preferencia> darPreferencias() throws SQLException, Exception {
+		ArrayList<Preferencia> preferencias= new ArrayList<Preferencia>();
+
+		String sql = "SELECT * FROM ISIS2304A021720.PREFERENCIA";
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			String preferencia = rs.getString("preferencia");
+			String tipo = rs.getString("tipo");
+			preferencias.add(new Preferencia(tipo, preferencia));
+		}
+		return preferencias;
+	}
+	
+	////////////////////////////////////////RF8////////////////////////////////////////////////////////////////
+
+	
+	////////////////////////////////////////RF9////////////////////////////////////////////////////////////////
+
 }
