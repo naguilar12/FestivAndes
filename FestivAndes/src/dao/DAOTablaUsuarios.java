@@ -10,8 +10,12 @@ import vos.Espectaculo;
 import vos.ListaCategorias;
 import vos.ListaCompañias;
 import vos.ListaRequerimientos;
+import vos.Preferencia;
+import vos.Video;
 
-public class DAOTablaEspectaculos {	
+public class DAOTablaUsuarios {
+
+	
 
 	/**
 	 * Arraylits de recursos que se usan para la ejecuciÃ³n de sentencias SQL
@@ -27,7 +31,7 @@ public class DAOTablaEspectaculos {
 	 * MÃ©todo constructor que crea DAOVideo
 	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
 	 */
-	public DAOTablaEspectaculos() {
+	public DAOTablaUsuarios() {
 		recursos = new ArrayList<Object>();
 	}
 
@@ -54,35 +58,50 @@ public class DAOTablaEspectaculos {
 		this.conn = con;
 	}
 
-	public ArrayList<Espectaculo> darEspectaculos() throws SQLException, Exception {
-		ArrayList<Espectaculo> espectaculos = new ArrayList<Espectaculo>();
+	public void addPreferenciaCliente(Preferencia preferencia, int idUsuario) throws SQLException, Exception {
 
-		//String sql = "SELECT * FROM ISIS2304MO11620.VIDEOS";
-		String sql = "SELECT * FROM ISIS2304A021720.ESPECTACULO";
+		String sql = "INSERT INTO PREFERENCIA VALUES (";
+		sql += idUsuario + ",'";
+		sql += preferencia.getTipo() + "',";
+		sql += preferencia.getPreferencia() + ")";
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
+	
+	public void deletePreferenciaCliente(Preferencia preferencia, int idUsuario) throws SQLException, Exception {
+
+		String sql = "DELETE FROM PREFERENCIA";
+		sql += " WHERE id = " + idUsuario;
+		sql += " AND preferencia = " + preferencia.getPreferencia();
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
+	
+	public ArrayList<Preferencia> buscarPreferenciasPorUsuario(int idUsuario) throws SQLException, Exception {
+		ArrayList<Preferencia> preferencias= new ArrayList<Preferencia>();
+
+		String sql = "SELECT * FROM PREFERENCIA WHERE id ='" + idUsuario+ "'";
+
+		System.out.println("SQL stmt:" + sql);
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 
 		while (rs.next()) {
-			String nombre = rs.getString("nombre");
-			int id = Integer.parseInt(rs.getString("id"));
-			double duracion= Double.parseDouble(rs.getString("duracion"));
-			boolean intermedio = rs.getBoolean("intermedio");
-			String idioma = rs.getString("idioma");
-			String clasificacion = rs.getString("clasificacion");
-			double costoRealizacion= Double.parseDouble(rs.getString("costo_realizacion"));
-			boolean publicoActivo = rs.getBoolean("publico_activo");
-			boolean traduccionSubtitulos = rs.getBoolean("traduccion_subtitulos");
-			boolean traduccionAudifonos = rs.getBoolean("audifonos");
-			String descripcion= rs.getString("descripcion");
-			String publicoObjetivo= rs.getString("publico_objetivo");
-			ListaCompañias compañias = null;
-			ListaCategorias categorias = null;
-			ListaRequerimientos requerimientos = null;
-			
-			espectaculos.add(new Espectaculo(id, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compañias, categorias, requerimientos));
+			String preferencia = rs.getString("preferencia");
+			String tipo = rs.getString("tipo");
+			preferencias.add(new Preferencia(tipo, preferencia));
 		}
-		return espectaculos;
+
+		return preferencias;
 	}
 }
