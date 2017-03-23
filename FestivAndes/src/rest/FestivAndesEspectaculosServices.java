@@ -53,19 +53,6 @@ public class FestivAndesEspectaculosServices {
 		return Response.status(200).entity(espectaculos).build();
 	}
 	
-	@GET
-	@Path("{id}/funciones/{idF}/realizarFuncion")
-	@Produces({ MediaType.APPLICATION_JSON })
-	public Response realizarFuncion(@javax.ws.rs.PathParam("id") int id, @javax.ws.rs.PathParam("idF") int idF) {
-		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-		Funcion funcion;
-		try {
-			funcion = tm.realizarFuncion(idF);
-		} catch (Exception e) {
-			return Response.status(500).entity(doErrorMessage(e)).build();
-		}
-		return Response.status(200).entity(funcion).build();
-	}
 
 	////////////////////////////////////////RFC1////////////////////////////////////////////////////////////////
 

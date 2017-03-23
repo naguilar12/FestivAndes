@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import dao.DAOTablaEspectaculos;
+import dao.DAOTablaUsuarios;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
@@ -17,8 +18,10 @@ import vos.Espectaculo;
 import vos.Funcion;
 import vos.ListaEspectaculos;
 import vos.ListaPreferencias;
+import vos.ListaSillas;
 import vos.ListaVideos;
 import vos.Preferencia;
+import vos.Reserva;
 import vos.Video;
 
 public class FestivAndesMaster {
@@ -142,7 +145,7 @@ public class FestivAndesMaster {
 	//////////////////////////////////////////////////////////////////////////
 
 	public void addPreferencia(Preferencia preferencia, int idUsuario) throws Exception {
-		DAOTablaEspectaculos daoUsuarios = new DAOTablaEspectaculos();
+		DAOTablaUsuarios daoUsuarios = new DAOTablaUsuarios();
 		try 
 		{
 			//////Transacción
@@ -173,7 +176,7 @@ public class FestivAndesMaster {
 	}
 
 	public void deletePreferencia(Preferencia preferencia, int idUsuario) throws Exception {
-		DAOTablaEspectaculos daoUsuario = new DAOTablaEspectaculos();
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
 		try 
 		{
 			//////Transacción
@@ -204,7 +207,7 @@ public class FestivAndesMaster {
 	
 	public ListaPreferencias buscarPreferenciasPorUsuario(int idUsuario) throws Exception {
 		ArrayList<Preferencia> preferencias;
-		DAOTablaEspectaculos daoUsuario = new DAOTablaEspectaculos();
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
 		try 
 		{
 			//////Transacción
@@ -236,7 +239,7 @@ public class FestivAndesMaster {
 	
 	public ListaPreferencias darPreferencias() throws Exception {
 		ArrayList<Preferencia> preferencias;
-		DAOTablaEspectaculos daoUsuario = new DAOTablaEspectaculos();
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
 		try 
 		{
 			//////Transacción
@@ -330,6 +333,38 @@ public class FestivAndesMaster {
 		}
 		return new ListaEspectaculos(espectaculos);		
 	}
-
+	
+//	public Reserva comprarBoletas(int id, int idFuncion, ListaSillas sillas)
+//	{
+//		Reserva reserva;
+//		DAOTablaUsuarios daoUsuarios= new DAOTablaUsuarios();
+//		try 
+//		{
+//			//////Transacción
+//			this.conn = darConexion();
+//			daoUsuarios.setConn(conn);
+//			reserva = daoUsuarios.comprarBoletas(id, idFuncion, sillas);
+//
+//		} catch (SQLException e) {
+//			System.err.println("SQLException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} catch (Exception e) {
+//			System.err.println("GeneralException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} finally {
+//			try {
+//				daoUsuarios.cerrarRecursos();
+//				if(this.conn!=null)
+//					this.conn.close();
+//			} catch (SQLException exception) {
+//				System.err.println("SQLException closing resources:" + exception.getMessage());
+//				exception.printStackTrace();
+//				throw exception;
+//			}
+//		}
+//		return reserva;		
+//	}
 
 }

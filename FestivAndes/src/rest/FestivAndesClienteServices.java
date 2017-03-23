@@ -13,9 +13,11 @@ import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
 import vos.ListaPreferencias;
+import vos.ListaSillas;
 import vos.Preferencia;
+import vos.Reserva;
 
-@Path("")
+@Path("clientes")
 public class FestivAndesClienteServices {
 
 	@Context
@@ -28,70 +30,89 @@ public class FestivAndesClienteServices {
 	private String getPath() {
 		return context.getRealPath("WEB-INF/ConnectionData");
 	}
-	
-	
+
+
 	private String doErrorMessage(Exception e){
 		return "{ \"ERROR\": \""+ e.getMessage() + "\"}" ;
 	}
-	
+
 	////////////////////////////////////////RF7///////////////////////////////////////////
-	
+
 	@GET
-	@Path("/clientes/{id}/preferencias")
+	@Path("{id}/preferencias")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getPreferenciasUsuario(@javax.ws.rs.PathParam("id") int id) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		ListaPreferencias preferencias;
 		try {
-			preferencias = tm.buscarPreferenciasPorUsuario(id);
+				preferencias = tm.buscarPreferenciasPorUsuario(id);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(preferencias).build();
 	}
-	
-	@GET
-	@Path("/preferencias")
-	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getPreferencias() {
-		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-		ListaPreferencias preferencias;
-		try {
-			preferencias = tm.darPreferencias();
-		} catch (Exception e) {
-			return Response.status(500).entity(doErrorMessage(e)).build();
-		}
-		return Response.status(200).entity(preferencias).build();
-	}
-	
+
+	//	@GET
+	//	@Path("/preferencias")
+	//	@Produces({ MediaType.APPLICATION_JSON })
+	//	public Response getPreferencias() {
+	//		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+	//		ListaPreferencias preferencias;
+	//		try {
+	//			preferencias = tm.darPreferencias();
+	//		} catch (Exception e) {
+	//			return Response.status(500).entity(doErrorMessage(e)).build();
+	//		}
+	//		return Response.status(200).entity(preferencias).build();
+	//	}
+
 	@POST
-	@Path("/clientes/{id}/preferencias")
+	@Path("{id}/preferencias")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addPreferencia(Preferencia preferencia, @javax.ws.rs.PathParam("id") int id) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		try {
-			tm.addPreferencia(preferencia, id);;
+				tm.addPreferencia(preferencia, id);;
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(preferencia).build();
 	}
-	
+
 	@DELETE
-	@Path("/clientes/{id}/preferencias")
+	@Path("{id}/preferencias")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deletePreferencia(Preferencia preferencia, @javax.ws.rs.PathParam("id") int id) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		try {
-			tm.deletePreferencia(preferencia, id);
+			//if(tm.esCliente(id))
+				tm.deletePreferencia(preferencia, id);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(preferencia).build();
 	}
-	
+
 	////////////////////////////////////////RF8///////////////////////////////////////////
 	
+//	@POST
+//	@Path("{id}/funciones/{idFuncion}/comprarBoletas")
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@Produces({ MediaType.APPLICATION_JSON })
+//	public Response comprarBoletas(@javax.ws.rs.PathParam("id") int id, @javax.ws.rs.PathParam("idFuncion") int idFuncion, ListaSillas sillas) {
+//		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+//		Reserva reserva;
+//		try {
+//			//if(tm.esCliente(id))
+//				reserva = tm.comprarBoletas(id, idFuncion, sillas);
+//			//else
+//				//preferencias = null;
+//		} catch (Exception e) {
+//			return Response.status(500).entity(doErrorMessage(e)).build();
+//		}
+//		return Response.status(200).entity(reserva).build();
+//	}
+
 }
