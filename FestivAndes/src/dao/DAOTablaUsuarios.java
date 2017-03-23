@@ -1,22 +1,24 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import vos.Cliente;
 import vos.Espectaculo;
+import vos.Funcion;
 import vos.ListaCategorias;
 import vos.ListaCompañias;
 import vos.ListaRequerimientos;
+import vos.ListaSillas;
 import vos.Preferencia;
+import vos.Reserva;
 import vos.Video;
 
 public class DAOTablaUsuarios {
-
-	
-	
 
 	/**
 	 * Arraylits de recursos que se usan para la ejecuciÃ³n de sentencias SQL
@@ -58,23 +60,33 @@ public class DAOTablaUsuarios {
 	public void setConn(Connection con){
 		this.conn = con;
 	}
-	
+
 	////////////////////////////////////////RF7////////////////////////////////////////////////////////////////
 
 	public void addPreferenciaCliente(Preferencia preferencia, int idUsuario) throws SQLException, Exception {
+		String sql1 = "SELECT * FROM CLIENTE WHERE id ='" + idUsuario+ "'";
 
-		String sql = "INSERT INTO ISIS2304A021720.PREFERENCIA VALUES (";
-		sql += idUsuario + ",'";
-		sql += preferencia.getTipo() + "',";
-		sql += "'"+preferencia.getPreferencia() + "')";
+		System.out.println("SQL stmt:" + sql1);
 
-		System.out.println("SQL stmt:" + sql);
-
-		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		PreparedStatement prepStmt = conn.prepareStatement(sql1);
 		recursos.add(prepStmt);
-		prepStmt.executeQuery();
+		ResultSet rs = prepStmt.executeQuery();
+
+		if (rs.next()) {
+
+			String sql = "INSERT INTO ISIS2304A021720.PREFERENCIA VALUES (";
+			sql += idUsuario + ",'";
+			sql += preferencia.getTipo() + "',";
+			sql += "'"+preferencia.getPreferencia() + "')";
+
+			System.out.println("SQL stmt:" + sql);
+
+			PreparedStatement prepStmta = conn.prepareStatement(sql);
+			recursos.add(prepStmta);
+			prepStmta.executeQuery();
+		}
 	}
-	
+
 	public void deletePreferenciaCliente(Preferencia preferencia, int idUsuario) throws SQLException, Exception {
 
 		String sql = "DELETE FROM PREFERENCIA";
@@ -87,7 +99,7 @@ public class DAOTablaUsuarios {
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
 	}
-	
+
 	public ArrayList<Preferencia> buscarPreferenciasPorUsuario(int idUsuario) throws SQLException, Exception {
 		ArrayList<Preferencia> preferencias= new ArrayList<Preferencia>();
 
@@ -99,7 +111,7 @@ public class DAOTablaUsuarios {
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 
-		while (rs.next()) {
+		if (rs.next()) {
 			String preferencia = rs.getString("preferencia");
 			String tipo = rs.getString("tipo");
 			preferencias.add(new Preferencia(tipo, preferencia));
@@ -107,8 +119,7 @@ public class DAOTablaUsuarios {
 
 		return preferencias;
 	}
-	
-	
+
 	public ArrayList<Preferencia> darPreferencias() throws SQLException, Exception {
 		ArrayList<Preferencia> preferencias= new ArrayList<Preferencia>();
 
@@ -127,9 +138,31 @@ public class DAOTablaUsuarios {
 		}
 		return preferencias;
 	}
-	
+
+	public boolean esCliente(int id) throws SQLException, Exception
+	{
+		boolean encontro = false;
+		String sql = "SELECT * FROM ISIS2304A021720.CLIENTE WHERE ID = " + id ;
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if(rs==null)
+			encontro = true;
+
+		return encontro;
+	}
+
 	////////////////////////////////////////RF8////////////////////////////////////////////////////////////////
-	
-	
-	
+
+	//	public Reserva comprarBoletas(int id, int idFuncion, ListaSillas sillas) throws SQLException, Exception
+	//	{
+	//		if(esCliente(id) && esfuncion(idFuncion))
+	//		{
+	//
+	//		}
+	//	}	
 }

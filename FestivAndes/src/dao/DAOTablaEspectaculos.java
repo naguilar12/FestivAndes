@@ -93,7 +93,7 @@ public class DAOTablaEspectaculos {
 	public Funcion realizarFuncion(int idF) throws SQLException, Exception {
 
 		String sql = "UPDATE ISIS2304A021720.FUNCION SET ";
-		sql += "ya_se_realizo='" + "true',";
+		sql += "ya_se_realizo='" + "1";
 		sql += " WHERE id = " + idF;
 
 		System.out.println("SQL stmt:" + sql);
