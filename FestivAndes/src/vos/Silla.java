@@ -17,7 +17,10 @@ public class Silla {
 	private Localidad localidad;
 	
 	@JsonProperty(value="reserva")
-	private Reserva reserva;	
+	private Reserva reserva;
+	
+	@JsonProperty(value="disponible")
+	private int disponible;
 
 	public Localidad getLocalidad() {
 		return localidad;
@@ -27,16 +30,27 @@ public class Silla {
 		this.localidad = localidad;
 	}
 
-	public Silla(@JsonProperty(value="id")int id,@JsonProperty(value="fila") int fila, @JsonProperty(value="columna")int columna,@JsonProperty(value="localidad")Localidad localidad) {
+	public Silla(@JsonProperty(value="id")int id,@JsonProperty(value="fila") int fila, @JsonProperty(value="columna")int columna,@JsonProperty(value="localidad")Localidad localidad, @JsonProperty(value="disponible")int disponible) {
 		super();
 		this.id = id;
 		this.fila = fila;
 		this.columna = columna;
 		this.localidad = localidad;
+		this.disponible = disponible;
 	}
 
 	public int getId() {
 		return id;
+	}
+	
+	
+
+	public int getDisponible() {
+		return disponible;
+	}
+
+	public void setDisponible(int disponible) {
+		this.disponible = disponible;
 	}
 
 	public void setId(int id) {

@@ -1,5 +1,7 @@
 package rest;
 
+import java.util.ArrayList;
+
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -14,6 +16,7 @@ import javax.ws.rs.core.Response;
 import tm.FestivAndesMaster;
 import tm.VideoAndesMaster;
 import vos.ListaPreferencias;
+import vos.ListaReservas;
 import vos.ListaSillas;
 import vos.Preferencia;
 import vos.Reserva;
@@ -101,21 +104,21 @@ public class FestivAndesClienteServices {
 	}
 
 	////////////////////////////////////////RF8///////////////////////////////////////////
-//	
-//	@GET
-//	@Path("/reservas")
-//	@Produces({ MediaType.APPLICATION_JSON })
-//	public Response getPreferencias() {
-//		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-//		ListaPreferencias preferencias;
-//		try {
-//			preferencias = tm.darPreferencias();
-//		} catch (Exception e) {
-//			return Response.status(500).entity(doErrorMessage(e)).build();
-//		}
-//		return Response.status(200).entity(preferencias).build();
-//	}
-//	
+	
+	@GET
+	@Path("/reservas")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getReservas() {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaReservas preferencias;
+		try {
+			preferencias = tm.darReservas();
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(preferencias).build();
+	}
+	
 //	@POST
 //	@Path("{id}/reserva")
 //	@Consumes(MediaType.APPLICATION_JSON)

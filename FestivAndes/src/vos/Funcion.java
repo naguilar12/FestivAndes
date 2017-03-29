@@ -10,7 +10,7 @@ public class Funcion {
 	private int id;
 	
 	@JsonProperty(value="fechaHora")
-	private Date fechaHora;
+	private java.sql.Timestamp fechaHora;
 	
 	@JsonProperty(value="costo")
 	private double costo;
@@ -26,7 +26,7 @@ public class Funcion {
 	
 	
 
-	public Funcion(@JsonProperty(value="id")int id, @JsonProperty(value="fechaHora")Date fechaHora, @JsonProperty(value="costo")double costo, @JsonProperty(value="sillasReservadas")int sillasreservadas, @JsonProperty(value="realizada")int realizada,
+	public Funcion(@JsonProperty(value="id")int id, @JsonProperty(value="fechaHora")java.sql.Timestamp fechaHora, @JsonProperty(value="costo")double costo, @JsonProperty(value="sillasReservadas")int sillasreservadas, @JsonProperty(value="realizada")int realizada,
 			@JsonProperty(value="espectaculo")Espectaculo espectaculo) {
 		super();
 		this.id = id;
@@ -45,11 +45,11 @@ public class Funcion {
 		this.id = id;
 	}
 
-	public Date getFechaHora() {
+	public java.sql.Timestamp getFechaHora() {
 		return fechaHora;
 	}
 
-	public void setFechaHora(Date fechaHora) {
+	public void setFechaHora(java.sql.Timestamp fechaHora) {
 		this.fechaHora = fechaHora;
 	}
 

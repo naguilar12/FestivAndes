@@ -9,15 +9,16 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import dao.DAOTablaCliente;
-import dao.DAOTablaEspectaculos;
-import dao.DAOTablaEspectaculos;
-import dao.DAOTablaEspectaculos;
-import dao.DAOTablaEspectaculos;
-import dao.DAOTablaEspectaculos;
+import dao.DAOTablaCliente;
+import dao.DAOTablaCliente;
+import dao.DAOTablaCliente;
+import dao.DAOTablaCliente;
+import dao.DAOTablaCliente;
 import vos.Espectaculo;
 import vos.Funcion;
 import vos.ListaEspectaculos;
 import vos.ListaPreferencias;
+import vos.ListaReservas;
 import vos.ListaSillas;
 import vos.ListaVideos;
 import vos.Preferencia;
@@ -242,7 +243,7 @@ public class FestivAndesMaster {
 	
 	public ListaEspectaculos darEspectaculos() throws Exception {
 		ArrayList<Espectaculo> espectaculos;
-		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+		DAOTablaCliente daoEspectaculos = new DAOTablaCliente();
 		try 
 		{
 			//////Transacción
@@ -271,6 +272,38 @@ public class FestivAndesMaster {
 		}
 		return new ListaEspectaculos(espectaculos);
 	}
+	
+	public ListaReservas darReservas() throws Exception {
+		ArrayList<Reserva> reservas;
+		DAOTablaCliente daoCliente = new DAOTablaCliente();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoCliente.setConn(conn);
+			reservas = daoCliente.darReservas();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoCliente.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaReservas(reservas);
+	}
 
 
 	
@@ -280,7 +313,7 @@ public class FestivAndesMaster {
 		
 	public Funcion realizarFuncion(int idE,int idF) throws Exception {
 		Funcion funcion;
-		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+		DAOTablaCliente daoEspectaculos = new DAOTablaCliente();
 		try 
 		{
 			//////Transacción
@@ -313,7 +346,7 @@ public class FestivAndesMaster {
 	public ListaEspectaculos darEspectaculosIdioma(String idioma) throws Exception
 	{
 		ArrayList<Espectaculo> espectaculos;
-		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+		DAOTablaCliente daoEspectaculos = new DAOTablaCliente();
 		try 
 		{
 			//////Transacción
