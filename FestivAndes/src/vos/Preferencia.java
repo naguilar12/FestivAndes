@@ -10,12 +10,24 @@ public class Preferencia {
 	@JsonProperty(value="preferencia")
 	private String preferencia;
 	
+	@JsonProperty(value="id")
+	private int id;
+	
 	
 
-	public Preferencia(@JsonProperty(value="tipo")String tipo, @JsonProperty(value="preferencia")String preferencia) {
+	public Preferencia(@JsonProperty(value="tipo")String tipo, @JsonProperty(value="preferencia")String preferencia, @JsonProperty(value="id")int id) {
 		super();
 		this.tipo = tipo;
 		this.preferencia = preferencia;
+		this.id = id;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getTipo() {

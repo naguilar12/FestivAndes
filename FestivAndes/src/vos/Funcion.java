@@ -19,14 +19,14 @@ public class Funcion {
 	private int sillasreservadas;
 	
 	@JsonProperty(value="realizada")
-	private boolean realizada;
+	private int realizada;
 	
 	@JsonProperty(value="espectaculo")
 	private Espectaculo espectaculo;
 	
 	
 
-	public Funcion(@JsonProperty(value="id")int id, @JsonProperty(value="fechaHora")Date fechaHora, @JsonProperty(value="costo")double costo, @JsonProperty(value="sillasReservadas")int sillasreservadas, @JsonProperty(value="realizada")boolean realizada,
+	public Funcion(@JsonProperty(value="id")int id, @JsonProperty(value="fechaHora")Date fechaHora, @JsonProperty(value="costo")double costo, @JsonProperty(value="sillasReservadas")int sillasreservadas, @JsonProperty(value="realizada")int realizada,
 			@JsonProperty(value="espectaculo")Espectaculo espectaculo) {
 		super();
 		this.id = id;
@@ -69,11 +69,11 @@ public class Funcion {
 		this.sillasreservadas = sillasreservadas;
 	}
 
-	public boolean isRealizada() {
+	public int isRealizada() {
 		return realizada;
 	}
 
-	public void setRealizada(boolean realizada) {
+	public void setRealizada(int realizada) {
 		this.realizada = realizada;
 	}
 

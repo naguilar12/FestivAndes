@@ -60,7 +60,7 @@ public class DAOTablaEspectaculos {
 		ArrayList<Espectaculo> espectaculos = new ArrayList<Espectaculo>();
 
 		//String sql = "SELECT * FROM ISIS2304MO11620.VIDEOS";
-		String sql = "SELECT * FROM ISIS2304A021720.ESPECTACULO";
+		String sql = "SELECT * FROM ISIS2304A231720.ESPECTACULO";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -90,11 +90,12 @@ public class DAOTablaEspectaculos {
 	
 	////////////////////////////////////////RF9////////////////////////////////////////////////////////////////
 	
-	public Funcion realizarFuncion(int idF) throws SQLException, Exception {
+	public Funcion realizarFuncion(int idE, int idF) throws SQLException, Exception {
 
-		String sql = "UPDATE ISIS2304A021720.FUNCION SET ";
+		String sql = "UPDATE FUNCION SET ";
 		sql += "ya_se_realizo='" + "1";
-		sql += " WHERE id = " + idF;
+		sql += " WHERE ID = " + idF;
+		sql += " WHERE ID_ESPECTACULOS = " + idF;
 
 		System.out.println("SQL stmt:" + sql);
 
@@ -108,7 +109,7 @@ public class DAOTablaEspectaculos {
 	public Funcion darFuncion(int idF) throws SQLException, Exception {
 		Funcion funcion = null;
 
-		String sql = "SELECT * FROM ISIS2304A021720.FUNCION WHERE id = '" + idF + "'";
+		String sql = "SELECT * FROM FUNCION WHERE ID=" + idF;
 
 		System.out.println("SQL stmt:" + sql);
 
@@ -122,7 +123,7 @@ public class DAOTablaEspectaculos {
 			Date fechaHora =  rs.getDate("fecha_hora");
 			double costo = Double.parseDouble(rs.getString("costo"));
 			int sillasreservadas = Integer.parseInt(rs.getString("sillas_reservadas"));
-			boolean realizada = rs.getBoolean("ya_se_realizo");
+			int  realizada = Integer.parseInt(rs.getString("ya_se_realizo"));
 			Espectaculo espectaculo = null;
 			funcion = new Funcion(id, fechaHora, costo, sillasreservadas, realizada, espectaculo);
 		}
