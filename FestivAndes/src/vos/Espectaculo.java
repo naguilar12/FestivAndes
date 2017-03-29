@@ -14,7 +14,7 @@ public class Espectaculo {
 	private double duracion;	
 
 	@JsonProperty(value="intermedio")
-	private boolean intermedio;
+	private int intermedio;
 	
 	@JsonProperty(value="idioma")
 	private String idioma;
@@ -26,13 +26,13 @@ public class Espectaculo {
 	private double costoRealizacion;
 	
 	@JsonProperty(value="publicoActivo")
-	private boolean publicoActivo;
+	private int publicoActivo;
 	
 	@JsonProperty(value="traduccionSubtitulos")
-	private boolean traduccionSubtitulos;
+	private int traduccionSubtitulos;
 	
 	@JsonProperty(value="traduccionAudifonos")
-	private boolean traduccionAudifonos;
+	private int traduccionAudifonos;
 	
 	@JsonProperty(value="descripcion")
 	private String descripcion;
@@ -49,8 +49,8 @@ public class Espectaculo {
 	@JsonProperty(value="requerimientos")
 	private ListaRequerimientos requerimientos;
 
-	public Espectaculo(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="duracion")double duracion, @JsonProperty(value="intermedio")boolean intermedio, @JsonProperty(value="idioma")String idioma, @JsonProperty(value="clasificacion")String clasificacion,
-			@JsonProperty(value="costoRealizacion")double costoRealizacion, @JsonProperty(value="publicoActivo")boolean publicoActivo, @JsonProperty(value="traduccionSubtitulos")boolean traduccionSubtitulos, @JsonProperty(value="traduccionAudifonos")boolean traduccionAudifonos,
+	public Espectaculo(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="duracion")double duracion, @JsonProperty(value="intermedio")int intermedio, @JsonProperty(value="idioma")String idioma, @JsonProperty(value="clasificacion")String clasificacion,
+			@JsonProperty(value="costoRealizacion")double costoRealizacion, @JsonProperty(value="publicoActivo")int publicoActivo, @JsonProperty(value="traduccionSubtitulos")int traduccionSubtitulos, @JsonProperty(value="traduccionAudifonos")int traduccionAudifonos,
 			@JsonProperty(value="descripcion")String descripcion, @JsonProperty(value="publicoObjetivo")String publicoObjetivo, @JsonProperty(value="compañias")ListaCompañias compañias, @JsonProperty(value="categorias")ListaCategorias categorias, @JsonProperty(value="requerimientos")ListaRequerimientos requerimientos ) {
 		super();
 		this.id = id;
@@ -112,11 +112,11 @@ public class Espectaculo {
 		this.duracion = duracion;
 	}
 
-	public boolean isIntermedio() {
+	public int isIntermedio() {
 		return intermedio;
 	}
 
-	public void setIntermedio(boolean intermedio) {
+	public void setIntermedio(int intermedio) {
 		this.intermedio = intermedio;
 	}
 
@@ -144,27 +144,27 @@ public class Espectaculo {
 		this.costoRealizacion = costoRealizacion;
 	}
 
-	public boolean isPublicoActivo() {
+	public int isPublicoActivo() {
 		return publicoActivo;
 	}
 
-	public void setPublicoActivo(boolean publicoActivo) {
+	public void setPublicoActivo(int publicoActivo) {
 		this.publicoActivo = publicoActivo;
 	}
 
-	public boolean isTraduccionSubtitulos() {
+	public int isTraduccionSubtitulos() {
 		return traduccionSubtitulos;
 	}
 
-	public void setTraduccionSubtitulos(boolean traduccionSubtitulos) {
+	public void setTraduccionSubtitulos(int traduccionSubtitulos) {
 		this.traduccionSubtitulos = traduccionSubtitulos;
 	}
 
-	public boolean isTraduccionAudifonos() {
+	public int isTraduccionAudifonos() {
 		return traduccionAudifonos;
 	}
 
-	public void setTraduccionAudifonos(boolean traduccionAudifonos) {
+	public void setTraduccionAudifonos(int traduccionAudifonos) {
 		this.traduccionAudifonos = traduccionAudifonos;
 	}
 

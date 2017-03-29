@@ -79,7 +79,7 @@ public class DAOTablaCliente {
 	public ArrayList<Preferencia> buscarPreferenciasPorUsuario(int idUsuario) throws SQLException, Exception {
 		ArrayList<Preferencia> preferencias= new ArrayList<Preferencia>();
 
-		String sql = "SELECT * FROM PREFERENCIA WHERE ID ='" + idUsuario+ "'";
+		String sql = "SELECT * FROM PREFERENCIA WHERE ID =" + idUsuario;
 
 		System.out.println("SQL stmt:" + sql);
 
@@ -109,8 +109,8 @@ public class DAOTablaCliente {
 
 			String sql = "INSERT INTO PREFERENCIA VALUES (";
 			sql += idUsuario + ",'";
-			sql += preferencia.getTipo() + "',";
-			sql += "'"+preferencia.getPreferencia() + "')";
+			sql += preferencia.getPreferencia() + "',";
+			sql += "'"+preferencia.getTipo() + "')";
 
 			System.out.println("SQL stmt:" + sql);
 

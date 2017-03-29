@@ -32,13 +32,13 @@ public class FestivAndesOrganizadoresServices {
 	
 	/////////////////////////////////////////RF9/////////////////////////////////////////////////////////////////
 	@GET
-	@Path("/espectaculos/{id}/funciones/{idF}/realizarFuncion")
+	@Path("{idO}/espectaculos/{id}/funciones/{idF}/realizarFuncion")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response realizarFuncion(@javax.ws.rs.PathParam("id") int id, @javax.ws.rs.PathParam("idF") int idF) {
+	public Response realizarFuncion(@javax.ws.rs.PathParam("idO") int idO,@javax.ws.rs.PathParam("id") int id, @javax.ws.rs.PathParam("idF") int idF) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		Funcion funcion;
 		try {
-			funcion = tm.realizarFuncion(id, idF);
+			funcion = tm.realizarFuncion(idO,id, idF);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}

@@ -12,90 +12,99 @@ import vos.Funcion;
 public class DAOTablaFuncion {
 
 
-		/**
-		 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
-		 */
-		private ArrayList<Object> recursos;
+	/**
+	 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
+	 */
+	private ArrayList<Object> recursos;
 
-		/**
-		 * Atributo que genera la conexión a la base de datos
-		 */
-		private Connection conn;
+	/**
+	 * Atributo que genera la conexión a la base de datos
+	 */
+	private Connection conn;
 
-		/**
-		 * Método constructor que crea DAOVideo
-		 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
-		 */
-		public DAOTablaFuncion() {
-			recursos = new ArrayList<Object>();
+	/**
+	 * Método constructor que crea DAOVideo
+	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
+	 */
+	public DAOTablaFuncion() {
+		recursos = new ArrayList<Object>();
+	}
+
+	/**
+	 * Método que cierra todos los recursos que estan enel arreglo de recursos
+	 * <b>post: </b> Todos los recurso del arreglo de recursos han sido cerrados
+	 */
+	public void cerrarRecursos() {
+		for(Object ob : recursos){
+			if(ob instanceof PreparedStatement)
+				try {
+					((PreparedStatement) ob).close();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 		}
+	}
 
-		/**
-		 * Método que cierra todos los recursos que estan enel arreglo de recursos
-		 * <b>post: </b> Todos los recurso del arreglo de recursos han sido cerrados
-		 */
-		public void cerrarRecursos() {
-			for(Object ob : recursos){
-				if(ob instanceof PreparedStatement)
-					try {
-						((PreparedStatement) ob).close();
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-			}
-		}
+	/**
+	 * Método que inicializa la connection del DAO a la base de datos con la conexión que entra como parámetro.
+	 * @param con  - connection a la base de datos
+	 */
+	public void setConn(Connection con){
+		this.conn = con;
+	}
 
-		/**
-		 * Método que inicializa la connection del DAO a la base de datos con la conexión que entra como parámetro.
-		 * @param con  - connection a la base de datos
-		 */
-		public void setConn(Connection con){
-			this.conn = con;
-		}
 
-		
-		////////////////////////////////////////RF9////////////////////////////////////////////////////////////////
-		
-		public Funcion realizarFuncion(int idE, int idF) throws SQLException, Exception {
+	////////////////////////////////////////RF9////////////////////////////////////////////////////////////////
 
+	public Funcion realizarFuncion(int idO, int idE, int idF) throws SQLException, Exception {
+
+		String sql1 = "SELECT * FROM ORGANIZADOR WHERE ID =" + idO;
+
+		System.out.println("SQL stmt:" + sql1);
+
+		PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
+		recursos.add(prepStmt1);
+		ResultSet rs = prepStmt1.executeQuery();
+		if (rs.next()) 
+		{
 			String sql = "UPDATE FUNCION SET ";
-			sql += "ya_se_realizo='" + "1";
+			sql += "ya_se_realizo=" + "1";
 			sql += " WHERE ID = " + idF;
-			sql += " WHERE ID_ESPECTACULOS = " + idF;
+			sql += " AND ID_ESPECTACULO = " + idE;
 
 			System.out.println("SQL stmt:" + sql);
 
 			PreparedStatement prepStmt = conn.prepareStatement(sql);
 			recursos.add(prepStmt);
 			prepStmt.executeQuery();
-			
-			return darFuncion(idF);
 		}
-		
-		public Funcion darFuncion(int idF) throws SQLException, Exception {
-			Funcion funcion = null;
+		return darFuncion(idF);
+	}
 
-			String sql = "SELECT * FROM FUNCION WHERE ID=" + idF;
+	public Funcion darFuncion(int idF) throws SQLException, Exception {
+		Funcion funcion = null;
 
-			System.out.println("SQL stmt:" + sql);
+		String sql = "SELECT * FROM FUNCION WHERE ID=" + idF;
 
-			PreparedStatement prepStmt = conn.prepareStatement(sql);
-			recursos.add(prepStmt);
-			ResultSet rs = prepStmt.executeQuery();
+		System.out.println("SQL stmt:" + sql);
 
-			while (rs.next()) {
-				
-				int id = Integer.parseInt(rs.getString("id"));
-				Date fechaHora =  rs.getDate("fecha_hora");
-				double costo = Double.parseDouble(rs.getString("costo"));
-				int sillasreservadas = Integer.parseInt(rs.getString("sillas_reservadas"));
-				int  realizada = Integer.parseInt(rs.getString("ya_se_realizo"));
-				Espectaculo espectaculo = null;
-				funcion =  new Funcion(id, (java.sql.Date) fechaHora, costo, sillasreservadas, realizada, espectaculo);
-				
-			}
-			return funcion;
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+
+			int id = Integer.parseInt(rs.getString("id"));
+			Date fechaHora =  rs.getDate("fecha_hora");
+			double costo = Double.parseDouble(rs.getString("costo"));
+			int sillasreservadas = Integer.parseInt(rs.getString("sillas_reservadas"));
+			int  realizada = Integer.parseInt(rs.getString("ya_se_realizo"));
+			Espectaculo espectaculo = null;
+			funcion =  new Funcion(id, (java.sql.Date) fechaHora, costo, sillasreservadas, realizada, espectaculo);
+
 		}
-		
+		return funcion;
+	}
+
 
 }
