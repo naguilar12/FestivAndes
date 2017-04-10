@@ -25,10 +25,8 @@ import vos.ListaCategorias;
 import vos.ListaCompañias;
 import vos.ListaEspectaculos;
 import vos.ListaPreferencias;
-import vos.ListaSillas;
 import vos.ListaVideos;
 import vos.Preferencia;
-import vos.Reserva;
 import vos.Video;
 
 public class FestivAndesMaster {
@@ -414,6 +412,7 @@ public class FestivAndesMaster {
 		}
 		return new ListaCategorias(categorias);
 	}
+	
 //	public ListaEspectaculos darEspectaculosIdioma(String idioma) throws Exception
 //	{
 //		ArrayList<Espectaculo> espectaculos;

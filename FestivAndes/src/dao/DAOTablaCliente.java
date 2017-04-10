@@ -7,11 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import com.sun.jmx.snmp.Timestamp;
-import vos.ListaSillas;
 import vos.Localidad;
 import vos.Preferencia;
-import vos.Reserva;
-import vos.Silla;
 import vos.Sitio;
 import vos.Video;
 
@@ -117,7 +114,6 @@ public class DAOTablaCliente {
 			PreparedStatement prepStmta = conn.prepareStatement(sql);
 			recursos.add(prepStmta);
 			prepStmta.executeQuery();
-			//
 		}
 	}
 

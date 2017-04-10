@@ -16,19 +16,19 @@ public class Localidad {
 	@JsonProperty(value="nombre")
 	private String nombre;
 	
-	@JsonProperty(value="sillas")
-	private ListaSillas sillas;
+	@JsonProperty(value="boletas")
+	private ListaBoletas boletas;
 	
 	@JsonProperty(value="sitio")
 	private Sitio sitio;
 
-	public Localidad(	@JsonProperty(value="id") int id, @JsonProperty(value="capacidad")int capacidad, @JsonProperty(value="numerada")int numerada, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="sillas")ListaSillas sillas, @JsonProperty(value="sitio")Sitio sitio) {
+	public Localidad(	@JsonProperty(value="id") int id, @JsonProperty(value="capacidad")int capacidad, @JsonProperty(value="numerada")int numerada, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="boletas")ListaBoletas boletas, @JsonProperty(value="sitio")Sitio sitio) {
 		super();
 		this.id = id;
 		this.capacidad = capacidad;
 		this.numerada = numerada;
 		this.nombre = nombre;
-		this.sillas = sillas;
+		this.boletas = boletas;
 		this.sitio = sitio;
 	}
 
@@ -64,14 +64,6 @@ public class Localidad {
 		this.nombre = nombre;
 	}
 
-	public ListaSillas getSillas() {
-		return sillas;
-	}
-
-	public void setSillas(ListaSillas sillas) {
-		this.sillas = sillas;
-	}
-
 	public Sitio getSitio() {
 		return sitio;
 	}
@@ -79,6 +71,12 @@ public class Localidad {
 	public void setSitio(Sitio sitio) {
 		this.sitio = sitio;
 	}
-	
-	
+
+	public ListaBoletas getBoletas() {
+		return boletas;
+	}
+
+	public void setBoletas(ListaBoletas boletas) {
+		this.boletas = boletas;
+	}
 }

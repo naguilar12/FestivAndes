@@ -13,10 +13,9 @@ import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
 import tm.VideoAndesMaster;
+import vos.ListaBoletas;
 import vos.ListaPreferencias;
-import vos.ListaSillas;
 import vos.Preferencia;
-import vos.Reserva;
 import vos.Video;
 
 @Path("clientes")
@@ -99,36 +98,24 @@ public class FestivAndesClienteServices {
 		}
 		return Response.status(200).entity(preferencia).build();
 	}
+	
+	////////////////////////////////////////RF10///////////////////////////////////////////
 
-	////////////////////////////////////////RF8///////////////////////////////////////////
-//	
-//	@GET
-//	@Path("/reservas")
-//	@Produces({ MediaType.APPLICATION_JSON })
-//	public Response getPreferencias() {
-//		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-//		ListaPreferencias preferencias;
-//		try {
-//			preferencias = tm.darPreferencias();
-//		} catch (Exception e) {
-//			return Response.status(500).entity(doErrorMessage(e)).build();
-//		}
-//		return Response.status(200).entity(preferencias).build();
-//	}
-//	
-//	@POST
-//	@Path("{id}/reserva")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public Response addReserva(Reserva reserva, @javax.ws.rs.PathParam("id") int id) {
-//		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-//		try 
-//		{
-//			tm.addReserva(reserva, id);
-//		} catch (Exception e) {
-//			return Response.status(500).entity(doErrorMessage(e)).build();
-//		}
-//		return Response.status(200).entity(reserva).build();
-//	}
+	@POST
+	@Path("{id}/compraMultipleBoletas")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response compraMultipleBoletas(ListaBoletas boletas,@javax.ws.rs.PathParam("id") int id)
+	{
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		try{
+			if(id==boletas.getBoletas().get(0).getId())
+			{}
+				
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return null;
+	}
 
 }
