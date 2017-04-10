@@ -82,5 +82,9 @@ public class DAOTablaCategorias {
 				return categorias;
 			}
 	
-
+			public void nuevo()
+			{
+				
+			}
+			
 }
