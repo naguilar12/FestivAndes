@@ -4,8 +4,10 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class Boleta {
 	
-	@JsonProperty(value="id")
-	private int id;
+	public final static int DISPONIBLE = 0;
+	public final static int NO_DISPONIBLE= 1;
+	public final static int ABONADA = 2;
+	public final static int DEVUELTA = 3;
 	
 	@JsonProperty(value="ubicacion")
 	private String ubicacion;
@@ -25,12 +27,11 @@ public class Boleta {
 	@JsonProperty(value="cliente")
 	private Cliente cliente;
 	
-	public Boleta(@JsonProperty(value="id")int id, @JsonProperty(value="ubicacion") String ubicacion, @JsonProperty(value="estado") int estado,
+	public Boleta(@JsonProperty(value="ubicacion") String ubicacion, @JsonProperty(value="estado") int estado,
 			@JsonProperty(value="costo") double costo, @JsonProperty(value="localidad") Localidad localidad, @JsonProperty(value="funcion")Funcion funcion,
 			@JsonProperty(value="cliente") Cliente cliente) {
 		
 		super();
-		this.id = id;
 		this.ubicacion = ubicacion;
 		this.estado = estado;
 		this.costo = costo;
@@ -38,14 +39,6 @@ public class Boleta {
 		this.funcion = funcion;
 		this.cliente = cliente;
 		
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getUbicacion() {

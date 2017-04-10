@@ -7,6 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import com.sun.jmx.snmp.Timestamp;
+
+import vos.Boleta;
+import vos.Cliente;
+import vos.Funcion;
+import vos.ListaBoletas;
 import vos.Localidad;
 import vos.Preferencia;
 import vos.Sitio;
@@ -131,94 +136,156 @@ public class DAOTablaCliente {
 		prepStmt.executeQuery();
 	}
 
+	public Boleta comprarBoleta(Boleta boleta, int idUsuario) throws SQLException, Exception {
+
+		if(boletaDisponible(boleta))
+		{
+			String sql = "UPDATE BOLETA ";
+			sql += " SET ID_CLIENTE = " + idUsuario;
+			sql += ", ESTADO = " + Boleta.NO_DISPONIBLE;
+			sql += " WHERE UBICACION ='" + boleta.getUbicacion()+"'";
+			sql += " AND ID_LOCALIDAD = " + boleta.getLocalidad().getId();
+			sql += " AND ID_FUNCION = " + boleta.getFuncion().getId();
+
+			System.out.println("SQL stmt:" + sql);
+
+			PreparedStatement prepStmt = conn.prepareStatement(sql);
+			recursos.add(prepStmt);
+			prepStmt.executeQuery();	
+		}
+		
+		return darBoleta(boleta);
+	}
+
+	public boolean boletaDisponible(Boleta boleta) throws SQLException, Exception 
+	{
+		boolean disponible = false;
+		String sql1 = "SELECT * FROM BOLETA WHERE UBICACION ='" + boleta.getUbicacion()+"'";
+		sql1	+= " AND ID_LOCALIDAD = " + boleta.getLocalidad().getId();
+		sql1	+= " AND ID_FUNCION = " + boleta.getFuncion().getId();
+
+		System.out.println("SQL stmt:" + sql1);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql1);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		if (rs.next()) 
+			if(rs.getString("ESTADO").equals(Boleta.DISPONIBLE))
+				disponible=true;
+		return disponible;
+	}
+	
+	public Boleta darBoleta (Boleta boleta)  throws SQLException, Exception
+	{
+		Boleta resultado = null;
+		
+		String sql = "SELECT * FROM BOLETA WHERE UBICACION ='" + boleta.getUbicacion()+"'";
+		sql	+= " AND ID_LOCALIDAD = " + boleta.getLocalidad().getId();
+		sql	+= " AND ID_FUNCION = " + boleta.getFuncion().getId();
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if (rs.next()) {
+			String ubicacion = rs.getString("UBICACION");
+			int estado = rs.getInt("ESTADO");
+			double costo = rs.getDouble("COSTO");
+			Localidad localidad = null;
+			Funcion funcion = null;
+			Cliente cliente = null;
+			resultado = new Boleta(ubicacion, estado, costo, localidad, funcion, cliente);
+		}
+		return resultado;
+	}
 	////////////////////////////////////////RF8///////////////////////////////////////////
-//	public ArrayList<Reserva> darReservas() throws SQLException, Exception {
-//		ArrayList<Reserva> reservas = new ArrayList<Reserva>();
-//
-//		String sql = "SELECT * FROM RESERVA";
-//
-//		PreparedStatement prepStmt = conn.prepareStatement(sql);
-//		recursos.add(prepStmt);
-//		ResultSet rs = prepStmt.executeQuery();
-//
-//		ArrayList<Silla> listaSillas;
-//		int idAntes = -1;
-//		while (rs.next()) {
-//			listaSillas = new ArrayList<Silla>();
-//			int id = Integer.parseInt(rs.getString("ID"));
-//			int idFun = Integer.parseInt(rs.getString("ID_FUNCION"));
-//			int idClien = Integer.parseInt(rs.getString("ID_CLIENTE"));
-//			int valor = Integer.parseInt(rs.getString("VALOR_A_PAGAR"));
-//			int cantidad = Integer.parseInt(rs.getString("CANTIDAD_PERSONAS"));
-//			int pagada = Integer.parseInt(rs.getString("PAGADA"));
-//
-//			String sql1 = "SELECT * FROM SILLA S WHERE S.ID_RESERVA = " + id;
-//
-//			PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
-//			recursos.add(prepStmt1);
-//			ResultSet rs1 = prepStmt1.executeQuery();
-//			while(rs1.next())
-//			{
-//				int idSilla = Integer.parseInt(rs1.getString("ID"));
-//				int idLocal = Integer.parseInt(rs1.getString("ID_LOCALIDAD"));
-//				int fila = Integer.parseInt(rs1.getString("FILA"));
-//				int columna = Integer.parseInt(rs1.getString("COLUMNA"));
-//
-//				String sql2 = "SELECT * FROM LOCALIDAD L WHERE L.ID = " + idLocal;
-//
-//				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
-//				recursos.add(prepStmt2);
-//				ResultSet rs2 = prepStmt2.executeQuery();
-//				Localidad localSilla = null;;
-//				while(rs2.next())
-//				{
-//					int idLocalidad = Integer.parseInt(rs2.getString("ID"));
-//					int idSitio = Integer.parseInt(rs2.getString("ID_SITIO"));
-//					String nombre = rs2.getString("NOMBRE");
-//					int LocalCapaci = Integer.parseInt(rs2.getString("CAPACIDAD"));
-//					int numerada = Integer.parseInt(rs2.getString("NUMERADA"));
-//
-//					String sql3 = "SELECT * FROM SITIO H WHERE H.ID = " + idSitio;
-//
-//					PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
-//					recursos.add(prepStmt3);
-//					ResultSet rs3 = prepStmt3.executeQuery();
-//					
-//					Sitio nuevoSitio = null;
-//					while(rs3.next())
-//					{
-//						int idSitio1 = Integer.parseInt(rs3.getString("ID"));
-//						String direccion = rs3.getString("DIRECCION");
-//						int capacidadSitio = Integer.parseInt(rs3.getString("CAPACIDAD"));
-//						int lugarAbierto = Integer.parseInt(rs3.getString("ID"));
-//						int AptoInca = Integer.parseInt(rs3.getString("CAPACIDAD"));
-//						java.sql.Timestamp iniHora = rs3.getTimestamp("INICIO_HORAIO");
-//						java.sql.Timestamp finHora = rs3.getTimestamp("FIN_HORAIO");
-//						int protec = Integer.parseInt(rs3.getString("PROTECCION_LLUVIA"));
-//						int efectAt = Integer.parseInt(rs3.getString("EFECTOS_ATMOSFERICOS"));
-//						nuevoSitio = new Sitio(idSitio1, direccion, lugarAbierto, capacidadSitio, AptoInca, iniHora, finHora, protec, efectAt);
-//					}
-//					localSilla =  new Localidad(idLocalidad, LocalCapaci, numerada, nombre, null, nuevoSitio);
-//				}
-//				listaSillas.add(new Silla(id, fila, columna, localSilla));
-//			}
-//			String sql4 = "SELECT * FROM FUNCION F WHERE F.ID = " + idFun;
-//
-//			PreparedStatement prepStmt4 = conn.prepareStatement(sql4);
-//			recursos.add(prepStmt4);
-//			ResultSet rs4 = prepStmt4.executeQuery();
-//			
-//			while(rs4.next())
-//			{
-//				int idFuncion = Integer.parseInt(rs3.getString("ID"));
-//				String direccion = rs3.getString("DIRECCION");
-//				int capacidadSitio = Integer.parseInt(rs3.getString("CAPACIDAD"));
-//				int lugarAbierto = Integer.parseInt(rs3.getString("ID"));
-//				int AptoInca = Integer.parseInt(rs3.getString("CAPACIDAD"));
-//			}
-//			listaSillas nuevo = listaSillas;
-//			reservas.add(new Reserva(id, valor, cantidad, pagada, null, listaSillas));
-//		}
-//		return reservas;
-//	}
+	//	public ArrayList<Reserva> darReservas() throws SQLException, Exception {
+	//		ArrayList<Reserva> reservas = new ArrayList<Reserva>();
+	//
+	//		String sql = "SELECT * FROM RESERVA";
+	//
+	//		PreparedStatement prepStmt = conn.prepareStatement(sql);
+	//		recursos.add(prepStmt);
+	//		ResultSet rs = prepStmt.executeQuery();
+	//
+	//		ArrayList<Silla> listaSillas;
+	//		int idAntes = -1;
+	//		while (rs.next()) {
+	//			listaSillas = new ArrayList<Silla>();
+	//			int id = Integer.parseInt(rs.getString("ID"));
+	//			int idFun = Integer.parseInt(rs.getString("ID_FUNCION"));
+	//			int idClien = Integer.parseInt(rs.getString("ID_CLIENTE"));
+	//			int valor = Integer.parseInt(rs.getString("VALOR_A_PAGAR"));
+	//			int cantidad = Integer.parseInt(rs.getString("CANTIDAD_PERSONAS"));
+	//			int pagada = Integer.parseInt(rs.getString("PAGADA"));
+	//
+	//			String sql1 = "SELECT * FROM SILLA S WHERE S.ID_RESERVA = " + id;
+	//
+	//			PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
+	//			recursos.add(prepStmt1);
+	//			ResultSet rs1 = prepStmt1.executeQuery();
+	//			while(rs1.next())
+	//			{
+	//				int idSilla = Integer.parseInt(rs1.getString("ID"));
+	//				int idLocal = Integer.parseInt(rs1.getString("ID_LOCALIDAD"));
+	//				int fila = Integer.parseInt(rs1.getString("FILA"));
+	//				int columna = Integer.parseInt(rs1.getString("COLUMNA"));
+	//
+	//				String sql2 = "SELECT * FROM LOCALIDAD L WHERE L.ID = " + idLocal;
+	//
+	//				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+	//				recursos.add(prepStmt2);
+	//				ResultSet rs2 = prepStmt2.executeQuery();
+	//				Localidad localSilla = null;;
+	//				while(rs2.next())
+	//				{
+	//					int idLocalidad = Integer.parseInt(rs2.getString("ID"));
+	//					int idSitio = Integer.parseInt(rs2.getString("ID_SITIO"));
+	//					String nombre = rs2.getString("NOMBRE");
+	//					int LocalCapaci = Integer.parseInt(rs2.getString("CAPACIDAD"));
+	//					int numerada = Integer.parseInt(rs2.getString("NUMERADA"));
+	//
+	//					String sql3 = "SELECT * FROM SITIO H WHERE H.ID = " + idSitio;
+	//
+	//					PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
+	//					recursos.add(prepStmt3);
+	//					ResultSet rs3 = prepStmt3.executeQuery();
+	//					
+	//					Sitio nuevoSitio = null;
+	//					while(rs3.next())
+	//					{
+	//						int idSitio1 = Integer.parseInt(rs3.getString("ID"));
+	//						String direccion = rs3.getString("DIRECCION");
+	//						int capacidadSitio = Integer.parseInt(rs3.getString("CAPACIDAD"));
+	//						int lugarAbierto = Integer.parseInt(rs3.getString("ID"));
+	//						int AptoInca = Integer.parseInt(rs3.getString("CAPACIDAD"));
+	//						java.sql.Timestamp iniHora = rs3.getTimestamp("INICIO_HORAIO");
+	//						java.sql.Timestamp finHora = rs3.getTimestamp("FIN_HORAIO");
+	//						int protec = Integer.parseInt(rs3.getString("PROTECCION_LLUVIA"));
+	//						int efectAt = Integer.parseInt(rs3.getString("EFECTOS_ATMOSFERICOS"));
+	//						nuevoSitio = new Sitio(idSitio1, direccion, lugarAbierto, capacidadSitio, AptoInca, iniHora, finHora, protec, efectAt);
+	//					}
+	//					localSilla =  new Localidad(idLocalidad, LocalCapaci, numerada, nombre, null, nuevoSitio);
+	//				}
+	//				listaSillas.add(new Silla(id, fila, columna, localSilla));
+	//			}
+	//			String sql4 = "SELECT * FROM FUNCION F WHERE F.ID = " + idFun;
+	//
+	//			PreparedStatement prepStmt4 = conn.prepareStatement(sql4);
+	//			recursos.add(prepStmt4);
+	//			ResultSet rs4 = prepStmt4.executeQuery();
+	//			
+	//			while(rs4.next())
+	//			{
+	//				int idFuncion = Integer.parseInt(rs3.getString("ID"));
+	//				String direccion = rs3.getString("DIRECCION");
+	//				int capacidadSitio = Integer.parseInt(rs3.getString("CAPACIDAD"));
+	//				int lugarAbierto = Integer.parseInt(rs3.getString("ID"));
+	//				int AptoInca = Integer.parseInt(rs3.getString("CAPACIDAD"));
+	//			}
+	//			listaSillas nuevo = listaSillas;
+	//			reservas.add(new Reserva(id, valor, cantidad, pagada, null, listaSillas));
+	//		}
+	//		return reservas;
+	//	}
 }

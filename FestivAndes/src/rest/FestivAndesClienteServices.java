@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
 import tm.VideoAndesMaster;
+import vos.Boleta;
 import vos.ListaBoletas;
 import vos.ListaPreferencias;
 import vos.Preferencia;
@@ -52,7 +53,7 @@ public class FestivAndesClienteServices {
 		}
 		return Response.status(200).entity(preferencias).build();
 	}
-	
+
 	@GET
 	@Path("{id}/preferencias")
 	@Produces({ MediaType.APPLICATION_JSON })
@@ -60,14 +61,14 @@ public class FestivAndesClienteServices {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		ListaPreferencias preferencias;
 		try {
-				preferencias = tm.buscarPreferenciasPorUsuario(id);
+			preferencias = tm.buscarPreferenciasPorUsuario(id);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(preferencias).build();
 	}
 
-		
+
 
 	@POST
 	@Path("{id}/preferencias")
@@ -98,7 +99,7 @@ public class FestivAndesClienteServices {
 		}
 		return Response.status(200).entity(preferencia).build();
 	}
-	
+
 	////////////////////////////////////////RF10///////////////////////////////////////////
 
 	@POST
@@ -108,14 +109,14 @@ public class FestivAndesClienteServices {
 	public Response compraMultipleBoletas(ListaBoletas boletas,@javax.ws.rs.PathParam("id") int id)
 	{
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaBoletas resultado;
 		try{
-			if(id==boletas.getBoletas().get(0).getId())
-			{}
-				
+			resultado = tm.comprarMultiplesBoletas(boletas, id);					
+
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return null;
+		return Response.status(200).entity(resultado).build();
 	}
 
 }

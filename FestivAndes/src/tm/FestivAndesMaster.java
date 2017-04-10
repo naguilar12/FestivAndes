@@ -13,19 +13,23 @@ import dao.DAOTablaCliente;
 import dao.DAOTablaCompa駃a;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaFuncion;
+import dao.DAOTablaSitio;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
+import vos.Boleta;
 import vos.Categoria;
 import vos.Compa駃aTeatro;
 import vos.Espectaculo;
 import vos.Funcion;
+import vos.ListaBoletas;
 import vos.ListaCategorias;
 import vos.ListaCompa駃as;
 import vos.ListaEspectaculos;
 import vos.ListaPreferencias;
 import vos.ListaVideos;
+import vos.Localidad;
 import vos.Preferencia;
 import vos.Video;
 
@@ -117,7 +121,7 @@ public class FestivAndesMaster {
 	/////////////////////PREFERENCIA
 	//////////////////////////////////////////////////////////////////////////
 
-	
+
 	public ListaPreferencias darPreferencias() throws Exception {
 		ArrayList<Preferencia> preferencias;
 		DAOTablaCliente daoUsuario = new DAOTablaCliente();
@@ -149,7 +153,7 @@ public class FestivAndesMaster {
 		}
 		return new ListaPreferencias(preferencias);
 	}
-	
+
 
 	public ListaPreferencias buscarPreferenciasPorUsuario(int idUsuario) throws Exception {
 		ArrayList<Preferencia> preferencias;
@@ -182,7 +186,7 @@ public class FestivAndesMaster {
 		}
 		return new ListaPreferencias(preferencias);
 	}
-	
+
 	public void addPreferencia(Preferencia preferencia, int idUsuario) throws Exception {
 		DAOTablaCliente daoClientes = new DAOTablaCliente();
 		try 
@@ -244,45 +248,45 @@ public class FestivAndesMaster {
 		}
 	}
 
-	
-//	public ListaEspectaculos darEspectaculos() throws Exception {
-//		ArrayList<Espectaculo> espectaculos;
-//		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
-//		try 
-//		{
-//			//////Transacci贸n
-//			this.conn = darConexion();
-//			daoEspectaculos.setConn(conn);
-//			espectaculos = daoEspectaculos.darEspectaculos();
-//
-//		} catch (SQLException e) {
-//			System.err.println("SQLException:" + e.getMessage());
-//			e.printStackTrace();
-//			throw e;
-//		} catch (Exception e) {
-//			System.err.println("GeneralException:" + e.getMessage());
-//			e.printStackTrace();
-//			throw e;
-//		} finally {
-//			try {
-//				daoEspectaculos.cerrarRecursos();
-//				if(this.conn!=null)
-//					this.conn.close();
-//			} catch (SQLException exception) {
-//				System.err.println("SQLException closing resources:" + exception.getMessage());
-//				exception.printStackTrace();
-//				throw exception;
-//			}
-//		}
-//		return new ListaEspectaculos(espectaculos);
-//	}
+
+	//	public ListaEspectaculos darEspectaculos() throws Exception {
+	//		ArrayList<Espectaculo> espectaculos;
+	//		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+	//		try 
+	//		{
+	//			//////Transacci贸n
+	//			this.conn = darConexion();
+	//			daoEspectaculos.setConn(conn);
+	//			espectaculos = daoEspectaculos.darEspectaculos();
+	//
+	//		} catch (SQLException e) {
+	//			System.err.println("SQLException:" + e.getMessage());
+	//			e.printStackTrace();
+	//			throw e;
+	//		} catch (Exception e) {
+	//			System.err.println("GeneralException:" + e.getMessage());
+	//			e.printStackTrace();
+	//			throw e;
+	//		} finally {
+	//			try {
+	//				daoEspectaculos.cerrarRecursos();
+	//				if(this.conn!=null)
+	//					this.conn.close();
+	//			} catch (SQLException exception) {
+	//				System.err.println("SQLException closing resources:" + exception.getMessage());
+	//				exception.printStackTrace();
+	//				throw exception;
+	//			}
+	//		}
+	//		return new ListaEspectaculos(espectaculos);
+	//	}
 
 
-	
 
-		
-	
-		
+
+
+
+
 	public Funcion realizarFuncion(int idO, int idE,int idF) throws Exception {
 		Funcion funcion;
 		DAOTablaFuncion daoFuncion = new DAOTablaFuncion();
@@ -291,7 +295,7 @@ public class FestivAndesMaster {
 			//////Transacci贸n
 			this.conn = darConexion();
 			daoFuncion.setConn(conn);
-			
+
 			funcion = daoFuncion.realizarFuncion(idO, idE, idF);
 			funcion.setEspectaculo(buscarEspectaculoId(idE));
 
@@ -316,7 +320,7 @@ public class FestivAndesMaster {
 		}
 		return funcion;
 	}
-	
+
 	public Espectaculo buscarEspectaculoId(int idE) throws Exception {
 		Espectaculo espectaculo;
 		DAOTablaEspectaculos daoEspectaculo = new DAOTablaEspectaculos();
@@ -350,7 +354,7 @@ public class FestivAndesMaster {
 		}
 		return espectaculo;
 	}
-	
+
 	public ListaCompa駃as buscarCompa駃asEspectaculoId(int idE) throws Exception {
 		ArrayList<Compa駃aTeatro> compa駃as;
 		DAOTablaCompa駃a daoTablaCompa駃as = new DAOTablaCompa駃a();
@@ -381,7 +385,7 @@ public class FestivAndesMaster {
 		}
 		return new ListaCompa駃as(compa駃as);
 	}
-	
+
 	public ListaCategorias darCategoriasPorEspectaculoId(int idE) throws Exception {
 		ArrayList<Categoria> categorias;
 		DAOTablaCategorias daoTablaCategoria = new DAOTablaCategorias();
@@ -412,71 +416,160 @@ public class FestivAndesMaster {
 		}
 		return new ListaCategorias(categorias);
 	}
+
+	public ListaBoletas comprarMultiplesBoletas(ListaBoletas boletas, int id) throws Exception {
+		ArrayList<Boleta> arregloBoletas;
+		DAOTablaCliente daoTablaCliente = new DAOTablaCliente();
+		try 
+		{
+			//////Transacci贸n
+			this.conn = darConexion();
+			daoTablaCliente.setConn(conn);
+			
+			boolean mismaLocalidad = true;
+			int localidadID = boletas.getBoletas().get(0).getLocalidad().getId();
+			for (Boleta boleta : boletas.getBoletas()) 
+				if(boleta.getLocalidad().getId()!=localidadID)
+					mismaLocalidad=false;		
+			
+			boolean numerada = false;
+			Localidad loc = darLocalidad(localidadID);
+			if(loc.getNumerada()==1)
+				numerada = true;
+			
+			boolean seguidas = true;
+			for(int i = 0; i < boletas.getBoletas().size()-1 && seguidas && numerada; i++)
+				if(Integer.parseInt(boletas.getBoletas().get(i).getUbicacion()) != Integer.parseInt(boletas.getBoletas().get(i+1).getUbicacion())-1)
+					seguidas = false;
+
+			arregloBoletas = new ArrayList<Boleta>();
+			if(seguidas&&mismaLocalidad)
+				for (Boleta boleta : boletas.getBoletas()){
+					Boleta agregada = daoTablaCliente.comprarBoleta(boleta, id);
+					agregada.setLocalidad(loc);
+					arregloBoletas.add(agregada);
+				}
+				
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaCliente.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaBoletas(arregloBoletas);
+	}
 	
-//	public ListaEspectaculos darEspectaculosIdioma(String idioma) throws Exception
-//	{
-//		ArrayList<Espectaculo> espectaculos;
-//		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
-//		try 
-//		{
-//			//////Transacci贸n
-//			this.conn = darConexion();
-//			daoEspectaculos.setConn(conn);
-//			espectaculos = daoEspectaculos.darEspectaculosIdioma(idioma);
-//
-//		} catch (SQLException e) {
-//			System.err.println("SQLException:" + e.getMessage());
-//			e.printStackTrace();
-//			throw e;
-//		} catch (Exception e) {
-//			System.err.println("GeneralException:" + e.getMessage());
-//			e.printStackTrace();
-//			throw e;
-//		} finally {
-//			try {
-//				daoEspectaculos.cerrarRecursos();
-//				if(this.conn!=null)
-//					this.conn.close();
-//			} catch (SQLException exception) {
-//				System.err.println("SQLException closing resources:" + exception.getMessage());
-//				exception.printStackTrace();
-//				throw exception;
-//			}
-//		}
-//		return new ListaEspectaculos(espectaculos);		
-//	}
-	
-//	public Reserva comprarBoletas(int id, int idFuncion, ListaSillas sillas)
-//	{
-//		Reserva reserva;
-//		DAOTablaUsuarios daoUsuarios= new DAOTablaUsuarios();
-//		try 
-//		{
-//			//////Transacci贸n
-//			this.conn = darConexion();
-//			daoUsuarios.setConn(conn);
-//			reserva = daoUsuarios.comprarBoletas(id, idFuncion, sillas);
-//
-//		} catch (SQLException e) {
-//			System.err.println("SQLException:" + e.getMessage());
-//			e.printStackTrace();
-//			throw e;
-//		} catch (Exception e) {
-//			System.err.println("GeneralException:" + e.getMessage());
-//			e.printStackTrace();
-//			throw e;
-//		} finally {
-//			try {
-//				daoUsuarios.cerrarRecursos();
-//				if(this.conn!=null)
-//					this.conn.close();
-//			} catch (SQLException exception) {
-//				System.err.println("SQLException closing resources:" + exception.getMessage());
-//				exception.printStackTrace();
-//				throw exception;
-//			}
-//		}
-//		return reserva;		
-//	}
+	public Localidad darLocalidad(int id) throws Exception
+	{
+		Localidad localidad;
+		DAOTablaSitio daoTablaSitio = new DAOTablaSitio();
+		try 
+		{
+			//////Transacci贸n
+			this.conn = darConexion();
+			daoTablaSitio.setConn(conn);
+			
+			localidad = darLocalidad(id);
+				
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaSitio.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return localidad;
+	}
+
+	//	public ListaEspectaculos darEspectaculosIdioma(String idioma) throws Exception
+	//	{
+	//		ArrayList<Espectaculo> espectaculos;
+	//		DAOTablaEspectaculos daoEspectaculos = new DAOTablaEspectaculos();
+	//		try 
+	//		{
+	//			//////Transacci贸n
+	//			this.conn = darConexion();
+	//			daoEspectaculos.setConn(conn);
+	//			espectaculos = daoEspectaculos.darEspectaculosIdioma(idioma);
+	//
+	//		} catch (SQLException e) {
+	//			System.err.println("SQLException:" + e.getMessage());
+	//			e.printStackTrace();
+	//			throw e;
+	//		} catch (Exception e) {
+	//			System.err.println("GeneralException:" + e.getMessage());
+	//			e.printStackTrace();
+	//			throw e;
+	//		} finally {
+	//			try {
+	//				daoEspectaculos.cerrarRecursos();
+	//				if(this.conn!=null)
+	//					this.conn.close();
+	//			} catch (SQLException exception) {
+	//				System.err.println("SQLException closing resources:" + exception.getMessage());
+	//				exception.printStackTrace();
+	//				throw exception;
+	//			}
+	//		}
+	//		return new ListaEspectaculos(espectaculos);		
+	//	}
+
+	//	public Reserva comprarBoletas(int id, int idFuncion, ListaSillas sillas)
+	//	{
+	//		Reserva reserva;
+	//		DAOTablaUsuarios daoUsuarios= new DAOTablaUsuarios();
+	//		try 
+	//		{
+	//			//////Transacci贸n
+	//			this.conn = darConexion();
+	//			daoUsuarios.setConn(conn);
+	//			reserva = daoUsuarios.comprarBoletas(id, idFuncion, sillas);
+	//
+	//		} catch (SQLException e) {
+	//			System.err.println("SQLException:" + e.getMessage());
+	//			e.printStackTrace();
+	//			throw e;
+	//		} catch (Exception e) {
+	//			System.err.println("GeneralException:" + e.getMessage());
+	//			e.printStackTrace();
+	//			throw e;
+	//		} finally {
+	//			try {
+	//				daoUsuarios.cerrarRecursos();
+	//				if(this.conn!=null)
+	//					this.conn.close();
+	//			} catch (SQLException exception) {
+	//				System.err.println("SQLException closing resources:" + exception.getMessage());
+	//				exception.printStackTrace();
+	//				throw exception;
+	//			}
+	//		}
+	//		return reserva;		
+	//	}
 
 }
