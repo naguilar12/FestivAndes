@@ -20,6 +20,7 @@ import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
 import vos.Boleta;
 import vos.Categoria;
+import vos.Cliente;
 import vos.Compa駃aTeatro;
 import vos.Espectaculo;
 import vos.Funcion;
@@ -425,31 +426,53 @@ public class FestivAndesMaster {
 			//////Transacci贸n
 			this.conn = darConexion();
 			daoTablaCliente.setConn(conn);
-			
+
 			boolean mismaLocalidad = true;
 			int localidadID = boletas.getBoletas().get(0).getLocalidad().getId();
 			for (Boleta boleta : boletas.getBoletas()) 
 				if(boleta.getLocalidad().getId()!=localidadID)
-					mismaLocalidad=false;		
-			
+					mismaLocalidad=false;	
+
+			boolean mismaFuncion = true;
+			int funcionId = boletas.getBoletas().get(0).getFuncion().getId();
+			for (Boleta boleta : boletas.getBoletas()) 
+				if(boleta.getFuncion().getId()!=funcionId)
+					mismaFuncion=false;	
+			Funcion f = darFuncion(funcionId);
+
 			boolean numerada = false;
 			Localidad loc = darLocalidad(localidadID);
 			if(loc.getNumerada()==1)
 				numerada = true;
-			
-			boolean seguidas = true;
-			for(int i = 0; i < boletas.getBoletas().size()-1 && seguidas && numerada; i++)
-				if(Integer.parseInt(boletas.getBoletas().get(i).getUbicacion()) != Integer.parseInt(boletas.getBoletas().get(i+1).getUbicacion())-1)
-					seguidas = false;
 
+			Cliente cliente = darCliente(id);
 			arregloBoletas = new ArrayList<Boleta>();
-			if(seguidas&&mismaLocalidad)
-				for (Boleta boleta : boletas.getBoletas()){
-					Boleta agregada = daoTablaCliente.comprarBoleta(boleta, id);
-					agregada.setLocalidad(loc);
-					arregloBoletas.add(agregada);
-				}
-				
+			if(numerada){
+				boolean seguidas = true;
+				for(int i = 0; i < boletas.getBoletas().size()-1 && seguidas && numerada; i++)
+					if(boletas.getBoletas().get(i).getUbicacion() != boletas.getBoletas().get(i+1).getUbicacion()-1)
+						seguidas = false;
+
+				boolean disponiblesNumeradas = true;
+				for (int i = 0; i < boletas.getBoletas().size()&&numerada; i++) 
+					disponiblesNumeradas = disponiblesNumeradas&&daoTablaCliente.boletaNumeradaDisponible(boletas.getBoletas().get(i));		
+
+				if(seguidas&&disponiblesNumeradas&&mismaLocalidad&&mismaFuncion)
+					for (Boleta boleta : boletas.getBoletas()){
+						Boleta agregada = daoTablaCliente.comprarBoletaNumerada(boleta, id);
+						agregada.setLocalidad(loc);
+						agregada.setFuncion(f);
+						agregada.setCliente(cliente);
+						arregloBoletas.add(agregada);
+					}
+			}
+			else if(mismaLocalidad&&mismaFuncion&&!numerada){
+				int ocupadas = daoTablaCliente.ocupadasBoletaNoNumeradas(boletas.getBoletas().get(0));
+				int disponiblesNoNumeradas = loc.getCapacidad() - ocupadas;
+				if(disponiblesNoNumeradas >= boletas.getBoletas().size())
+					arregloBoletas = daoTablaCliente.comprarBoletasNoNumeradas(boletas.getBoletas().get(0), id, boletas.getBoletas().size(), ocupadas);
+			}
+
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
@@ -471,6 +494,84 @@ public class FestivAndesMaster {
 		}
 		return new ListaBoletas(arregloBoletas);
 	}
+
+	public ListaBoletas registrarCompraAbonamiento(ListaBoletas boletas, int id) throws Exception {
+		ArrayList<Boleta> arregloBoletas;
+		DAOTablaCliente daoTablaCliente = new DAOTablaCliente();
+		try 
+		{
+			//////Transacci贸n
+			this.conn = darConexion();
+			daoTablaCliente.setConn(conn);
+
+			boolean mismaLocalidad = true;
+			int localidadID = boletas.getBoletas().get(0).getLocalidad().getId();
+			for (Boleta boleta : boletas.getBoletas()) 
+				if(boleta.getLocalidad().getId()!=localidadID)
+					mismaLocalidad=false;	
+
+			boolean mismaFuncion = true;
+			int funcionId = boletas.getBoletas().get(0).getFuncion().getId();
+			for (Boleta boleta : boletas.getBoletas()) 
+				if(boleta.getFuncion().getId()!=funcionId)
+					mismaFuncion=false;	
+			Funcion f = darFuncion(funcionId);
+
+			boolean numerada = false;
+			Localidad loc = darLocalidad(localidadID);
+			if(loc.getNumerada()==1)
+				numerada = true;
+
+			Cliente cliente = darCliente(id);
+			arregloBoletas = new ArrayList<Boleta>();
+			if(numerada){
+				boolean seguidas = true;
+				for(int i = 0; i < boletas.getBoletas().size()-1 && seguidas && numerada; i++)
+					if(boletas.getBoletas().get(i).getUbicacion() != boletas.getBoletas().get(i+1).getUbicacion()-1)
+						seguidas = false;
+
+				boolean disponiblesNumeradas = true;
+				for (int i = 0; i < boletas.getBoletas().size()&&numerada; i++) 
+					disponiblesNumeradas = disponiblesNumeradas&&daoTablaCliente.boletaNumeradaDisponible(boletas.getBoletas().get(i));		
+
+				if(seguidas&&disponiblesNumeradas&&mismaLocalidad&&mismaFuncion)
+					for (Boleta boleta : boletas.getBoletas()){
+						Boleta agregada = daoTablaCliente.comprarBoletaNumerada(boleta, id);
+						agregada.setLocalidad(loc);
+						agregada.setFuncion(f);
+						agregada.setCliente(cliente);
+						arregloBoletas.add(agregada);
+					}
+			}
+			else if(mismaLocalidad&&mismaFuncion&&!numerada){
+				int ocupadas = daoTablaCliente.ocupadasBoletaNoNumeradas(boletas.getBoletas().get(0));
+				int disponiblesNoNumeradas = loc.getCapacidad() - ocupadas;
+				if(disponiblesNoNumeradas >= boletas.getBoletas().size())
+					arregloBoletas = daoTablaCliente.comprarBoletasNoNumeradas(boletas.getBoletas().get(0), id, boletas.getBoletas().size(), ocupadas);
+			}
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaCliente.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaBoletas(arregloBoletas);
+	}
+
 	
 	public Localidad darLocalidad(int id) throws Exception
 	{
@@ -481,9 +582,9 @@ public class FestivAndesMaster {
 			//////Transacci贸n
 			this.conn = darConexion();
 			daoTablaSitio.setConn(conn);
-			
-			localidad = darLocalidad(id);
-				
+
+			localidad = daoTablaSitio.darLocalidad(id);
+
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
@@ -505,6 +606,75 @@ public class FestivAndesMaster {
 		}
 		return localidad;
 	}
+
+	public Funcion darFuncion(int id) throws Exception
+	{
+		Funcion funcion;
+		DAOTablaFuncion daoTablaFuncion = new DAOTablaFuncion();
+		try 
+		{
+			//////Transacci贸n
+			this.conn = darConexion();
+			daoTablaFuncion.setConn(conn);
+
+			funcion = daoTablaFuncion.darFuncion(id);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaFuncion.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return funcion;
+	}
+
+	public Cliente darCliente(int id) throws Exception
+	{
+		Cliente cliente;
+		DAOTablaCliente daoTablaCliente = new DAOTablaCliente();
+		try 
+		{
+			//////Transacci贸n
+			this.conn = darConexion();
+			daoTablaCliente.setConn(conn);
+
+			cliente = daoTablaCliente.darCliente(id);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaCliente.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return cliente;
+	}
+
 
 	//	public ListaEspectaculos darEspectaculosIdioma(String idioma) throws Exception
 	//	{
@@ -537,39 +707,6 @@ public class FestivAndesMaster {
 	//			}
 	//		}
 	//		return new ListaEspectaculos(espectaculos);		
-	//	}
-
-	//	public Reserva comprarBoletas(int id, int idFuncion, ListaSillas sillas)
-	//	{
-	//		Reserva reserva;
-	//		DAOTablaUsuarios daoUsuarios= new DAOTablaUsuarios();
-	//		try 
-	//		{
-	//			//////Transacci贸n
-	//			this.conn = darConexion();
-	//			daoUsuarios.setConn(conn);
-	//			reserva = daoUsuarios.comprarBoletas(id, idFuncion, sillas);
-	//
-	//		} catch (SQLException e) {
-	//			System.err.println("SQLException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			throw e;
-	//		} catch (Exception e) {
-	//			System.err.println("GeneralException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			throw e;
-	//		} finally {
-	//			try {
-	//				daoUsuarios.cerrarRecursos();
-	//				if(this.conn!=null)
-	//					this.conn.close();
-	//			} catch (SQLException exception) {
-	//				System.err.println("SQLException closing resources:" + exception.getMessage());
-	//				exception.printStackTrace();
-	//				throw exception;
-	//			}
-	//		}
-	//		return reserva;		
 	//	}
 
 }

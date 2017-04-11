@@ -118,5 +118,24 @@ public class FestivAndesClienteServices {
 		}
 		return Response.status(200).entity(resultado).build();
 	}
+	
+	////////////////////////////////////////RF11///////////////////////////////////////////
+
+	@POST
+	@Path("{id}/registrarCompraAbonamiento")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response registrarCompraAbonamiento(ListaBoletas boletas,@javax.ws.rs.PathParam("id") int id)
+	{
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaBoletas resultado;
+		try{
+			resultado = tm.registrarCompraAbonamiento(boletas, id);					
+
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resultado).build();
+	}
 
 }

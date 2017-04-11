@@ -10,7 +10,7 @@ public class Boleta {
 	public final static int DEVUELTA = 3;
 	
 	@JsonProperty(value="ubicacion")
-	private String ubicacion;
+	private int ubicacion;
 	
 	@JsonProperty(value="estado")
 	private int estado;
@@ -27,7 +27,7 @@ public class Boleta {
 	@JsonProperty(value="cliente")
 	private Cliente cliente;
 	
-	public Boleta(@JsonProperty(value="ubicacion") String ubicacion, @JsonProperty(value="estado") int estado,
+	public Boleta(@JsonProperty(value="ubicacion") int ubicacion, @JsonProperty(value="estado") int estado,
 			@JsonProperty(value="costo") double costo, @JsonProperty(value="localidad") Localidad localidad, @JsonProperty(value="funcion")Funcion funcion,
 			@JsonProperty(value="cliente") Cliente cliente) {
 		
@@ -41,11 +41,11 @@ public class Boleta {
 		
 	}
 
-	public String getUbicacion() {
+	public int getUbicacion() {
 		return ubicacion;
 	}
 
-	public void setUbicacion(String ubicacion) {
+	public void setUbicacion(int ubicacion) {
 		this.ubicacion = ubicacion;
 	}
 

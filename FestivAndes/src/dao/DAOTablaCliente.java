@@ -10,6 +10,7 @@ import com.sun.jmx.snmp.Timestamp;
 
 import vos.Boleta;
 import vos.Cliente;
+import vos.Festival;
 import vos.Funcion;
 import vos.ListaBoletas;
 import vos.Localidad;
@@ -136,9 +137,9 @@ public class DAOTablaCliente {
 		prepStmt.executeQuery();
 	}
 
-	public Boleta comprarBoleta(Boleta boleta, int idUsuario) throws SQLException, Exception {
+	public Boleta comprarBoletaNumerada(Boleta boleta, int idUsuario) throws SQLException, Exception {
 
-		if(boletaDisponible(boleta))
+		if(boletaNumeradaDisponible(boleta))
 		{
 			String sql = "UPDATE BOLETA ";
 			sql += " SET ID_CLIENTE = " + idUsuario;
@@ -153,11 +154,35 @@ public class DAOTablaCliente {
 			recursos.add(prepStmt);
 			prepStmt.executeQuery();	
 		}
-		
+
 		return darBoleta(boleta);
 	}
 
-	public boolean boletaDisponible(Boleta boleta) throws SQLException, Exception 
+	public ArrayList<Boleta> comprarBoletasNoNumeradas(Boleta boleta, int idCliente, int necesarias, int ocupadas) throws SQLException, Exception {
+
+		ArrayList<Boleta> boletas = new ArrayList<>();
+
+		for(int i=0; i < necesarias;i++)
+		{
+			String sql = "UPDATE BOLETA ";
+			sql += " SET ID_CLIENTE = "+ idCliente;
+			sql += ", ESTADO = " + Boleta.NO_DISPONIBLE;
+			sql += " WHERE UBICACION = " + (ocupadas+1);
+			sql += " AND ID_LOCALIDAD = " + boleta.getLocalidad().getId();
+			sql += " AND ID_FUNCION = " + boleta.getFuncion().getId();
+			
+			System.out.println("SQL stmt:" + sql);
+
+			PreparedStatement prepStmt = conn.prepareStatement(sql);
+			recursos.add(prepStmt);
+			prepStmt.executeQuery();	
+			boleta.setUbicacion(ocupadas+1);
+			boletas.add(darBoleta(boleta));
+		}
+		return boletas;
+	}
+
+	public boolean boletaNumeradaDisponible(Boleta boleta) throws SQLException, Exception 
 	{
 		boolean disponible = false;
 		String sql1 = "SELECT * FROM BOLETA WHERE UBICACION ='" + boleta.getUbicacion()+"'";
@@ -174,11 +199,30 @@ public class DAOTablaCliente {
 				disponible=true;
 		return disponible;
 	}
-	
+
+	public int ocupadasBoletaNoNumeradas(Boleta boleta) throws SQLException, Exception
+	{
+		int disponibles = -1;
+
+		String sql = "SELECT COUNT(*) FROM BOLETA WHERE ID_LOCALIDAD = " + boleta.getLocalidad().getId();
+		sql +=" AND ID_FUNCION = " + boleta.getFuncion().getId();
+		sql +=" AND ESTADO = " + Boleta.NO_DISPONIBLE;
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		if (rs.next()) 
+			disponibles=rs.getInt("COUNT(*)");
+
+		return disponibles;
+	}
+
 	public Boleta darBoleta (Boleta boleta)  throws SQLException, Exception
 	{
 		Boleta resultado = null;
-		
+
 		String sql = "SELECT * FROM BOLETA WHERE UBICACION ='" + boleta.getUbicacion()+"'";
 		sql	+= " AND ID_LOCALIDAD = " + boleta.getLocalidad().getId();
 		sql	+= " AND ID_FUNCION = " + boleta.getFuncion().getId();
@@ -188,13 +232,43 @@ public class DAOTablaCliente {
 		ResultSet rs = prepStmt.executeQuery();
 
 		if (rs.next()) {
-			String ubicacion = rs.getString("UBICACION");
+			int ubicacion = rs.getInt("UBICACION");
 			int estado = rs.getInt("ESTADO");
 			double costo = rs.getDouble("COSTO");
 			Localidad localidad = null;
 			Funcion funcion = null;
 			Cliente cliente = null;
 			resultado = new Boleta(ubicacion, estado, costo, localidad, funcion, cliente);
+		}
+		return resultado;
+	}
+
+	public Cliente darCliente (int id)  throws SQLException, Exception
+	{
+		Cliente resultado = null;
+
+		String sql = "SELECT * FROM USUARIO WHERE ID ="+id;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if (rs.next()) {
+			String nombre = rs.getString("NOMBRE");
+			String mail = rs.getString("MAIL");
+			String rol = rs.getString("ROL");
+
+			String sql1 = "SELECT * FROM CLIENTE WHERE ID ="+id;
+
+			PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
+			recursos.add(prepStmt1);
+			ResultSet rs1 = prepStmt1.executeQuery();
+			if(rs1.next())
+			{
+				String contrasena = rs1.getString("CONTRASENA");
+				Festival festival = null;
+				resultado = new Cliente(festival, id, nombre, mail, rol, contrasena);
+			}
 		}
 		return resultado;
 	}

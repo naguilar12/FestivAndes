@@ -8,9 +8,13 @@ public class Cliente extends Usuario
 	@JsonProperty(value="contrasena")
 	private String contrasena;
 	
-	public Cliente(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre,@JsonProperty(value="mail") String mail,@JsonProperty(value="rol") String rol, @JsonProperty(value="nombre")String contrasena) {
+	@JsonProperty(value="festival")
+	private Festival festival;
+	
+	public Cliente(	@JsonProperty(value="festival") Festival festival, @JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre,@JsonProperty(value="mail") String mail,@JsonProperty(value="rol") String rol, @JsonProperty(value="nombre")String contrasena) {
 		super(id, nombre, mail, rol);
 		this.contrasena = contrasena;
+		this.festival = festival;		
 		// TODO Auto-generated constructor stub
 	}
 
