@@ -71,7 +71,7 @@ public class DAOTablaCliente {
 		ResultSet rs = prepStmt.executeQuery();
 
 		while (rs.next()) {
-			int id = Integer.parseInt(rs.getString("ID"));
+			int id = rs.getInt("ID");
 			String peferencia = rs.getString("PREFERENCIA");
 			String tipo = rs.getString("TIPO");
 			preferencias.add(new Preferencia(tipo, peferencia, id));
@@ -90,7 +90,7 @@ public class DAOTablaCliente {
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 
-		if (rs.next()) {
+		while (rs.next()) {
 			int id = Integer.parseInt(rs.getString("ID"));
 			String preferencia = rs.getString("PREFERENCIA");
 			String tipo = rs.getString("TIPO");
@@ -195,7 +195,7 @@ public class DAOTablaCliente {
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 		if (rs.next()) 
-			if(rs.getString("ESTADO").equals(Boleta.DISPONIBLE))
+			if(rs.getInt("ESTADO")==(Boleta.DISPONIBLE))
 				disponible=true;
 		return disponible;
 	}

@@ -108,6 +108,7 @@ public class FestivAndesClienteServices {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response compraMultipleBoletas(ListaBoletas boletas,@javax.ws.rs.PathParam("id") int id)
 	{
+		System.out.println("LLEGUE 1111111111111111111111");
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		ListaBoletas resultado;
 		try{

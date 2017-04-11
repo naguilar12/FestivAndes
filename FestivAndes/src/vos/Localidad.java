@@ -22,7 +22,7 @@ public class Localidad {
 	@JsonProperty(value="sitio")
 	private Sitio sitio;
 
-	public Localidad(	@JsonProperty(value="id") int id, @JsonProperty(value="capacidad")int capacidad, @JsonProperty(value="numerada")int numerada, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="boletas")ListaBoletas boletas, @JsonProperty(value="sitio")Sitio sitio) {
+	public Localidad(@JsonProperty(value="id") int id, @JsonProperty(value="capacidad")int capacidad, @JsonProperty(value="numerada")int numerada, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="boletas")ListaBoletas boletas, @JsonProperty(value="sitio")Sitio sitio) {
 		super();
 		this.id = id;
 		this.capacidad = capacidad;

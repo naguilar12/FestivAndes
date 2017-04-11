@@ -7,9 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class ListaPreferencias {
 
 	@JsonProperty(value="preferencias")
-	private List<Preferencia> preferencias;
-
-	
+	private List<Preferencia> preferencias;	
 	
 	public ListaPreferencias(@JsonProperty(value="preferencias")List<Preferencia> preferencias) {
 		super();

@@ -132,7 +132,6 @@ public class FestivAndesMaster {
 			this.conn = darConexion();
 			daoUsuario.setConn(conn);
 			preferencias = daoUsuario.darPreferencias();
-
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
@@ -432,6 +431,8 @@ public class FestivAndesMaster {
 			for (Boleta boleta : boletas.getBoletas()) 
 				if(boleta.getLocalidad().getId()!=localidadID)
 					mismaLocalidad=false;	
+			System.out.println(mismaLocalidad);
+			System.out.println("LLEGUE 2222222222222222");
 
 			boolean mismaFuncion = true;
 			int funcionId = boletas.getBoletas().get(0).getFuncion().getId();
@@ -439,26 +440,34 @@ public class FestivAndesMaster {
 				if(boleta.getFuncion().getId()!=funcionId)
 					mismaFuncion=false;	
 			Funcion f = darFuncion(funcionId);
+			System.out.println(mismaFuncion);
+			System.out.println("LLEGUE 3333333333333333333");
 
 			boolean numerada = false;
 			Localidad loc = darLocalidad(localidadID);
 			if(loc.getNumerada()==1)
 				numerada = true;
+			System.out.println(numerada);
+			System.out.println("LLEGUE 4444444444444444444444444");
 
 			Cliente cliente = darCliente(id);
 			arregloBoletas = new ArrayList<Boleta>();
 			if(numerada){
+				System.out.println("LLEGUE 555555555555555555");
 				boolean seguidas = true;
 				for(int i = 0; i < boletas.getBoletas().size()-1 && seguidas && numerada; i++)
 					if(boletas.getBoletas().get(i).getUbicacion() != boletas.getBoletas().get(i+1).getUbicacion()-1)
 						seguidas = false;
+				System.out.println(seguidas+"SEGUIDAS");
 
 				boolean disponiblesNumeradas = true;
 				for (int i = 0; i < boletas.getBoletas().size()&&numerada; i++) 
 					disponiblesNumeradas = disponiblesNumeradas&&daoTablaCliente.boletaNumeradaDisponible(boletas.getBoletas().get(i));		
-
+				System.out.println(disponiblesNumeradas+"Disponibles");
+				
 				if(seguidas&&disponiblesNumeradas&&mismaLocalidad&&mismaFuncion)
 					for (Boleta boleta : boletas.getBoletas()){
+						System.out.println("LLEGUE 666666666666666666666");
 						Boleta agregada = daoTablaCliente.comprarBoletaNumerada(boleta, id);
 						agregada.setLocalidad(loc);
 						agregada.setFuncion(f);
