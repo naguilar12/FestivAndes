@@ -167,7 +167,7 @@ public class DAOTablaCliente {
 			String sql = "UPDATE BOLETA ";
 			sql += " SET ID_CLIENTE = "+ idCliente;
 			sql += ", ESTADO = " + Boleta.NO_DISPONIBLE;
-			sql += " WHERE UBICACION = " + (ocupadas+1);
+			sql += " WHERE UBICACION = '" + (ocupadas+1+i)+"'";
 			sql += " AND ID_LOCALIDAD = " + boleta.getLocalidad().getId();
 			sql += " AND ID_FUNCION = " + boleta.getFuncion().getId();
 			
@@ -176,7 +176,7 @@ public class DAOTablaCliente {
 			PreparedStatement prepStmt = conn.prepareStatement(sql);
 			recursos.add(prepStmt);
 			prepStmt.executeQuery();	
-			boleta.setUbicacion(ocupadas+1);
+			boleta.setUbicacion(ocupadas+1+i);
 			boletas.add(darBoleta(boleta));
 		}
 		return boletas;
@@ -202,7 +202,7 @@ public class DAOTablaCliente {
 
 	public int ocupadasBoletaNoNumeradas(Boleta boleta) throws SQLException, Exception
 	{
-		int disponibles = -1;
+		int ocupadas = -1;
 
 		String sql = "SELECT COUNT(*) FROM BOLETA WHERE ID_LOCALIDAD = " + boleta.getLocalidad().getId();
 		sql +=" AND ID_FUNCION = " + boleta.getFuncion().getId();
@@ -214,9 +214,9 @@ public class DAOTablaCliente {
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 		if (rs.next()) 
-			disponibles=rs.getInt("COUNT(*)");
+			ocupadas=rs.getInt("COUNT(*)");
 
-		return disponibles;
+		return ocupadas;
 	}
 
 	public Boleta darBoleta (Boleta boleta)  throws SQLException, Exception

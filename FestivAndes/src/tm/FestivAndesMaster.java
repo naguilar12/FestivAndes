@@ -479,7 +479,14 @@ public class FestivAndesMaster {
 				int ocupadas = daoTablaCliente.ocupadasBoletaNoNumeradas(boletas.getBoletas().get(0));
 				int disponiblesNoNumeradas = loc.getCapacidad() - ocupadas;
 				if(disponiblesNoNumeradas >= boletas.getBoletas().size())
+				{
 					arregloBoletas = daoTablaCliente.comprarBoletasNoNumeradas(boletas.getBoletas().get(0), id, boletas.getBoletas().size(), ocupadas);
+					for (Boleta boleta : arregloBoletas) {
+						boleta.setLocalidad(loc);
+						boleta.setFuncion(f);
+						boleta.setCliente(cliente);
+					}
+				}
 			}
 
 		} catch (SQLException e) {
