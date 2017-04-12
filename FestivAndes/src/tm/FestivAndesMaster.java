@@ -452,7 +452,8 @@ public class FestivAndesMaster {
 
 			Cliente cliente = darCliente(id);
 			arregloBoletas = new ArrayList<Boleta>();
-			if(numerada){
+			
+			if(numerada&&cliente!=null){
 				System.out.println("LLEGUE 555555555555555555");
 				boolean seguidas = true;
 				for(int i = 0; i < boletas.getBoletas().size()-1 && seguidas && numerada; i++)
@@ -475,7 +476,7 @@ public class FestivAndesMaster {
 						arregloBoletas.add(agregada);
 					}
 			}
-			else if(mismaLocalidad&&mismaFuncion&&!numerada){
+			else if(mismaLocalidad&&mismaFuncion&&!numerada&&cliente!=null){
 				int ocupadas = daoTablaCliente.ocupadasBoletaNoNumeradas(boletas.getBoletas().get(0));
 				int disponiblesNoNumeradas = loc.getCapacidad() - ocupadas;
 				if(disponiblesNoNumeradas >= boletas.getBoletas().size())

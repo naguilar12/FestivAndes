@@ -206,7 +206,7 @@ public class DAOTablaCliente {
 
 		String sql = "SELECT COUNT(*) FROM BOLETA WHERE ID_LOCALIDAD = " + boleta.getLocalidad().getId();
 		sql +=" AND ID_FUNCION = " + boleta.getFuncion().getId();
-		sql +=" AND ESTADO = " + Boleta.NO_DISPONIBLE;
+		sql +=" AND (ESTADO = " + Boleta.NO_DISPONIBLE+" OR ESTADO = " + Boleta.ABONADA+")";
 
 		System.out.println("SQL stmt:" + sql);
 
