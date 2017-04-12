@@ -281,6 +281,11 @@ public class DAOTablaCliente {
 		}
 		return resultado;
 	}
+	
+	public ListaBoletas darBoletasCliente (int id)
+	{
+		return null;
+	}
 	////////////////////////////////////////RF8///////////////////////////////////////////
 	//	public ArrayList<Reserva> darReservas() throws SQLException, Exception {
 	//		ArrayList<Reserva> reservas = new ArrayList<Reserva>();

@@ -32,6 +32,7 @@ import vos.ListaPreferencias;
 import vos.ListaVideos;
 import vos.Localidad;
 import vos.Preferencia;
+import vos.Resultado;
 import vos.Video;
 
 public class FestivAndesMaster {
@@ -685,6 +686,49 @@ public class FestivAndesMaster {
 		return cliente;
 	}
 
+	public Resultado consultarAsistenciaAlFestival(int idO, int idC) throws Exception
+	{
+		String resultado ="";
+		DAOTablaCliente daoTablaCliente = new DAOTablaCliente();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoTablaCliente.setConn(conn);
+			ListaBoletas bol = daoTablaCliente.darBoletasCliente(idC);
+			
+			ArrayList<Funcion> funciones = new ArrayList<>();
+			for (Boleta b : bol.getBoletas()) {
+				funciones.add(darFuncion(b.getFuncion().getId()));
+			}
+			
+			for (Funcion funcion : funciones) {
+				resultado += funcion.isRealizada();			
+			}
+			
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaCliente.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new Resultado(resultado);
+	}
+
+	
 
 	//	public ListaEspectaculos darEspectaculosIdioma(String idioma) throws Exception
 	//	{

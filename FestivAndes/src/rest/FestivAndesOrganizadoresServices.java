@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
 import vos.Funcion;
+import vos.Resultado;
 
 @Path("organizadores")
 public class FestivAndesOrganizadoresServices {
@@ -24,12 +25,12 @@ public class FestivAndesOrganizadoresServices {
 	private String getPath() {
 		return context.getRealPath("WEB-INF/ConnectionData");
 	}
-	
-	
+
+
 	private String doErrorMessage(Exception e){
 		return "{ \"ERROR\": \""+ e.getMessage() + "\"}" ;
 	}
-	
+
 	/////////////////////////////////////////RF9/////////////////////////////////////////////////////////////////
 	@GET
 	@Path("{idO}/espectaculos/{id}/funciones/{idF}/realizarFuncion")
@@ -44,4 +45,19 @@ public class FestivAndesOrganizadoresServices {
 		}
 		return Response.status(200).entity(funcion).build();
 	}
+	/////////////////////////////////////////RFC7/////////////////////////////////////////////////////////////////
+	@GET
+	@Path("{idO}/consultarAsistenciaAlFestival/{idC}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response consultarAsistenciaAlFestival(@javax.ws.rs.PathParam("idO") int idO,@javax.ws.rs.PathParam("idC") int idC) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		Resultado resultado;
+		try {
+			resultado = tm.consultarAsistenciaAlFestival(idO,idC);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resultado).build();
+	}
+
 }
