@@ -535,19 +535,27 @@ public class FestivAndesMaster {
 					todasDisponibles = todasDisponibles && (disponibles>0);
 				}
 			}
-			
+			Cliente c = darCliente(id);
 			arregloBoletas = new ArrayList<>();
 			if(antesDeTresSem&&todasDisponibles)
 			{
 				for (Boleta boleta : boletas.getBoletas()) {
 					Localidad loc = darLocalidad(boleta.getLocalidad().getId());
 					if(loc.getNumerada()==1){
-						arregloBoletas.add(daoTablaCliente.comprarBoletaNumerada(boleta, id,true));
+						Boleta b = daoTablaCliente.comprarBoletaNumerada(boleta, id,true);
+						b.setLocalidad(loc);
+						b.setFuncion(darFuncion(boleta.getFuncion().getId()));
+						b.setCliente(c);
+						arregloBoletas.add(b);
 					}
 					else if(loc.getNumerada()==0)
 					{
 						int ocupadas = daoTablaCliente.ocupadasBoletaNoNumeradas(boleta);
-						arregloBoletas.add(daoTablaCliente.comprarBoletasNoNumeradas(boleta, id, 1, ocupadas,true).get(0));
+						Boleta b = daoTablaCliente.comprarBoletasNoNumeradas(boleta, id, 1, ocupadas,true).get(0);
+						b.setLocalidad(loc);
+						b.setFuncion(darFuncion(boleta.getFuncion().getId()));
+						b.setCliente(c);
+						arregloBoletas.add(b);
 					}
 				}
 			}
