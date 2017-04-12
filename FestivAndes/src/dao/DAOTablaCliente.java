@@ -137,13 +137,18 @@ public class DAOTablaCliente {
 		prepStmt.executeQuery();
 	}
 
-	public Boleta comprarBoletaNumerada(Boleta boleta, int idUsuario) throws SQLException, Exception {
+	public Boleta comprarBoletaNumerada(Boleta boleta, int idUsuario, boolean abonado) throws SQLException, Exception {
 
+		int nuevoEstado = Boleta.NO_DISPONIBLE;
+		
+		if(abonado)
+			nuevoEstado = Boleta.ABONADA;
+		
 		if(boletaNumeradaDisponible(boleta))
 		{
 			String sql = "UPDATE BOLETA ";
 			sql += " SET ID_CLIENTE = " + idUsuario;
-			sql += ", ESTADO = " + Boleta.NO_DISPONIBLE;
+			sql += ", ESTADO = " + nuevoEstado;
 			sql += " WHERE UBICACION ='" + boleta.getUbicacion()+"'";
 			sql += " AND ID_LOCALIDAD = " + boleta.getLocalidad().getId();
 			sql += " AND ID_FUNCION = " + boleta.getFuncion().getId();
@@ -158,15 +163,19 @@ public class DAOTablaCliente {
 		return darBoleta(boleta);
 	}
 
-	public ArrayList<Boleta> comprarBoletasNoNumeradas(Boleta boleta, int idCliente, int necesarias, int ocupadas) throws SQLException, Exception {
+	public ArrayList<Boleta> comprarBoletasNoNumeradas(Boleta boleta, int idCliente, int necesarias, int ocupadas, boolean abonado) throws SQLException, Exception {
 
+		int nuevoEstado = Boleta.NO_DISPONIBLE;
+		
+		if(abonado)
+			nuevoEstado = Boleta.ABONADA;
 		ArrayList<Boleta> boletas = new ArrayList<>();
 
 		for(int i=0; i < necesarias;i++)
 		{
 			String sql = "UPDATE BOLETA ";
 			sql += " SET ID_CLIENTE = "+ idCliente;
-			sql += ", ESTADO = " + Boleta.NO_DISPONIBLE;
+			sql += ", ESTADO = " + nuevoEstado;
 			sql += " WHERE UBICACION = '" + (ocupadas+1+i)+"'";
 			sql += " AND ID_LOCALIDAD = " + boleta.getLocalidad().getId();
 			sql += " AND ID_FUNCION = " + boleta.getFuncion().getId();

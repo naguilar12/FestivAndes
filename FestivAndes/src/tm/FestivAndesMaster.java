@@ -452,7 +452,7 @@ public class FestivAndesMaster {
 
 			Cliente cliente = darCliente(id);
 			arregloBoletas = new ArrayList<Boleta>();
-			
+
 			if(numerada&&cliente!=null){
 				System.out.println("LLEGUE 555555555555555555");
 				boolean seguidas = true;
@@ -465,11 +465,11 @@ public class FestivAndesMaster {
 				for (int i = 0; i < boletas.getBoletas().size()&&numerada; i++) 
 					disponiblesNumeradas = disponiblesNumeradas&&daoTablaCliente.boletaNumeradaDisponible(boletas.getBoletas().get(i));		
 				System.out.println(disponiblesNumeradas+"Disponibles");
-				
+
 				if(seguidas&&disponiblesNumeradas&&mismaLocalidad&&mismaFuncion)
 					for (Boleta boleta : boletas.getBoletas()){
 						System.out.println("LLEGUE 666666666666666666666");
-						Boleta agregada = daoTablaCliente.comprarBoletaNumerada(boleta, id);
+						Boleta agregada = daoTablaCliente.comprarBoletaNumerada(boleta, id,false);
 						agregada.setLocalidad(loc);
 						agregada.setFuncion(f);
 						agregada.setCliente(cliente);
@@ -481,7 +481,7 @@ public class FestivAndesMaster {
 				int disponiblesNoNumeradas = loc.getCapacidad() - ocupadas;
 				if(disponiblesNoNumeradas >= boletas.getBoletas().size())
 				{
-					arregloBoletas = daoTablaCliente.comprarBoletasNoNumeradas(boletas.getBoletas().get(0), id, boletas.getBoletas().size(), ocupadas);
+					arregloBoletas = daoTablaCliente.comprarBoletasNoNumeradas(boletas.getBoletas().get(0), id, boletas.getBoletas().size(), ocupadas, false);
 					for (Boleta boleta : arregloBoletas) {
 						boleta.setLocalidad(loc);
 						boleta.setFuncion(f);
@@ -521,50 +521,35 @@ public class FestivAndesMaster {
 			this.conn = darConexion();
 			daoTablaCliente.setConn(conn);
 
-			boolean mismaLocalidad = true;
-			int localidadID = boletas.getBoletas().get(0).getLocalidad().getId();
-			for (Boleta boleta : boletas.getBoletas()) 
-				if(boleta.getLocalidad().getId()!=localidadID)
-					mismaLocalidad=false;	
+			boolean antesDeTresSem = true;
 
-			boolean mismaFuncion = true;
-			int funcionId = boletas.getBoletas().get(0).getFuncion().getId();
-			for (Boleta boleta : boletas.getBoletas()) 
-				if(boleta.getFuncion().getId()!=funcionId)
-					mismaFuncion=false;	
-			Funcion f = darFuncion(funcionId);
-
-			boolean numerada = false;
-			Localidad loc = darLocalidad(localidadID);
-			if(loc.getNumerada()==1)
-				numerada = true;
-
-			Cliente cliente = darCliente(id);
-			arregloBoletas = new ArrayList<Boleta>();
-			if(numerada){
-				boolean seguidas = true;
-				for(int i = 0; i < boletas.getBoletas().size()-1 && seguidas && numerada; i++)
-					if(boletas.getBoletas().get(i).getUbicacion() != boletas.getBoletas().get(i+1).getUbicacion()-1)
-						seguidas = false;
-
-				boolean disponiblesNumeradas = true;
-				for (int i = 0; i < boletas.getBoletas().size()&&numerada; i++) 
-					disponiblesNumeradas = disponiblesNumeradas&&daoTablaCliente.boletaNumeradaDisponible(boletas.getBoletas().get(i));		
-
-				if(seguidas&&disponiblesNumeradas&&mismaLocalidad&&mismaFuncion)
-					for (Boleta boleta : boletas.getBoletas()){
-						Boleta agregada = daoTablaCliente.comprarBoletaNumerada(boleta, id);
-						agregada.setLocalidad(loc);
-						agregada.setFuncion(f);
-						agregada.setCliente(cliente);
-						arregloBoletas.add(agregada);
-					}
+			boolean todasDisponibles = true;
+			for (Boleta boleta : boletas.getBoletas()) {
+				Localidad loc = darLocalidad(boleta.getLocalidad().getId());
+				if(loc.getNumerada()==1)
+					todasDisponibles = todasDisponibles&&daoTablaCliente.boletaNumeradaDisponible(boleta);
+				else if(loc.getNumerada()==0)
+				{
+					int ocupadas = daoTablaCliente.ocupadasBoletaNoNumeradas(boleta);
+					int disponibles = loc.getCapacidad() - ocupadas;
+					todasDisponibles = todasDisponibles && (disponibles>0);
+				}
 			}
-			else if(mismaLocalidad&&mismaFuncion&&!numerada){
-				int ocupadas = daoTablaCliente.ocupadasBoletaNoNumeradas(boletas.getBoletas().get(0));
-				int disponiblesNoNumeradas = loc.getCapacidad() - ocupadas;
-				if(disponiblesNoNumeradas >= boletas.getBoletas().size())
-					arregloBoletas = daoTablaCliente.comprarBoletasNoNumeradas(boletas.getBoletas().get(0), id, boletas.getBoletas().size(), ocupadas);
+			
+			arregloBoletas = new ArrayList<>();
+			if(antesDeTresSem&&todasDisponibles)
+			{
+				for (Boleta boleta : boletas.getBoletas()) {
+					Localidad loc = darLocalidad(boleta.getLocalidad().getId());
+					if(loc.getNumerada()==1){
+						arregloBoletas.add(daoTablaCliente.comprarBoletaNumerada(boleta, id,true));
+					}
+					else if(loc.getNumerada()==0)
+					{
+						int ocupadas = daoTablaCliente.ocupadasBoletaNoNumeradas(boleta);
+						arregloBoletas.add(daoTablaCliente.comprarBoletasNoNumeradas(boleta, id, 1, ocupadas,true).get(0));
+					}
+				}
 			}
 
 		} catch (SQLException e) {
@@ -589,7 +574,7 @@ public class FestivAndesMaster {
 		return new ListaBoletas(arregloBoletas);
 	}
 
-	
+
 	public Localidad darLocalidad(int id) throws Exception
 	{
 		Localidad localidad;
