@@ -369,6 +369,7 @@ public class FestivAndesMaster {
 			daoTablaCompañias.setConn(conn);
 			compañias = daoTablaCompañias.darInfoCompaniasId(idE);
 			List<Espectaculo> listaEsp = compañias.getEspectaculos().getEspectaculos();
+			ArrayList<Funcion> funcionesEspect = listaEsp.get(0).getFunciones();
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
