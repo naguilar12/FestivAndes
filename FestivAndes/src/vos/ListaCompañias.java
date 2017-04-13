@@ -6,10 +6,10 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class ListaCompañias {
 
-	@JsonProperty(value="compañias")
+	@JsonProperty(value="companias")
 	private List<CompañiaTeatro> compañias;
 
-	public ListaCompañias(@JsonProperty(value="compañias")List<CompañiaTeatro> compañias) {
+	public ListaCompañias(@JsonProperty(value="companias")List<CompañiaTeatro> compañias) {
 		super();
 		this.compañias = compañias;
 	}

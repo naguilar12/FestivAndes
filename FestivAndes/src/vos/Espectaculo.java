@@ -1,5 +1,7 @@
 package vos;
 
+import java.util.ArrayList;
+
 import org.codehaus.jackson.annotate.JsonProperty;
 
 public class Espectaculo {
@@ -48,10 +50,13 @@ public class Espectaculo {
 	
 	@JsonProperty(value="requerimientos")
 	private ListaRequerimientos requerimientos;
+	
+	@JsonProperty(value="funciones")
+	private ArrayList<Funcion> funciones;
 
 	public Espectaculo(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="duracion")double duracion, @JsonProperty(value="intermedio")int intermedio, @JsonProperty(value="idioma")String idioma, @JsonProperty(value="clasificacion")String clasificacion,
 			@JsonProperty(value="costoRealizacion")double costoRealizacion, @JsonProperty(value="publicoActivo")int publicoActivo, @JsonProperty(value="traduccionSubtitulos")int traduccionSubtitulos, @JsonProperty(value="traduccionAudifonos")int traduccionAudifonos,
-			@JsonProperty(value="descripcion")String descripcion, @JsonProperty(value="publicoObjetivo")String publicoObjetivo, @JsonProperty(value="compañias")ListaCompañias compañias, @JsonProperty(value="categorias")ListaCategorias categorias, @JsonProperty(value="requerimientos")ListaRequerimientos requerimientos ) {
+			@JsonProperty(value="descripcion")String descripcion, @JsonProperty(value="publicoObjetivo")String publicoObjetivo, @JsonProperty(value="compañias")ListaCompañias compañias, @JsonProperty(value="categorias")ListaCategorias categorias, @JsonProperty(value="requerimientos")ListaRequerimientos requerimientos, @JsonProperty(value="funciones") ArrayList<Funcion> funciones) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -68,6 +73,7 @@ public class Espectaculo {
 		this.compañias = compañias;
 		this.categorias = categorias;
 		this.requerimientos = requerimientos;
+		this.funciones = funciones;
 	}
 
 	public ListaRequerimientos getRequerimientos() {
@@ -78,7 +84,6 @@ public class Espectaculo {
 	public void setRequerimientos(ListaRequerimientos requerimientos) {
 		this.requerimientos = requerimientos;
 	}
-
 
 	public int getId() {
 		return id;
@@ -191,6 +196,14 @@ public class Espectaculo {
 	public void setCompañias(ListaCompañias compañias) {
 		this.compañias = compañias;
 	}
-	
 
+	public ArrayList<Funcion> getFunciones() {
+		return funciones;
+	}
+
+	public void setFunciones(ArrayList<Funcion> funciones) {
+		this.funciones = funciones;
+	}
+	
+	
 }

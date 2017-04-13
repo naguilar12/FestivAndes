@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import vos.Espectaculo;
@@ -86,8 +87,6 @@ public class DAOTablaFuncion {
 
 		String sql = "SELECT * FROM FUNCION WHERE ID=" + idF;
 
-		System.out.println("SQL stmt:" + sql);
-
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
@@ -95,12 +94,12 @@ public class DAOTablaFuncion {
 		while (rs.next()) {
 
 			int id = Integer.parseInt(rs.getString("id"));
-			Date fechaHora =  rs.getDate("fecha_hora");
+			Timestamp fechaHora = rs.getTimestamp("fecha_hora");
 			double costo = Double.parseDouble(rs.getString("costo"));
 			int sillasreservadas = Integer.parseInt(rs.getString("sillas_reservadas"));
 			int  realizada = Integer.parseInt(rs.getString("ya_se_realizo"));
 			Espectaculo espectaculo = null;
-			funcion =  new Funcion(id, (java.sql.Date) fechaHora, costo, sillasreservadas, realizada, espectaculo);
+			funcion =  new Funcion(id, fechaHora, costo, sillasreservadas, realizada, espectaculo);
 
 		}
 		return funcion;

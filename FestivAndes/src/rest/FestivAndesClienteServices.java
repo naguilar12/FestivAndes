@@ -5,6 +5,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -12,12 +13,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
-import tm.VideoAndesMaster;
 import vos.Boleta;
 import vos.ListaBoletas;
+import vos.ListaCompañias;
 import vos.ListaPreferencias;
 import vos.Preferencia;
-import vos.Video;
 
 @Path("clientes")
 public class FestivAndesClienteServices {
@@ -58,6 +58,7 @@ public class FestivAndesClienteServices {
 	@Path("{id}/preferencias")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getPreferenciasUsuario(@javax.ws.rs.PathParam("id") int id) {
+		System.out.println("Aqui llegue");
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		ListaPreferencias preferencias;
 		try {
@@ -120,23 +121,41 @@ public class FestivAndesClienteServices {
 		return Response.status(200).entity(resultado).build();
 	}
 	
-	////////////////////////////////////////RF11///////////////////////////////////////////
-
-	@POST
-	@Path("{id}/registrarCompraAbonamiento")
+	
+	@PUT
+	@Path ("{id}/devolverBoleta")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response registrarCompraAbonamiento(ListaBoletas boletas,@javax.ws.rs.PathParam("id") int id)
-	{
+	public Response devolverBoletas(Boleta pBoleta,@javax.ws.rs.PathParam("id") int id){
+		System.out.println("llegue aqui");
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-		ListaBoletas resultado;
+		Boleta result;
 		try{
-			resultado = tm.registrarCompraAbonamiento(boletas, id);					
+			result = tm.devolverBoleta(pBoleta, id);					
 
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return Response.status(200).entity(resultado).build();
-	}
+		return Response.status(200).entity(result).build();
 
+	}
+	
+	@PUT
+	@Path ("{id}/devolverAbonamiento")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response devolverAbonamiento(Boleta pBoleta,@javax.ws.rs.PathParam("id") int id){
+		System.out.println("llegue aqui");
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		try{
+			tm.devolverAbonamiento(pBoleta, id);					
+
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(pBoleta).build();
+
+	}
+	
+	
 }

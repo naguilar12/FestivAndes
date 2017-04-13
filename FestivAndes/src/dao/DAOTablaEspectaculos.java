@@ -117,7 +117,7 @@ public class DAOTablaEspectaculos {
 			ListaCompañias compañias = null;
 			ListaCategorias categorias = null;
 			ListaRequerimientos requerimientos = null;
-			espectaculo = new Espectaculo(id, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compañias, categorias, requerimientos);
+			espectaculo = new Espectaculo(id, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compañias, categorias, requerimientos,null);
 
 		}
 		return espectaculo;
