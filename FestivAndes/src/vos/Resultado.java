@@ -10,6 +10,7 @@ public class Resultado {
 	public Resultado (@JsonProperty(value="respuesta") String respuesta)
 	{
 		this.respuesta = respuesta;
+		
 	}
 
 	public String getRespuesta() {
