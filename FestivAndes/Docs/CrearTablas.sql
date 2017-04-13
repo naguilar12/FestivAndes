@@ -81,7 +81,7 @@ CREATE TABLE FUNCION
     id_espectaculo INTEGER,
     id_sitio INTEGER,
     costo DOUBLE PRECISION,
-    sillas_reservadas INTEGER,
+    sillas_ocupadas INTEGER,
     fecha_hora TIMESTAMP,
     ya_se_realizo NUMBER(1,0),
     CONSTRAINT funcion_pk PRIMARY KEY(id)
@@ -106,7 +106,7 @@ CREATE TABLE BOLETA
     id_localidad INTEGER,
     id_funcion INTEGER,
     id_cliente INTEGER,
-    ubicacion VARCHAR(100),
+    ubicacion INTEGER,
     estado INTEGER,
     costo DOUBLE PRECISION,
     CONSTRAINT boleta_pk PRIMARY KEY(id_localidad, id_funcion, id_cliente, ubicacion)

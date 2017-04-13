@@ -232,7 +232,7 @@ public class DAOTablaCliente {
 	{
 		Boleta resultado = null;
 
-		String sql = "SELECT * FROM BOLETA WHERE UBICACION ='" + boleta.getUbicacion()+"'";
+		String sql = "SELECT * FROM BOLETA WHERE UBICACION =" + boleta.getUbicacion();
 		sql	+= " AND ID_LOCALIDAD = " + boleta.getLocalidad().getId();
 		sql	+= " AND ID_FUNCION = " + boleta.getFuncion().getId();
 
@@ -244,13 +244,25 @@ public class DAOTablaCliente {
 			int ubicacion = rs.getInt("UBICACION");
 			int estado = rs.getInt("ESTADO");
 			double costo = rs.getDouble("COSTO");
+			
+			String sql1 = "SELECT * FROM FUNCION WHERE ID =" + boleta.getFuncion().getId();
+			
+
+			PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
+			recursos.add(prepStmt1);
+			ResultSet rs1 = prepStmt1.executeQuery();
+			if(rs1.next())
+			{
+			Funcion nueva = new Funcion(rs.getInt("ID_FUNCION"), rs1.getTimestamp("FECHA_HORA"), rs1.getDouble("COSTO"), rs1.getInt("SILLAS_RESERVADAS"), rs1.getInt("YA_SE_REALIZO"), null);
 			Localidad localidad = null;
-			Funcion funcion = null;
+			Funcion funcion = nueva;
 			Cliente cliente = null;
 			resultado = new Boleta(ubicacion, estado, costo, localidad, funcion, cliente);
+			}
 		}
 		return resultado;
 	}
+
 
 	public Cliente darCliente (int id)  throws SQLException, Exception
 	{
@@ -280,6 +292,38 @@ public class DAOTablaCliente {
 			}
 		}
 		return resultado;
+	}
+	
+	public void devolverBoleta(Boleta pBoleta) throws SQLException, Exception
+	{
+		
+		
+		String sql = "UPDATE BOLETA SET ESTADO = 3";
+		sql += " WHERE UBICACION ='" + pBoleta.getUbicacion()+"'";
+		sql += " AND ID_LOCALIDAD = " + pBoleta.getLocalidad().getId();
+		sql += " AND ID_FUNCION = " + pBoleta.getFuncion().getId();
+		
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+		
+
+	}
+	
+	public void devolverAbonamiento(Boleta pBoleta) throws SQLException, Exception
+	{
+		
+		
+		String sql = "UPDATE BOLETA SET ESTADO = 3";
+		sql += " WHERE UBICACION ='" + pBoleta.getUbicacion()+"'";
+		sql += " AND ID_LOCALIDAD = " + pBoleta.getLocalidad().getId();
+		sql += " AND ID_FUNCION = " + pBoleta.getFuncion().getId();
+		
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+		
+
 	}
 	////////////////////////////////////////RF8///////////////////////////////////////////
 	//	public ArrayList<Reserva> darReservas() throws SQLException, Exception {

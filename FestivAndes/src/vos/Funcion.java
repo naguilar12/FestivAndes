@@ -1,6 +1,7 @@
 package vos;
 
-import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -10,13 +11,13 @@ public class Funcion {
 	private int id;
 	
 	@JsonProperty(value="fechaHora")
-	private Date fechaHora;
+	private Timestamp fechaHora;
 	
 	@JsonProperty(value="costo")
 	private double costo;
 	
-	@JsonProperty(value="sillasReservadas")
-	private int sillasreservadas;
+	@JsonProperty(value="sillasOcupadas")
+	private int sillasOcupadas;
 	
 	@JsonProperty(value="realizada")
 	private int realizada;
@@ -26,13 +27,13 @@ public class Funcion {
 	
 	
 
-	public Funcion(@JsonProperty(value="id")int id, @JsonProperty(value="fechaHora")Date fechaHora, @JsonProperty(value="costo")double costo, @JsonProperty(value="sillasReservadas")int sillasreservadas, @JsonProperty(value="realizada")int realizada,
+	public Funcion(@JsonProperty(value="id")int id, @JsonProperty(value="fechaHora")Timestamp fechaHora, @JsonProperty(value="costo")double costo, @JsonProperty(value="sillasOcupadas")int sillasOcupadas, @JsonProperty(value="realizada")int realizada,
 			@JsonProperty(value="espectaculo")Espectaculo espectaculo) {
 		super();
 		this.id = id;
 		this.fechaHora = fechaHora;
 		this.costo = costo;
-		this.sillasreservadas = sillasreservadas;
+		this.sillasOcupadas = sillasOcupadas;
 		this.realizada = realizada;
 		this.espectaculo = espectaculo;
 	}
@@ -45,11 +46,11 @@ public class Funcion {
 		this.id = id;
 	}
 
-	public Date getFechaHora() {
+	public Timestamp getFechaHora() {
 		return fechaHora;
 	}
 
-	public void setFechaHora(Date fechaHora) {
+	public void setFechaHora(Timestamp fechaHora) {
 		this.fechaHora = fechaHora;
 	}
 
@@ -62,11 +63,11 @@ public class Funcion {
 	}
 
 	public int getSillasreservadas() {
-		return sillasreservadas;
+		return sillasOcupadas;
 	}
 
 	public void setSillasreservadas(int sillasreservadas) {
-		this.sillasreservadas = sillasreservadas;
+		this.sillasOcupadas = sillasreservadas;
 	}
 
 	public int isRealizada() {
@@ -85,6 +86,12 @@ public class Funcion {
 		this.espectaculo = espectaculo;
 	}
 	
-	
-	
+//	public void fechahaha()
+//	{
+//	Funcion fun = devolver.getFuncion();
+//	Date fecha = fun.getFechaHora();
+//	Timestamp fechaA = fun.getFechaHora();
+//	Date actual = new Date(fechaA.getTime());
+//	System.out.println(actual.getDate() + " / " + actual.getMonth());
+//	}
 }

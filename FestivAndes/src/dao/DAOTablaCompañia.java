@@ -5,10 +5,12 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import vos.Compa駃aTeatro;
 import vos.Espectaculo;
+import vos.Festival;
 import vos.Funcion;
 import vos.ListaCategorias;
 import vos.ListaCompa駃as;
@@ -20,77 +22,206 @@ import vos.Representante;
 
 public class DAOTablaCompa駃a {
 
-		/**
-		 * Arraylits de recursos que se usan para la ejecuci贸n de sentencias SQL
-		 */
-		private ArrayList<Object> recursos;
+	/**
+	 * Arraylits de recursos que se usan para la ejecuci贸n de sentencias SQL
+	 */
+	private ArrayList<Object> recursos;
 
-		/**
-		 * Atributo que genera la conexi贸n a la base de datos
-		 */
-		private Connection conn;
+	/**
+	 * Atributo que genera la conexi贸n a la base de datos
+	 */
+	private Connection conn;
 
-		/**
-		 * M茅todo constructor que crea DAOVideo
-		 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
-		 */
-		public DAOTablaCompa駃a() {
-			recursos = new ArrayList<Object>();
-		}
+	/**
+	 * M茅todo constructor que crea DAOVideo
+	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
+	 */
+	public DAOTablaCompa駃a() {
+		recursos = new ArrayList<Object>();
+	}
 
-		/**
-		 * M茅todo que cierra todos los recursos que estan enel arreglo de recursos
-		 * <b>post: </b> Todos los recurso del arreglo de recursos han sido cerrados
-		 */
-		public void cerrarRecursos() {
-			for(Object ob : recursos){
-				if(ob instanceof PreparedStatement)
-					try {
-						((PreparedStatement) ob).close();
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-			}
-		}
-
-		/**
-		 * M茅todo que inicializa la connection del DAO a la base de datos con la conexi贸n que entra como par谩metro.
-		 * @param con  - connection a la base de datos
-		 */
-		public void setConn(Connection con){
-			this.conn = con;
-		}
-
-		public ArrayList<Compa駃aTeatro> darCompa駃as(int idE) throws SQLException, Exception {
-			ArrayList<Compa駃aTeatro> compa駃as = new ArrayList<Compa駃aTeatro>();
-
-			String sql = "SELECT * FROM COMPA袸A_ESPECTACULO";
-			sql += " WHERE ID_ESPECTACULO = " + idE;
-
-			PreparedStatement prepStmt = conn.prepareStatement(sql);
-			recursos.add(prepStmt);
-			ResultSet rs = prepStmt.executeQuery();
-
-			while (rs.next()) {
-				String sql1 = "SELECT * FROM COMPA袸A_TEATRO";
-				sql1 += " WHERE ID = " + rs.getString("ID_COMPA袸A");
-				
-				PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
-				recursos.add(prepStmt1);
-				ResultSet rs1 = prepStmt1.executeQuery();
-				
-				while(rs1.next())
-				{
-					int id = Integer.parseInt(rs1.getString("ID"));
-					String nombre = rs1.getString("NOMBRE");
-					Date fechaLlegada =  rs1.getDate("FECHA_LLEGADA");
-					Date fechaSalida =  rs1.getDate("FECHA_SALIDA");
-					ListaFestivales festivales = null;
-					Representante representante = null;
-					ListaEspectaculos espectaculos = null;
-					compa駃as.add(new Compa駃aTeatro(id, nombre, fechaLlegada, fechaSalida, festivales, representante, espectaculos));
+	/**
+	 * M茅todo que cierra todos los recursos que estan enel arreglo de recursos
+	 * <b>post: </b> Todos los recurso del arreglo de recursos han sido cerrados
+	 */
+	public void cerrarRecursos() {
+		for(Object ob : recursos){
+			if(ob instanceof PreparedStatement)
+				try {
+					((PreparedStatement) ob).close();
+				} catch (Exception ex) {
+					ex.printStackTrace();
 				}
-			}
-			return compa駃as;
 		}
+	}
+
+	/**
+	 * M茅todo que inicializa la connection del DAO a la base de datos con la conexi贸n que entra como par谩metro.
+	 * @param con  - connection a la base de datos
+	 */
+	public void setConn(Connection con){
+		this.conn = con;
+	}
+
+	public Compa駃aTeatro darInfoCompaniasId(int idC) throws SQLException, Exception {
+
+		Compa駃aTeatro compania = null;
+
+		String sql = "SELECT * FROM COMPANIA_TEATRO";
+		sql += " WHERE ID = " + idC;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if(rs.next()) {
+
+			int idComp = rs.getInt("ID");
+			String nombreCom = rs.getString("NOMBRE");
+			Date fechaLLeg = rs.getDate("FECHA_LLEGADA");
+			Date fechaSali = rs.getDate("FECHA_SALIDA");
+			ArrayList<Espectaculo> listaEspec = new ArrayList<Espectaculo>();
+
+			String sql1 = "SELECT * FROM COMPANIA_ESPECTACULO";
+			sql1 += " WHERE ID = " + idC;
+
+			PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
+			recursos.add(prepStmt1);
+			ResultSet rs1 = prepStmt1.executeQuery();
+			while(rs1.next())
+			{
+				int id = rs1.getInt("ID_ESPECTACULO");
+
+				String sql2 = "SELECT * FROM ESPECTACULO";
+				sql2 += " WHERE ID = " + id;
+
+				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+				recursos.add(prepStmt2);
+				ResultSet rs2 = prepStmt2.executeQuery();
+
+				if(rs2.next())
+				{
+					int idEsp = rs2.getInt("ID");
+					String nombre = rs2.getString("NOMBRE");
+					double duracion = rs2.getDouble("DURACION");
+					int intermedio = rs2.getInt("INTERMEDIO");
+					String idioma = rs2.getString("IDIOMA");
+					String clasificacion = rs2.getString("CLASIFICACION");
+					double costoRealizacion = rs2.getDouble("COSTO_REALIZACION");
+					int publicoActivo = rs2.getInt("PUBLICO_ACTIVO");
+					int tradSubt = rs2.getInt("TRADUCCION_SUBTITULOS");
+					int tradAud = rs2.getInt("TRADUCCION_AUDIFONOS");
+					String descripcion = rs2.getString("DESCRIPCION");
+					String pubObj = rs2.getString("PUBLICO_OBJETIVO");
+					ArrayList<Funcion> funciones = new ArrayList<Funcion>();
+					
+					String sql3 = "SELECT * FROM FUNCION";
+					sql3 += " WHERE ID_ESPECTACULO = " + idEsp;
+					PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
+					recursos.add(prepStmt3);
+					ResultSet rs3 = prepStmt3.executeQuery();
+					
+					while(rs3.next())
+					{
+						int idFun = rs3.getInt("ID");
+						int idSit = rs3.getInt("ID_SITIO");
+						double costo = rs3.getDouble("COSTO");
+						int sillasOcupadas = rs3.getInt("SILLAS_OCUPADAS");
+						Timestamp fechaHora = rs3.getTimestamp("FECHA_HORA");
+						int yaSeRealizo = rs3.getInt("YA_SE_REALIZO");
+						Funcion nuevaFun = new Funcion(idFun, fechaHora, costo, sillasOcupadas, yaSeRealizo, null);
+						funciones.add(nuevaFun);
+						
+						
+					}
+					Espectaculo nuevoEspect = new Espectaculo(idEsp, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, tradSubt, tradAud, descripcion, pubObj, null, null, null, funciones);
+					listaEspec.add(nuevoEspect);
+				}
+
+			}
+			
+			compania = new Compa駃aTeatro(idComp, nombreCom, fechaLLeg, fechaSali, null , null, new ListaEspectaculos(listaEspec));
+		}
+		return compania;
+	}
+
+	public ArrayList<Compa駃aTeatro> darInfoCompanias() throws SQLException, Exception
+	{
+		ArrayList<Compa駃aTeatro> companiasLista = new ArrayList<Compa駃aTeatro>();
+		String sql = "SELECT * FROM COMPANIA_TEATRO";
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		while(rs.next())
+		{
+			int idComp = rs.getInt("ID");
+			String nombreCom = rs.getString("NOMBRE");
+			Date fechaLLeg = rs.getDate("FECHA_LLEGADA");
+			Date fechaSali = rs.getDate("FECHA_SALIDA");
+			ArrayList<Espectaculo> listaEspec = new ArrayList<Espectaculo>();
+
+			String sql1 = "SELECT * FROM COMPANIA_ESPECTACULO";
+			sql1 += " WHERE ID = " + idComp;
+
+			PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
+			recursos.add(prepStmt1);
+			ResultSet rs1 = prepStmt1.executeQuery();
+			while(rs1.next())
+			{
+				int id = rs1.getInt("ID_FESTIVAL");
+
+				String sql2 = "SELECT * FROM FESTIVAL";
+				sql2 += " WHERE ID = " + id;
+
+				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+				recursos.add(prepStmt2);
+				ResultSet rs2 = prepStmt2.executeQuery();
+
+				if(rs2.next())
+				{
+					int idEsp = rs2.getInt("ID");
+					String nombre = rs2.getString("NOMBRE");
+					double duracion = rs2.getDouble("DURACION");
+					int intermedio = rs2.getInt("INTERMEDIO");
+					String idioma = rs2.getString("IDIOMA");
+					String clasificacion = rs2.getString("CLASIFICACION");
+					double costoRealizacion = rs2.getDouble("COSTO_REALIZACION");
+					int publicoActivo = rs2.getInt("PUBLICO_ACTIVO");
+					int tradSubt = rs2.getInt("TRADUCCION_SUBTITULOS");
+					int tradAud = rs2.getInt("TRADUCCION_AUDIFONOS");
+					String descripcion = rs2.getString("DESCRIPCION");
+					String pubObj = rs2.getString("PUBLICO_OBJETIVO");
+					ArrayList<Funcion> funciones = new ArrayList<Funcion>();
+					
+					String sql3 = "SELECT * FROM FUNCION";
+					sql3 += " WHERE ID_ESPECTACULO = " + idEsp;
+					PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
+					recursos.add(prepStmt3);
+					ResultSet rs3 = prepStmt3.executeQuery();
+					
+					while(rs3.next())
+					{
+						int idFun = rs3.getInt("ID");
+						int idSit = rs3.getInt("ID_SITIO");
+						double costo = rs3.getDouble("COSTO");
+						int sillasOcupadas = rs3.getInt("SILLAS_OCUPADAS");
+						Timestamp fechaHora = rs3.getTimestamp("FECHA_HORA");
+						int yaSeRealizo = rs3.getInt("YA_SE_REALIZO");
+						Funcion nuevaFun = new Funcion(idFun, fechaHora, costo, sillasOcupadas, yaSeRealizo, null);
+						funciones.add(nuevaFun);
+						
+						
+					}
+					Espectaculo nuevoEspect = new Espectaculo(idEsp, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, tradSubt, tradAud, descripcion, pubObj, null, null, null, funciones);
+					listaEspec.add(nuevoEspect);
+				}
+
+			}
+			Compa駃aTeatro compania = new Compa駃aTeatro(idComp, nombreCom, fechaLLeg, fechaSali, null , null, new ListaEspectaculos(listaEspec));
+			companiasLista.add(compania);
+		}
+		
+		
+		return companiasLista;
+	}
 }
