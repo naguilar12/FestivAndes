@@ -62,5 +62,25 @@ public class FestivAndesOrganizadoresServices {
 		}
 		return Response.status(200).entity(resultado).build();
 	}
+	
+	/////////////////////////////////////////RF14/////////////////////////////////////////////////////////////////
+
+	@GET
+	@Path("{idO}/cancelarFuncion/{idF}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response cancelarFuncion(@javax.ws.rs.PathParam("idO") int idO,@javax.ws.rs.PathParam("idF") int idF) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		Resultado resultado;
+		try {
+			if(tm.darOrganizador(idO)!=null)
+				resultado = tm.cancelarFuncion(idF);
+			else
+				resultado = null;
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resultado).build();
+	}
+	
 
 }

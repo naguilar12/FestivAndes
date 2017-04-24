@@ -7,11 +7,16 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+
+import vos.Boleta;
+import vos.Cliente;
 import vos.Espectaculo;
 import vos.Funcion;
+import vos.ListaBoletas;
 import vos.ListaCategorias;
 import vos.ListaCompañias;
 import vos.ListaRequerimientos;
+import vos.Localidad;
 
 public class DAOTablaFuncion {
 
@@ -115,6 +120,40 @@ public class DAOTablaFuncion {
 		}
 		return funcion;
 	}
+	
+	public ListaBoletas darBoletasFuncion (int idF) throws SQLException, Exception
+	{
+		ArrayList<Boleta> boletas = new ArrayList<>();
+
+		String sql = "SELECT * FROM BOLETA WHERE ID_FUNCION =" + idF;
+		
+		System.out.println(sql);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			int idLocalidad = rs.getInt("ID_LOCALIDAD");
+			int idFuncion = rs.getInt("ID_FUNCION");
+			int idCliente = rs.getInt("ID_CLIENTE");
+			
+			int ubicacion = rs.getInt("UBICACION");
+			int estado = rs.getInt("ESTADO");
+			double costo = rs.getDouble("COSTO");
+
+			Localidad localidad =  new Localidad(idLocalidad, 0, 0, "", null, null);
+			Funcion funcion = new Funcion(idFuncion, null, 0, 0, 0, null);
+			
+			Boleta bol = new Boleta(ubicacion, estado, costo, localidad, funcion, new Cliente(null, idCliente, null, null, null, null)); 
+			
+			boletas.add(bol);
+		}
+
+		return new ListaBoletas(boletas);
+
+	}
+
 
 
 }

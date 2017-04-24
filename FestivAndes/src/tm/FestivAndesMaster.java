@@ -831,6 +831,41 @@ public class FestivAndesMaster {
 		}
 		return listaBoletas;
 	}
+	
+	public ListaBoletas darBoletasFuncion(int idF) throws Exception
+	{
+		ListaBoletas listaBoletas;
+		DAOTablaFuncion daoTablaOrganizadores = new DAOTablaFuncion();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoTablaOrganizadores.setConn(conn);
+
+			listaBoletas = daoTablaOrganizadores.darBoletasFuncion(idF);
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaOrganizadores.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return listaBoletas;
+	}
+
 
 
 
@@ -995,6 +1030,49 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
+
+	}
+
+	public Resultado cancelarFuncion(int idF) throws Exception
+	{
+		System.out.println(1);
+		DAOTablaCliente daoCliente = new DAOTablaCliente();
+		String respuesta= "";
+		try 
+		{
+			this.conn = darConexion();
+			daoCliente.setConn(conn);
+			
+			if(darFuncion(idF)!=null)
+			{
+				ListaBoletas boletas = darBoletasFuncion(idF);
+				for (Boleta boleta : boletas.getBoletas()) {
+					devolverBoleta(boleta, boleta.getCliente().getId());					
+				}
+			}
+
+		}
+		catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoCliente.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		
+		return new Resultado(respuesta);
 
 	}
 
