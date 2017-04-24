@@ -53,7 +53,10 @@ public class FestivAndesOrganizadoresServices {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		Resultado resultado;
 		try {
-			resultado = tm.consultarAsistenciaAlFestival(idO,idC);
+			if(tm.darOrganizador(idO)!=null)
+				resultado = tm.consultarAsistenciaAlFestival(idC);
+			else
+				resultado = null;
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}

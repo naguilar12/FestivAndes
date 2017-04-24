@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import vos.Espectaculo;
 import vos.Funcion;
+import vos.ListaCategorias;
+import vos.ListaCompañias;
+import vos.ListaRequerimientos;
 
 public class DAOTablaFuncion {
 
@@ -85,20 +88,28 @@ public class DAOTablaFuncion {
 	public Funcion darFuncion(int idF) throws SQLException, Exception {
 		Funcion funcion = null;
 
-		String sql = "SELECT * FROM FUNCION WHERE ID=" + idF;
+		String sql = "SELECT * FROM FUNCION WHERE ID = " + idF;
+		
+		System.out.println("SQL stmt:" + sql);
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 
-		while (rs.next()) {
+		if (rs.next()) {
 
 			int id = Integer.parseInt(rs.getString("id"));
+			int idEspectaculo = Integer.parseInt(rs.getString("id_espectaculo"));
 			Timestamp fechaHora = rs.getTimestamp("fecha_hora");
 			double costo = Double.parseDouble(rs.getString("costo"));
-			int sillasreservadas = Integer.parseInt(rs.getString("sillas_reservadas"));
+			int sillasreservadas = Integer.parseInt(rs.getString("sillas_ocupadas"));
 			int  realizada = Integer.parseInt(rs.getString("ya_se_realizo"));
-			Espectaculo espectaculo = null;
+			
+			ListaCompañias compañias = null;
+			ListaCategorias categorias = null;
+			ListaRequerimientos requerimientos = null;
+			
+			Espectaculo espectaculo = new Espectaculo(idEspectaculo, "", 0, 0, "", "", 0, 0, 0, 0, "", "", compañias, categorias, requerimientos, null);
 			funcion =  new Funcion(id, fechaHora, costo, sillasreservadas, realizada, espectaculo);
 
 		}

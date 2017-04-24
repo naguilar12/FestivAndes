@@ -18,6 +18,7 @@ import vos.ListaBoletas;
 import vos.ListaCompañias;
 import vos.ListaPreferencias;
 import vos.Preferencia;
+import vos.Resultado;
 
 @Path("clientes")
 public class FestivAndesClienteServices {
@@ -120,8 +121,8 @@ public class FestivAndesClienteServices {
 		}
 		return Response.status(200).entity(resultado).build();
 	}
-	
-	
+
+
 	@PUT
 	@Path ("{id}/devolverBoleta")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -139,7 +140,7 @@ public class FestivAndesClienteServices {
 		return Response.status(200).entity(result).build();
 
 	}
-	
+
 	@PUT
 	@Path ("{id}/devolverAbonamiento")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -156,6 +157,21 @@ public class FestivAndesClienteServices {
 		return Response.status(200).entity(pBoleta).build();
 
 	}
-	
-	
+
+	/////////////////////////////////////////RFC7/////////////////////////////////////////////////////////////////
+	@GET
+	@Path("{idC}/consultarAsistenciaAlFestival")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response consultarAsistenciaAlFestival(@javax.ws.rs.PathParam("idC") int idC) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		Resultado resultado;
+		try {
+			resultado = tm.consultarAsistenciaAlFestival(idC);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resultado).build();
+	}
+
+
 }
