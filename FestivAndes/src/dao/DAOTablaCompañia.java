@@ -124,7 +124,7 @@ public class DAOTablaCompañia {
 					recursos.add(prepStmt3);
 					ResultSet rs3 = prepStmt3.executeQuery();
 					
-					if(rs3.next())
+					while(rs3.next())
 					{
 						
 						int idFun = rs3.getInt("ID");

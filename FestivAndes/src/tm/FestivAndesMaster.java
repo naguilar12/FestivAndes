@@ -401,8 +401,10 @@ public class FestivAndesMaster {
 							numerador.add(boleta);
 						}
 					}
+					System.out.println("size "+numerador.size());
+					System.out.println("size "+boletasFun.size());
 					double resultadoPorcentaje = (numerador.size()/(double)boletasFun.size())*100;
-					String porcentajeOcupacion1 = "Para la función con identificación " + funciones.get(i).getId() + " el porcentaje de ocupación en el sitio con identificación " + actual.getId() + " es de " + resultadoPorcentaje + "% \n";
+					String porcentajeOcupacion1 = "Para la función con identificación " + funciones.get(i).getId() + " el porcentaje de ocupación en el sitio con identificación " + actual.getId() + " es de " + resultadoPorcentaje + "%";
 					porcentajeOcupacion.add(porcentajeOcupacion1);
 				}
 				String asistenciaEspect1 = "Para el espectaculo " + espect.getNombre() + " la asistencia total fue de " + contador + "\n"; 
