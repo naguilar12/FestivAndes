@@ -51,7 +51,8 @@ import vos.ListaConsultaCompania;
 			FestivAndesMaster tm = new FestivAndesMaster(getPath());
 			ListaConsultaCompania companias;
 			try{
-				companias = tm.darInfoCompanias();					
+				companias = tm.darInfoCompanias();	
+				
 
 			} catch (Exception e) {
 				return Response.status(500).entity(doErrorMessage(e)).build();
