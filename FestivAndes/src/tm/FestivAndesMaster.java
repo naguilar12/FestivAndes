@@ -28,6 +28,7 @@ import vos.Boleta;
 import vos.Categoria;
 import vos.Cliente;
 import vos.CompañiaTeatro;
+import vos.ConsultaCompania;
 import vos.ConsultaFuncion;
 import vos.Espectaculo;
 import vos.Festival;
@@ -35,6 +36,7 @@ import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaCategorias;
 import vos.ListaCompañias;
+import vos.ListaConsultaCompania;
 import vos.ListaEspectaculos;
 import vos.ListaNotasDebito;
 import vos.ListaPreferencias;
@@ -44,6 +46,7 @@ import vos.NotaDebito;
 import vos.Organizador;
 import vos.Preferencia;
 import vos.Resultado;
+import vos.Sitio;
 import vos.Video;
 
 public class FestivAndesMaster {
@@ -366,15 +369,117 @@ public class FestivAndesMaster {
 		return espectaculo;
 	}
 
-	public CompañiaTeatro darInfoCompaniasId(int idE) throws Exception {
+	public ConsultaCompania darInfoCompaniasId(int idE) throws Exception {
 		CompañiaTeatro compañias;
 		DAOTablaCompañia daoTablaCompañias = new DAOTablaCompañia();
+		ConsultaCompania entrega = null;
 		try 
 		{
 			//////TransacciÃ³n
 			this.conn = darConexion();
 			daoTablaCompañias.setConn(conn);
 			compañias = daoTablaCompañias.darInfoCompaniasId(idE);
+			ListaEspectaculos espectaculos = compañias.getEspectaculos();
+			ArrayList<String> asistenciaEspect = new ArrayList<>();
+			String dineroTaquilla = "";
+			ArrayList<String> porcentajeOcupacion = new ArrayList<>();
+			double dinero = 0;
+			for (Espectaculo espect : espectaculos.getEspectaculos()) {
+				ArrayList<Funcion> funciones = espect.getFunciones();
+				int contador = 0;
+				for (int i = 0; i < funciones.size(); i++) 
+				{
+					dinero += funciones.get(i).getCosto();
+					contador += funciones.get(i).getSillasOcupadas();
+					Sitio actual = funciones.get(i).getSitio();
+					List<Boleta> boletasFun = darBoletasFuncion(funciones.get(i).getId()).getBoletas();
+					ArrayList<Boleta> numerador = new ArrayList<Boleta>();
+					for (Boleta boleta : boletasFun) 
+					{
+						if(boleta.getEstado()==1 || boleta.getEstado()==2)
+						{
+							numerador.add(boleta);
+						}
+					}
+					double resultadoPorcentaje = (numerador.size()/(double)boletasFun.size())*100;
+					String porcentajeOcupacion1 = "Para la función con identificación " + funciones.get(i).getId() + " el porcentaje de ocupación en el sitio con identificación " + actual.getId() + " es de " + resultadoPorcentaje + "% \n";
+					porcentajeOcupacion.add(porcentajeOcupacion1);
+				}
+				String asistenciaEspect1 = "Para el espectaculo " + espect.getNombre() + " la asistencia total fue de " + contador + "\n"; 
+				asistenciaEspect.add(asistenciaEspect1);
+			}
+			dineroTaquilla = "El dinero total generado en la taquilla fue de " + dinero;
+			entrega = new ConsultaCompania(compañias.getNombre(), asistenciaEspect, dineroTaquilla, porcentajeOcupacion);
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaCompañias.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return entrega;
+	}
+
+	public ListaConsultaCompania darInfoCompanias() throws Exception {
+		ArrayList<CompañiaTeatro> companias;
+		DAOTablaCompañia daoTablaCompañias = new DAOTablaCompañia();
+		ArrayList<ConsultaCompania> resultado = new ArrayList<ConsultaCompania>();
+		try 
+		{
+			//////TransacciÃ³n
+			this.conn = darConexion();
+			daoTablaCompañias.setConn(conn);
+			companias = daoTablaCompañias.darInfoCompanias();
+			for (CompañiaTeatro compañiaTeatro : companias) {
+				
+				ListaEspectaculos espectaculos = compañiaTeatro.getEspectaculos();
+				ArrayList<String> asistenciaEspect = new ArrayList<>();
+				String dineroTaquilla = "";
+				ArrayList<String> porcentajeOcupacion = new ArrayList<>();
+				double dinero = 0;
+				
+				for (Espectaculo espect : espectaculos.getEspectaculos()) {
+					ArrayList<Funcion> funciones = espect.getFunciones();
+					int contador = 0;
+					for (int i = 0; i < funciones.size(); i++) 
+					{
+						dinero += funciones.get(i).getCosto();
+						contador += funciones.get(i).getSillasOcupadas();
+						Sitio actual = funciones.get(i).getSitio();
+						List<Boleta> boletasFun = darBoletasFuncion(funciones.get(i).getId()).getBoletas();
+						ArrayList<Boleta> numerador = new ArrayList<Boleta>();
+						for (Boleta boleta : boletasFun) 
+						{
+							if(boleta.getEstado()==1 || boleta.getEstado()==2)
+							{
+								numerador.add(boleta);
+							}
+						}
+						System.out.println("size "+numerador.size());
+						System.out.println("size "+boletasFun.size());
+						double resultadoPorcentaje = (numerador.size()/(double)boletasFun.size())*100;
+						String porcentajeOcupacion1 = "Para la función con identificación " + funciones.get(i).getId() + " el porcentaje de ocupación en el sitio con identificación " + actual.getId() + " es de " + resultadoPorcentaje + "%";
+						porcentajeOcupacion.add(porcentajeOcupacion1);
+					}
+					String asistenciaEspect1 = "Para el espectaculo " + espect.getNombre() + " la asistencia total fue de " + contador + "\n"; 
+					asistenciaEspect.add(asistenciaEspect1);
+				}
+				dineroTaquilla = "El dinero total generado en la taquilla fue de " + dinero;
+				ConsultaCompania entrega = new ConsultaCompania(compañiaTeatro.getNombre(), asistenciaEspect, dineroTaquilla, porcentajeOcupacion);
+				resultado.add(entrega);
+			}
 			
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -395,38 +500,7 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
-		return compañias;
-	}
-
-	public ListaCompañias darInfoCompanias() throws Exception {
-		ArrayList<CompañiaTeatro> companias;
-		DAOTablaCompañia daoTablaCompañias = new DAOTablaCompañia();
-		try 
-		{
-			//////TransacciÃ³n
-			this.conn = darConexion();
-			daoTablaCompañias.setConn(conn);
-			companias = daoTablaCompañias.darInfoCompanias();
-		} catch (SQLException e) {
-			System.err.println("SQLException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} catch (Exception e) {
-			System.err.println("GeneralException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} finally {
-			try {
-				daoTablaCompañias.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
-			} catch (SQLException exception) {
-				System.err.println("SQLException closing resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-		return new ListaCompañias(companias);
+		return new ListaConsultaCompania(resultado);
 	}
 
 	public ListaCategorias darCategoriasPorEspectaculoId(int idE) throws Exception {
@@ -835,7 +909,7 @@ public class FestivAndesMaster {
 		}
 		return listaBoletas;
 	}
-	
+
 	public ListaBoletas darBoletasFuncion(int idF) throws Exception
 	{
 		ListaBoletas listaBoletas;
@@ -1015,7 +1089,7 @@ public class FestivAndesMaster {
 					{
 						if(boleta.getEstado()==2)
 						{
-							daoCliente.devolverAbonamiento(boleta);
+							daoCliente.devolverBoleta(boleta);
 							resultado.add(boleta);
 						}
 					}
@@ -1049,21 +1123,25 @@ public class FestivAndesMaster {
 		return new ListaNotasDebito(notas);
 	}
 
-	public Resultado cancelarFuncion(int idF) throws Exception
+	public ListaNotasDebito cancelarFuncion(int idF) throws Exception
 	{
-		System.out.println(1);
+		System.out.println("cancelar");
 		DAOTablaCliente daoCliente = new DAOTablaCliente();
-		String respuesta= "";
+		List<NotaDebito> resultado = new ArrayList<NotaDebito>();
 		try 
 		{
 			this.conn = darConexion();
 			daoCliente.setConn(conn);
-			
-			if(darFuncion(idF)!=null)
+			Funcion fun =darFuncion(idF);
+			if(fun!=null)
 			{
 				ListaBoletas boletas = darBoletasFuncion(idF);
-				for (Boleta boleta : boletas.getBoletas()) {
-					devolverBoleta(boleta, boleta.getCliente().getId());					
+				if(fun.isRealizada()==0)
+				{
+					for (Boleta boleta : boletas.getBoletas()) {
+						daoCliente.devolverBoleta(boleta);
+						resultado.add(new NotaDebito(boleta.getCliente(), boleta.getCosto(), boleta.getFuncion(), boleta));
+					}
 				}
 			}
 
@@ -1087,8 +1165,8 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
-		
-		return new Resultado(respuesta);
+
+		return new ListaNotasDebito(resultado);
 
 	}
 

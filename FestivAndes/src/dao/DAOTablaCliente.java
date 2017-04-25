@@ -256,7 +256,7 @@ public class DAOTablaCliente {
 			ResultSet rs1 = prepStmt1.executeQuery();
 			if(rs1.next())
 			{
-				Funcion nueva = new Funcion(rs.getInt("ID_FUNCION"), rs1.getTimestamp("FECHA_HORA"), rs1.getDouble("COSTO"), rs1.getInt("SILLAS_OCUPADAS"), rs1.getInt("YA_SE_REALIZO"), null);
+				Funcion nueva = new Funcion(rs.getInt("ID_FUNCION"), rs1.getTimestamp("FECHA_HORA"), rs1.getDouble("COSTO"), rs1.getInt("SILLAS_OCUPADAS"), rs1.getInt("YA_SE_REALIZO"), null, null);
 				Localidad localidad = null;
 				Funcion funcion = nueva;
 				Cliente cliente = null;
@@ -330,21 +330,21 @@ public class DAOTablaCliente {
 
 	}
 
-	public void devolverAbonamiento(Boleta pBoleta) throws SQLException, Exception
-	{
-
-
-		String sql = "UPDATE BOLETA SET ESTADO = 3";
-		sql += " WHERE UBICACION ='" + pBoleta.getUbicacion()+"'";
-		sql += " AND ID_LOCALIDAD = " + pBoleta.getLocalidad().getId();
-		sql += " AND ID_FUNCION = " + pBoleta.getFuncion().getId();
-
-		PreparedStatement prepStmt = conn.prepareStatement(sql);
-		recursos.add(prepStmt);
-		prepStmt.executeQuery();
-
-
-	}
+//	public void devolverAbonamiento(Boleta pBoleta) throws SQLException, Exception
+//	{
+//
+//
+//		String sql = "UPDATE BOLETA SET ESTADO = 3";
+//		sql += " WHERE UBICACION ='" + pBoleta.getUbicacion()+"'";
+//		sql += " AND ID_LOCALIDAD = " + pBoleta.getLocalidad().getId();
+//		sql += " AND ID_FUNCION = " + pBoleta.getFuncion().getId();
+//
+//		PreparedStatement prepStmt = conn.prepareStatement(sql);
+//		recursos.add(prepStmt);
+//		prepStmt.executeQuery();
+//
+//
+//	}
 
 	public ListaBoletas darBoletasCliente (int id) throws SQLException, Exception
 	{
@@ -364,7 +364,7 @@ public class DAOTablaCliente {
 			double costo = rs.getDouble("COSTO");
 
 			Localidad localidad =  new Localidad(idLocalidad, 0, 0, "", null, null);
-			Funcion funcion = new Funcion(idFuncion, null, 0, 0, 0, null);
+			Funcion funcion = new Funcion(idFuncion, null, 0, 0, 0, null, null);
 			Boleta bol = new Boleta(ubicacion, estado, costo, localidad, funcion, null); 
 			
 			boletas.add(bol);

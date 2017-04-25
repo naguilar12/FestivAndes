@@ -25,10 +25,13 @@ public class Funcion {
 	@JsonProperty(value="espectaculo")
 	private Espectaculo espectaculo;
 	
+	@JsonProperty(value="sitio")
+	private Sitio sitio;
+	
 	
 
 	public Funcion(@JsonProperty(value="id")int id, @JsonProperty(value="fechaHora")Timestamp fechaHora, @JsonProperty(value="costo")double costo, @JsonProperty(value="sillasOcupadas")int sillasOcupadas, @JsonProperty(value="realizada")int realizada,
-			@JsonProperty(value="espectaculo")Espectaculo espectaculo) {
+			@JsonProperty(value="espectaculo")Espectaculo espectaculo,@JsonProperty(value="sitio") Sitio sitio ) {
 		super();
 		this.id = id;
 		this.fechaHora = fechaHora;
@@ -36,6 +39,7 @@ public class Funcion {
 		this.sillasOcupadas = sillasOcupadas;
 		this.realizada = realizada;
 		this.espectaculo = espectaculo;
+		this.sitio = sitio;
 	}
 
 	public int getId() {
@@ -62,12 +66,12 @@ public class Funcion {
 		this.costo = costo;
 	}
 
-	public int getSillasreservadas() {
+	public int getSillasOcupadas() {
 		return sillasOcupadas;
 	}
 
-	public void setSillasreservadas(int sillasreservadas) {
-		this.sillasOcupadas = sillasreservadas;
+	public void setSillasOcupadas(int SillasOcupadas) {
+		this.sillasOcupadas = SillasOcupadas;
 	}
 
 	public int isRealizada() {
@@ -85,6 +89,16 @@ public class Funcion {
 	public void setEspectaculo(Espectaculo espectaculo) {
 		this.espectaculo = espectaculo;
 	}
+
+	public Sitio getSitio() {
+		return sitio;
+	}
+
+	public void setSitio(Sitio sitio) {
+		this.sitio = sitio;
+	}
+	
+	
 	
 //	public void fechahaha()
 //	{

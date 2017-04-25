@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import tm.FestivAndesMaster;
 import vos.ConsultaFuncion;
 import vos.Funcion;
+import vos.ListaNotasDebito;
 import vos.Resultado;
 
 @Path("organizadores")
@@ -73,7 +74,7 @@ public class FestivAndesOrganizadoresServices {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response cancelarFuncion(@javax.ws.rs.PathParam("idO") int idO,@javax.ws.rs.PathParam("idF") int idF) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-		Resultado resultado;
+		ListaNotasDebito resultado;
 		try {
 			if(tm.darOrganizador(idO)!=null)
 				resultado = tm.cancelarFuncion(idF);

@@ -19,6 +19,7 @@ import vos.ListaFestivales;
 import vos.ListaRequerimientos;
 import vos.Preferencia;
 import vos.Representante;
+import vos.Sitio;
 
 public class DAOTablaCompañia {
 
@@ -132,7 +133,24 @@ public class DAOTablaCompañia {
 						int sillasOcupadas = rs3.getInt("SILLAS_OCUPADAS");
 						Timestamp fechaHora = rs3.getTimestamp("FECHA_HORA");
 						int yaSeRealizo = rs3.getInt("YA_SE_REALIZO");
-						Funcion nuevaFun = new Funcion(idFun, fechaHora, costo, sillasOcupadas, yaSeRealizo, null);
+						
+						String sql4 = "SELECT * FROM SITIO";
+						sql4 += " WHERE ID = " + idSit;
+						System.out.println(sql4);
+						PreparedStatement prepStmt4 = conn.prepareStatement(sql4);
+						recursos.add(prepStmt4);
+						ResultSet rs4 = prepStmt4.executeQuery();
+						Sitio nuevosit = null;
+						if(rs4.next())
+						{
+							String direccion = rs4.getString("DIRECCION");
+							int capacidad = rs4.getInt("CAPACIDAD");
+							Timestamp inicioHorario = rs4.getTimestamp("INICIO_HORARIO");
+							Timestamp finHorario = rs4.getTimestamp("FIN_HORARIO");
+							
+							nuevosit = new Sitio(idSit, direccion, 0, capacidad, 0, inicioHorario, finHorario, 0, 0);
+						}
+						Funcion nuevaFun = new Funcion(idFun, fechaHora, costo, sillasOcupadas, yaSeRealizo, null, nuevosit);
 						funciones.add(nuevaFun);
 						System.out.println("jola");
 						
@@ -213,7 +231,23 @@ public class DAOTablaCompañia {
 						int sillasOcupadas = rs3.getInt("SILLAS_OCUPADAS");
 						Timestamp fechaHora = rs3.getTimestamp("FECHA_HORA");
 						int yaSeRealizo = rs3.getInt("YA_SE_REALIZO");
-						Funcion nuevaFun = new Funcion(idFun, fechaHora, costo, sillasOcupadas, yaSeRealizo, null);
+						String sql4 = "SELECT * FROM SITIO";
+						sql4 += " WHERE ID = " + idSit;
+						System.out.println(sql4);
+						PreparedStatement prepStmt4 = conn.prepareStatement(sql4);
+						recursos.add(prepStmt4);
+						ResultSet rs4 = prepStmt4.executeQuery();
+						Sitio nuevosit = null;
+						if(rs4.next())
+						{
+							String direccion = rs4.getString("DIRECCION");
+							int capacidad = rs4.getInt("CAPACIDAD");
+							Timestamp inicioHorario = rs4.getTimestamp("INICIO_HORARIO");
+							Timestamp finHorario = rs4.getTimestamp("FIN_HORARIO");
+							
+							nuevosit = new Sitio(idSit, direccion, 0, capacidad, 0, inicioHorario, finHorario, 0, 0);
+						}
+						Funcion nuevaFun = new Funcion(idFun, fechaHora, costo, sillasOcupadas, yaSeRealizo, null, nuevosit);
 						funciones.add(nuevaFun);
 						
 						

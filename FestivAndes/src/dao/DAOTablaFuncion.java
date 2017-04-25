@@ -11,6 +11,7 @@ import java.util.Date;
 import vos.Boleta;
 import vos.Cliente;
 import vos.Espectaculo;
+import vos.Festival;
 import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaCategorias;
@@ -115,7 +116,7 @@ public class DAOTablaFuncion {
 			ListaRequerimientos requerimientos = null;
 			
 			Espectaculo espectaculo = new Espectaculo(idEspectaculo, "", 0, 0, "", "", 0, 0, 0, 0, "", "", compañias, categorias, requerimientos, null);
-			funcion =  new Funcion(id, fechaHora, costo, sillasreservadas, realizada, espectaculo);
+			funcion =  new Funcion(id, fechaHora, costo, sillasreservadas, realizada, espectaculo, null);
 
 		}
 		return funcion;
@@ -143,12 +144,38 @@ public class DAOTablaFuncion {
 			double costo = rs.getDouble("COSTO");
 
 			Localidad localidad =  new Localidad(idLocalidad, 0, 0, "", null, null);
-			Funcion funcion = new Funcion(idFuncion, null, 0, 0, 0, null);
+			Funcion funcion = new Funcion(idFuncion, null, 0, 0, 0, null,null);
 			
-			Boleta bol = new Boleta(ubicacion, estado, costo, localidad, funcion, new Cliente(null, idCliente, null, null, null, null)); 
+			Cliente resultado = null;
+
+			String sql1 = "SELECT * FROM USUARIO WHERE ID ="+idCliente;
+			System.out.println(sql1);
+			PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
+			recursos.add(prepStmt1);
+			ResultSet rs1 = prepStmt1.executeQuery();
+
+			if (rs1.next()) {
+				String nombre = rs1.getString("NOMBRE");
+				String mail = rs1.getString("MAIL");
+				String rol = rs1.getString("ROL");
+
+				String sql2 = "SELECT * FROM CLIENTE WHERE ID ="+idCliente;
+				System.out.println(sql2);
+				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+				recursos.add(prepStmt2);
+				ResultSet rs2 = prepStmt2.executeQuery();
+				if(rs2.next())
+				{
+					String contrasena = rs2.getString("CONTRASENA");
+					Festival nuevoFest = null;
+					resultado = new Cliente(nuevoFest, idCliente, nombre, mail, rol, contrasena);
+				}
+			}
+			Boleta bol = new Boleta(ubicacion, estado, costo, localidad, funcion, resultado); 
 			
 			boletas.add(bol);
 		}
+		
 
 		return new ListaBoletas(boletas);
 

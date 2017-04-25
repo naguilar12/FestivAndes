@@ -15,7 +15,9 @@ import javax.ws.rs.core.Response;
 import tm.FestivAndesMaster;
 import vos.Boleta;
 import vos.CompañiaTeatro;
+import vos.ConsultaCompania;
 import vos.ListaCompañias;
+import vos.ListaConsultaCompania;
 
 
 	@Path("companias")
@@ -47,7 +49,7 @@ import vos.ListaCompañias;
 		public Response darCompanias(){
 			System.out.println("compa");
 			FestivAndesMaster tm = new FestivAndesMaster(getPath());
-			ListaCompañias companias;
+			ListaConsultaCompania companias;
 			try{
 				companias = tm.darInfoCompanias();					
 
@@ -64,7 +66,7 @@ import vos.ListaCompañias;
 		public Response darCompaniasId(@javax.ws.rs.PathParam("id") int id){
 			
 			FestivAndesMaster tm = new FestivAndesMaster(getPath());
-			CompañiaTeatro resultado = null;
+			ConsultaCompania resultado = null;
 			try{
 				resultado = tm.darInfoCompaniasId(id);					
 
