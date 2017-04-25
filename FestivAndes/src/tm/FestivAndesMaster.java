@@ -28,6 +28,7 @@ import vos.Boleta;
 import vos.Categoria;
 import vos.Cliente;
 import vos.CompañiaTeatro;
+import vos.ConsultaFuncion;
 import vos.Espectaculo;
 import vos.Festival;
 import vos.Funcion;
@@ -498,7 +499,7 @@ public class FestivAndesMaster {
 			if(numerada&&cliente!=null){
 				System.out.println("LLEGUE 555555555555555555");
 				boolean seguidas = true;
-				for(int i = 0; i < boletas.getBoletas().size()-1 && seguidas && numerada; i++)
+				for(int i = 0; i < boletas.getBoletas().size()-1 && seguidas && numerada ; i++)
 					if(boletas.getBoletas().get(i).getUbicacion() != boletas.getBoletas().get(i+1).getUbicacion()-1)
 						seguidas = false;
 				System.out.println(seguidas+"SEGUIDAS");
@@ -674,6 +675,7 @@ public class FestivAndesMaster {
 			daoTablaFuncion.setConn(conn);
 
 			funcion = daoTablaFuncion.darFuncion(id);
+			funcion.setEspectaculo(darEspectaculo(funcion.getEspectaculo().getId()));
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -871,9 +873,9 @@ public class FestivAndesMaster {
 
 
 
-	public Resultado consultarAsistenciaAlFestival(int idC) throws Exception
+	public ArrayList<ConsultaFuncion> consultarAsistenciaAlFestival(int idC) throws Exception
 	{
-		String resultado ="";
+		ArrayList<ConsultaFuncion> resultado =new ArrayList<>();
 		DAOTablaCliente daoTablaCliente = new DAOTablaCliente();
 		try 
 		{
@@ -886,18 +888,15 @@ public class FestivAndesMaster {
 			for (Boleta boleta: boletas.getBoletas()) {
 				Funcion actual = darFuncion(boleta.getFuncion().getId());
 				Espectaculo esp = darEspectaculo(actual.getEspectaculo().getId());
-				resultado+="======================================================\n"
-						+ "Id Funcion: " + actual.getId()+"\n"
-						+ "Espectaculo: " + esp.getNombre()+ "\n"
-						+ "Fecha y hora: " + actual.getFechaHora()+ "\n"
-						+ "Costo de produccion: " + actual.getCosto()+ "\n\n";
+				String estado = "";
+				String devuelta = "La boleta no se devolvio";
 				if(actual.isRealizada()==1)
-					resultado+="Estado: La funcion ya se realizo. \n";
+					estado+="La funcion ya se realizo. \n";
 				else
-					resultado+="Estado: La funcion esta prevista por realizarse.\n";
+					estado+="La funcion esta prevista por realizarse.\n";
 				if(boleta.getEstado() == Boleta.DEVUELTA)
-					resultado+="La boleta se devolvio";
-				resultado+="\n";
+					devuelta="La boleta se devolvio";
+				resultado.add(new ConsultaFuncion(actual.getId(),esp.getNombre() , actual.getFechaHora().toString(), estado, devuelta));
 			}
 
 			System.out.println(resultado);
@@ -922,7 +921,7 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
-		return new Resultado(resultado);
+		return resultado;
 	}
 
 

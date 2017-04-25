@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
 import vos.Boleta;
+import vos.ConsultaFuncion;
 import vos.ListaBoletas;
 import vos.ListaCompañias;
 import vos.ListaNotasDebito;
@@ -128,11 +129,27 @@ public class FestivAndesClienteServices {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response compraMultipleBoletas(ListaBoletas boletas,@javax.ws.rs.PathParam("id") int id)
 	{
-		System.out.println("LLEGUE 1111111111111111111111");
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		ListaBoletas resultado;
 		try{
 			resultado = tm.comprarMultiplesBoletas(boletas, id);					
+
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resultado).build();
+	}
+	
+	@POST
+	@Path("{id}/registrarCompraAbonamiento")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response registrarCompraAbonamiento(ListaBoletas boletas,@javax.ws.rs.PathParam("id") int id)
+	{
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaBoletas resultado;
+		try{
+			resultado = tm.registrarCompraAbonamiento(boletas, id);					
 
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
@@ -182,7 +199,7 @@ public class FestivAndesClienteServices {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response consultarAsistenciaAlFestival(@javax.ws.rs.PathParam("idC") int idC) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-		Resultado resultado;
+		ArrayList<ConsultaFuncion> resultado;
 		try {
 			resultado = tm.consultarAsistenciaAlFestival(idC);
 		} catch (Exception e) {

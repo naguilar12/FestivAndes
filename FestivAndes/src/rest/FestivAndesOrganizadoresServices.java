@@ -1,5 +1,7 @@
 package rest;
 
+import java.util.ArrayList;
+
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -9,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
+import vos.ConsultaFuncion;
 import vos.Funcion;
 import vos.Resultado;
 
@@ -51,7 +54,7 @@ public class FestivAndesOrganizadoresServices {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response consultarAsistenciaAlFestival(@javax.ws.rs.PathParam("idO") int idO,@javax.ws.rs.PathParam("idC") int idC) {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-		Resultado resultado;
+		ArrayList<ConsultaFuncion> resultado;
 		try {
 			if(tm.darOrganizador(idO)!=null)
 				resultado = tm.consultarAsistenciaAlFestival(idC);
