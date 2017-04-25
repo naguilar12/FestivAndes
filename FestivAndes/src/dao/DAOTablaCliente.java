@@ -13,6 +13,9 @@ import vos.Cliente;
 import vos.Festival;
 import vos.Funcion;
 import vos.ListaBoletas;
+import vos.ListaClientes;
+import vos.ListaCompañias;
+import vos.ListaOrganizadores;
 import vos.Localidad;
 import vos.Preferencia;
 import vos.Sitio;
@@ -253,7 +256,7 @@ public class DAOTablaCliente {
 			ResultSet rs1 = prepStmt1.executeQuery();
 			if(rs1.next())
 			{
-				Funcion nueva = new Funcion(rs.getInt("ID_FUNCION"), rs1.getTimestamp("FECHA_HORA"), rs1.getDouble("COSTO"), rs1.getInt("SILLAS_RESERVADAS"), rs1.getInt("YA_SE_REALIZO"), null);
+				Funcion nueva = new Funcion(rs.getInt("ID_FUNCION"), rs1.getTimestamp("FECHA_HORA"), rs1.getDouble("COSTO"), rs1.getInt("SILLAS_OCUPADAS"), rs1.getInt("YA_SE_REALIZO"), null);
 				Localidad localidad = null;
 				Funcion funcion = nueva;
 				Cliente cliente = null;
@@ -287,8 +290,25 @@ public class DAOTablaCliente {
 			if(rs1.next())
 			{
 				String contrasena = rs1.getString("CONTRASENA");
-				Festival festival = null;
-				resultado = new Cliente(festival, id, nombre, mail, rol, contrasena);
+				int idFest = rs1.getInt("ID_FESTIVAL");
+				Festival nuevoFest = null;
+				String sql2 = "SELECT * FROM FESTIVAL WHERE ID ="+idFest;
+
+				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+				recursos.add(prepStmt2);
+				ResultSet rs2 = prepStmt2.executeQuery();
+				
+				if(rs2.next())
+				{
+					String nameFest = rs2.getString("NAME");
+					int anioFest = rs2.getInt("ANIO");
+					String paisFest = rs2.getString("PAIS");
+					Date fechaIniFest = rs2.getDate("FECHAINICIO");
+					Date fechaFinFest = rs2.getDate("FECHAFIN");
+					nuevoFest = new Festival(idFest, nameFest, anioFest, paisFest, fechaIniFest, fechaFinFest, null, null, null);
+				}
+				
+				resultado = new Cliente(nuevoFest, id, nombre, mail, rol, contrasena);
 			}
 		}
 		return resultado;

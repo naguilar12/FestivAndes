@@ -69,7 +69,7 @@ public class DAOTablaCompañia {
 
 		String sql = "SELECT * FROM COMPANIA_TEATRO";
 		sql += " WHERE ID = " + idC;
-
+		System.out.println(sql);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
@@ -83,8 +83,8 @@ public class DAOTablaCompañia {
 			ArrayList<Espectaculo> listaEspec = new ArrayList<Espectaculo>();
 
 			String sql1 = "SELECT * FROM COMPANIA_ESPECTACULO";
-			sql1 += " WHERE ID = " + idC;
-
+			sql1 += " WHERE ID_COMPANIA = " + idC;
+			System.out.println(sql1);
 			PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
 			recursos.add(prepStmt1);
 			ResultSet rs1 = prepStmt1.executeQuery();
@@ -94,13 +94,14 @@ public class DAOTablaCompañia {
 
 				String sql2 = "SELECT * FROM ESPECTACULO";
 				sql2 += " WHERE ID = " + id;
-
+				System.out.println(sql2);
 				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
 				recursos.add(prepStmt2);
 				ResultSet rs2 = prepStmt2.executeQuery();
 
 				if(rs2.next())
 				{
+					System.out.println("aqui");
 					int idEsp = rs2.getInt("ID");
 					String nombre = rs2.getString("NOMBRE");
 					double duracion = rs2.getDouble("DURACION");
@@ -117,12 +118,14 @@ public class DAOTablaCompañia {
 					
 					String sql3 = "SELECT * FROM FUNCION";
 					sql3 += " WHERE ID_ESPECTACULO = " + idEsp;
+					System.out.println(sql3);
 					PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
 					recursos.add(prepStmt3);
 					ResultSet rs3 = prepStmt3.executeQuery();
 					
-					while(rs3.next())
+					if(rs3.next())
 					{
+						
 						int idFun = rs3.getInt("ID");
 						int idSit = rs3.getInt("ID_SITIO");
 						double costo = rs3.getDouble("COSTO");
@@ -131,7 +134,7 @@ public class DAOTablaCompañia {
 						int yaSeRealizo = rs3.getInt("YA_SE_REALIZO");
 						Funcion nuevaFun = new Funcion(idFun, fechaHora, costo, sillasOcupadas, yaSeRealizo, null);
 						funciones.add(nuevaFun);
-						
+						System.out.println("jola");
 						
 					}
 					Espectaculo nuevoEspect = new Espectaculo(idEsp, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, tradSubt, tradAud, descripcion, pubObj, null, null, null, funciones);
@@ -149,11 +152,13 @@ public class DAOTablaCompañia {
 	{
 		ArrayList<CompañiaTeatro> companiasLista = new ArrayList<CompañiaTeatro>();
 		String sql = "SELECT * FROM COMPANIA_TEATRO";
+		System.out.println(sql);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 		while(rs.next())
 		{
+			System.out.println("Entroooooo");
 			int idComp = rs.getInt("ID");
 			String nombreCom = rs.getString("NOMBRE");
 			Date fechaLLeg = rs.getDate("FECHA_LLEGADA");
@@ -161,18 +166,18 @@ public class DAOTablaCompañia {
 			ArrayList<Espectaculo> listaEspec = new ArrayList<Espectaculo>();
 
 			String sql1 = "SELECT * FROM COMPANIA_ESPECTACULO";
-			sql1 += " WHERE ID = " + idComp;
-
+			sql1 += " WHERE ID_COMPANIA = " + idComp;
+			System.out.println(sql1);
 			PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
 			recursos.add(prepStmt1);
 			ResultSet rs1 = prepStmt1.executeQuery();
 			while(rs1.next())
 			{
-				int id = rs1.getInt("ID_FESTIVAL");
+				int id = rs1.getInt("ID_ESPECTACULO");
 
-				String sql2 = "SELECT * FROM FESTIVAL";
+				String sql2 = "SELECT * FROM ESPECTACULO";
 				sql2 += " WHERE ID = " + id;
-
+				System.out.println(sql2);
 				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
 				recursos.add(prepStmt2);
 				ResultSet rs2 = prepStmt2.executeQuery();
@@ -195,6 +200,7 @@ public class DAOTablaCompañia {
 					
 					String sql3 = "SELECT * FROM FUNCION";
 					sql3 += " WHERE ID_ESPECTACULO = " + idEsp;
+					System.out.println();
 					PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
 					recursos.add(prepStmt3);
 					ResultSet rs3 = prepStmt3.executeQuery();

@@ -6,7 +6,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class ListaEspectaculos {
 
-	@JsonProperty(value="festivales")
+	@JsonProperty(value="espectaculos")
 	private List<Espectaculo> espectaculos;
 
 	public ListaEspectaculos(@JsonProperty(value="espectaculos")List<Espectaculo> espectaculos) {

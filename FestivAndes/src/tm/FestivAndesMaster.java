@@ -29,14 +29,17 @@ import vos.Categoria;
 import vos.Cliente;
 import vos.CompañiaTeatro;
 import vos.Espectaculo;
+import vos.Festival;
 import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaCategorias;
 import vos.ListaCompañias;
 import vos.ListaEspectaculos;
+import vos.ListaNotasDebito;
 import vos.ListaPreferencias;
 import vos.ListaVideos;
 import vos.Localidad;
+import vos.NotaDebito;
 import vos.Organizador;
 import vos.Preferencia;
 import vos.Resultado;
@@ -371,8 +374,7 @@ public class FestivAndesMaster {
 			this.conn = darConexion();
 			daoTablaCompañias.setConn(conn);
 			compañias = daoTablaCompañias.darInfoCompaniasId(idE);
-			List<Espectaculo> listaEsp = compañias.getEspectaculos().getEspectaculos();
-			ArrayList<Funcion> funcionesEspect = listaEsp.get(1).getFunciones();
+			
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
@@ -925,11 +927,13 @@ public class FestivAndesMaster {
 
 
 
-	public Boleta devolverBoleta(Boleta pBoleta, int id) throws Exception
+	public NotaDebito devolverBoleta(Boleta pBoleta, int id) throws Exception
 	{
 		System.out.println(1);
 		DAOTablaCliente daoCliente = new DAOTablaCliente();
 		Boleta devolver = null;
+		Boleta nueva = null;
+		NotaDebito resultado = null;
 		try 
 		{
 			this.conn = darConexion();
@@ -937,6 +941,7 @@ public class FestivAndesMaster {
 			System.out.println(pBoleta.getFuncion().getId() + " " + pBoleta.getLocalidad().getId() + " " + pBoleta.getUbicacion());
 			devolver = daoCliente.darBoleta(pBoleta);
 			Cliente cliente = darCliente(id);
+			System.out.println(cliente);
 			if(devolver!=null && cliente!=null)
 			{
 				System.out.println("entra");
@@ -955,7 +960,8 @@ public class FestivAndesMaster {
 					daoCliente.devolverBoleta(pBoleta);
 				}
 			}
-
+			nueva = daoCliente.darBoleta(pBoleta);
+			resultado = new NotaDebito(cliente, nueva.getCosto(), nueva.getFuncion(), nueva);
 		}
 		catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -976,40 +982,51 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
-		return daoCliente.darBoleta(pBoleta);
+		return resultado;
 	}
 
-	public void devolverAbonamiento(Boleta pBoleta, int id) throws Exception
+	public ListaNotasDebito devolverAbonamiento(int id) throws Exception
 	{
 		System.out.println(1);
 		DAOTablaCliente daoCliente = new DAOTablaCliente();
-		Boleta devolver = null;
-		try 
+		ArrayList<Boleta> resultado = new ArrayList<Boleta>();
+		List<NotaDebito> notas = new ArrayList<NotaDebito>();
+		try
 		{
 			this.conn = darConexion();
 			daoCliente.setConn(conn);
-			System.out.println(pBoleta.getFuncion().getId() + " " + pBoleta.getLocalidad().getId() + " " + pBoleta.getUbicacion());
-			devolver = daoCliente.darBoleta(pBoleta);
+			ListaBoletas revisar = daoCliente.darBoletasCliente(id);
+			List<Boleta> aBuscar = revisar.getBoletas();
 			Cliente cliente = darCliente(id);
-			if(devolver!=null && cliente!=null)
+			if(cliente!=null)
 			{
 				System.out.println("entra");
-				Funcion fun = devolver.getFuncion();
-				Timestamp fechaA = fun.getFechaHora();
-				Date fechafun = new Date(fechaA.getYear(),fechaA.getMonth(),fechaA.getDate());
-				System.out.println(fechafun.toString());
+				Festival fest = cliente.getFestival();
+				Date fechafest = fest.getFechaInicio();
+				System.out.println(fechafest.toString());
 				Calendar fechaB = Calendar.getInstance();
-				fechaB.setTime(fechafun);
+				fechaB.setTime(fechafest);
 				fechaB.add(Calendar.DATE, -21);
 				Date compararFecha = fechaB.getTime();
 				System.out.println(fechaB.toString());
 				Date actual = new Date();
 				if(compararFecha.after(actual))
 				{
-					daoCliente.devolverAbonamiento(pBoleta);
+					for (Boleta boleta : aBuscar) 
+					{
+						if(boleta.getEstado()==2)
+						{
+							daoCliente.devolverAbonamiento(boleta);
+							resultado.add(boleta);
+						}
+					}
 				}
 			}
-
+			for (Boleta result : resultado) 
+			{
+				NotaDebito nuevaNota = new NotaDebito(cliente, result.getCosto(), result.getFuncion(), result);
+				notas.add(nuevaNota);
+			}
 		}
 		catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -1030,7 +1047,7 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
-
+		return new ListaNotasDebito(notas);
 	}
 
 	public Resultado cancelarFuncion(int idF) throws Exception

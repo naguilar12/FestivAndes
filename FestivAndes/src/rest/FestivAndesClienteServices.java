@@ -1,5 +1,7 @@
 package rest;
 
+import java.util.ArrayList;
+
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -16,7 +18,9 @@ import tm.FestivAndesMaster;
 import vos.Boleta;
 import vos.ListaBoletas;
 import vos.ListaCompañias;
+import vos.ListaNotasDebito;
 import vos.ListaPreferencias;
+import vos.NotaDebito;
 import vos.Preferencia;
 import vos.Resultado;
 
@@ -53,6 +57,20 @@ public class FestivAndesClienteServices {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(preferencias).build();
+	}
+	
+	@GET
+	@Path("{id}/boletas")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getBoletasCliente(@javax.ws.rs.PathParam("id") int id) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaBoletas boletas;
+		try {
+			boletas = tm.darBoletasCliente(id);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(boletas).build();
 	}
 
 	@GET
@@ -130,7 +148,7 @@ public class FestivAndesClienteServices {
 	public Response devolverBoletas(Boleta pBoleta,@javax.ws.rs.PathParam("id") int id){
 		System.out.println("llegue aqui");
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-		Boleta result;
+		NotaDebito result;
 		try{
 			result = tm.devolverBoleta(pBoleta, id);					
 
@@ -143,18 +161,18 @@ public class FestivAndesClienteServices {
 
 	@PUT
 	@Path ("{id}/devolverAbonamiento")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response devolverAbonamiento(Boleta pBoleta,@javax.ws.rs.PathParam("id") int id){
+	public Response devolverAbonamiento(@javax.ws.rs.PathParam("id") int id){
 		System.out.println("llegue aqui");
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaNotasDebito resultado = null;
 		try{
-			tm.devolverAbonamiento(pBoleta, id);					
+			resultado = tm.devolverAbonamiento(id);					
 
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return Response.status(200).entity(pBoleta).build();
+		return Response.status(200).entity(resultado).build();
 
 	}
 

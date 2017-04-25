@@ -25,6 +25,14 @@ public class Cliente extends Usuario
 	public void setContrasena(String contrasena) {
 		this.contrasena = contrasena;
 	}
+
+	public Festival getFestival() {
+		return festival;
+	}
+
+	public void setFestival(Festival festival) {
+		this.festival = festival;
+	}
 	
 	
 
