@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
 import vos.Boleta;
+import vos.Cliente;
 import vos.ConsultaFuncion;
 import vos.ListaBoletas;
 import vos.ListaCompañias;
@@ -83,6 +84,21 @@ public class FestivAndesClienteServices {
 		ListaPreferencias preferencias;
 		try {
 			preferencias = tm.buscarPreferenciasPorUsuario(id);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(preferencias).build();
+	}
+	
+	@GET
+	@Path("{id}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response getCliente(@javax.ws.rs.PathParam("id") int id) {
+		System.out.println("Aqui llegue");
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		Cliente preferencias;
+		try {
+			preferencias = tm.darCliente(id);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}

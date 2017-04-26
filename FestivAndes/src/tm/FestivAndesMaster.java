@@ -539,6 +539,8 @@ public class FestivAndesMaster {
 	public ListaBoletas comprarMultiplesBoletas(ListaBoletas boletas, int id) throws Exception {
 		ArrayList<Boleta> arregloBoletas;
 		DAOTablaCliente daoTablaCliente = new DAOTablaCliente();
+		DAOTablaFuncion daoTablaFuncion = new DAOTablaFuncion();
+		DAOTablaSitio daoTablaSitio = new DAOTablaSitio();
 		try 
 		{
 			//////Transacción
@@ -546,6 +548,8 @@ public class FestivAndesMaster {
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			daoTablaCliente.setConn(conn);
+			daoTablaFuncion.setConn(conn);
+			daoTablaSitio.setConn(conn);
 			conn.setSavepoint();
 			boolean mismaLocalidad = true;
 			int localidadID = boletas.getBoletas().get(0).getLocalidad().getId();
@@ -560,18 +564,18 @@ public class FestivAndesMaster {
 			for (Boleta boleta : boletas.getBoletas()) 
 				if(boleta.getFuncion().getId()!=funcionId)
 					mismaFuncion=false;	
-			Funcion f = darFuncion(funcionId);
+			Funcion f = daoTablaFuncion.darFuncion(funcionId);
 			System.out.println(mismaFuncion);
 			System.out.println("LLEGUE 3333333333333333333");
 
 			boolean numerada = false;
-			Localidad loc = darLocalidad(localidadID);
+			Localidad loc = daoTablaSitio.darLocalidad(localidadID);
 			if(loc.getNumerada()==1)
 				numerada = true;
 			System.out.println(numerada);
 			System.out.println("LLEGUE 4444444444444444444444444");
 
-			Cliente cliente = darCliente(id);
+			Cliente cliente = daoTablaCliente.darCliente(id);
 			arregloBoletas = new ArrayList<Boleta>();
 
 			if(numerada&&cliente!=null){
@@ -609,9 +613,9 @@ public class FestivAndesMaster {
 						boleta.setCliente(cliente);
 					}
 				}
-				conn.commit();
-				conn.setAutoCommit(true);
 			}
+			conn.commit();
+			conn.setAutoCommit(true);
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -827,17 +831,22 @@ public class FestivAndesMaster {
 		{
 			//////Transacción
 			this.conn = darConexion();
+			conn.setAutoCommit(false);
+			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			daoTablaCliente.setConn(conn);
-
 			cliente = daoTablaCliente.darCliente(id);
+			conn.commit();
+			conn.setAutoCommit(true);
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
+			conn.rollback();
 			throw e;
 		} catch (Exception e) {
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
+			conn.rollback();
 			throw e;
 		} finally {
 			try {
@@ -1022,14 +1031,14 @@ public class FestivAndesMaster {
 		{
 			this.conn = darConexion();
 			conn.setAutoCommit(false);
-			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			daoCliente.setConn(conn);
 			conn.setSavepoint();
 			//System.out.println(pBoleta.getFuncion().getId() + " " + pBoleta.getLocalidad().getId() + " " + pBoleta.getUbicacion());
 			devolver = daoCliente.darBoleta(pBoleta);
 			Cliente cliente = darCliente(id);
 			System.out.println(cliente);
-			if(devolver!=null && cliente!=null)
+			if(devolver!=null && cliente!=null && (devolver.getEstado()==1 || devolver.getEstado()==2) )
 			{
 				System.out.println("entra");
 				Funcion fun = devolver.getFuncion();
@@ -1046,9 +1055,9 @@ public class FestivAndesMaster {
 				{
 					daoCliente.devolverBoleta(pBoleta);
 				}
+				nueva = daoCliente.darBoleta(pBoleta);
+				resultado = new NotaDebito(cliente, nueva.getCosto(), nueva.getFuncion(), nueva);
 			}
-			nueva = daoCliente.darBoleta(pBoleta);
-			resultado = new NotaDebito(cliente, nueva.getCosto(), nueva.getFuncion(), nueva);
 			conn.commit();
 			conn.setAutoCommit(true);			
 		}
@@ -1110,6 +1119,7 @@ public class FestivAndesMaster {
 					{
 						if(boleta.getEstado()==2)
 						{
+							System.out.println("ahhhh");
 							daoCliente.devolverBoleta(boleta);
 							resultado.add(boleta);
 						}
