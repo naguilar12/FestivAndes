@@ -1031,12 +1031,12 @@ public class FestivAndesMaster {
 		{
 			this.conn = darConexion();
 			conn.setAutoCommit(false);
-			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			daoCliente.setConn(conn);
 			conn.setSavepoint();
 			//System.out.println(pBoleta.getFuncion().getId() + " " + pBoleta.getLocalidad().getId() + " " + pBoleta.getUbicacion());
 			devolver = daoCliente.darBoleta(pBoleta);
-			Cliente cliente = darCliente(id);
+			Cliente cliente = daoCliente.darCliente(id);
 			System.out.println(cliente);
 			if(devolver!=null && cliente!=null && (devolver.getEstado()==1 || devolver.getEstado()==2) )
 			{
@@ -1100,7 +1100,7 @@ public class FestivAndesMaster {
 			conn.setSavepoint();
 			ListaBoletas revisar = daoCliente.darBoletasCliente(id);
 			List<Boleta> aBuscar = revisar.getBoletas();
-			Cliente cliente = darCliente(id);
+			Cliente cliente = daoCliente.darCliente(id);
 			if(cliente!=null)
 			{
 				System.out.println("entra");
@@ -1119,7 +1119,6 @@ public class FestivAndesMaster {
 					{
 						if(boleta.getEstado()==2)
 						{
-							System.out.println("ahhhh");
 							daoCliente.devolverBoleta(boleta);
 							resultado.add(boleta);
 						}
@@ -1163,6 +1162,7 @@ public class FestivAndesMaster {
 	{
 		System.out.println("cancelar");
 		DAOTablaCliente daoCliente = new DAOTablaCliente();
+		DAOTablaFuncion daoFuncion = new DAOTablaFuncion();
 		List<NotaDebito> resultado = new ArrayList<NotaDebito>();
 		try 
 		{
@@ -1170,16 +1170,20 @@ public class FestivAndesMaster {
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			daoCliente.setConn(conn);
+			daoFuncion.setConn(conn);
 			conn.setSavepoint();
-			Funcion fun =darFuncion(idF);
+			Funcion fun =daoFuncion.darFuncion(idF);
 			if(fun!=null)
 			{
-				ListaBoletas boletas = darBoletasFuncion(idF);
+				ListaBoletas boletas = daoFuncion.darBoletasFuncion(idF);
 				if(fun.isRealizada()==0)
 				{
 					for (Boleta boleta : boletas.getBoletas()) {
-						daoCliente.devolverBoleta(boleta);
-						resultado.add(new NotaDebito(boleta.getCliente(), boleta.getCosto(), boleta.getFuncion(), boleta));
+						if(boleta.getEstado()==1 || boleta.getEstado()==2)
+						{
+							daoCliente.devolverBoleta(boleta);
+							resultado.add(new NotaDebito(boleta.getCliente(), boleta.getCosto(), boleta.getFuncion(), boleta));							
+						}
 					}
 				}
 			}
