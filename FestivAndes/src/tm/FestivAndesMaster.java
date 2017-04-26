@@ -543,8 +543,10 @@ public class FestivAndesMaster {
 		{
 			//////Transacción
 			this.conn = darConexion();
+			conn.setAutoCommit(false);
+			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			daoTablaCliente.setConn(conn);
-
+			conn.setSavepoint();
 			boolean mismaLocalidad = true;
 			int localidadID = boletas.getBoletas().get(0).getLocalidad().getId();
 			for (Boleta boleta : boletas.getBoletas()) 
@@ -607,15 +609,19 @@ public class FestivAndesMaster {
 						boleta.setCliente(cliente);
 					}
 				}
+				conn.commit();
+				conn.setAutoCommit(true);
 			}
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
+			conn.rollback();
 			throw e;
 		} catch (Exception e) {
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
+			conn.rollback();
 			throw e;
 		} finally {
 			try {
@@ -638,8 +644,10 @@ public class FestivAndesMaster {
 		{
 			//////Transacción
 			this.conn = darConexion();
+			conn.setAutoCommit(true);
+			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			daoTablaCliente.setConn(conn);
-
+			conn.setSavepoint();
 			boolean antesDeTresSem = true;
 
 			boolean todasDisponibles = true;
@@ -678,7 +686,8 @@ public class FestivAndesMaster {
 					}
 				}
 			}
-
+			conn.commit();
+			conn.setAutoCommit(true);
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
@@ -1012,8 +1021,11 @@ public class FestivAndesMaster {
 		try 
 		{
 			this.conn = darConexion();
+			conn.setAutoCommit(false);
+			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			daoCliente.setConn(conn);
-			System.out.println(pBoleta.getFuncion().getId() + " " + pBoleta.getLocalidad().getId() + " " + pBoleta.getUbicacion());
+			conn.setSavepoint();
+			//System.out.println(pBoleta.getFuncion().getId() + " " + pBoleta.getLocalidad().getId() + " " + pBoleta.getUbicacion());
 			devolver = daoCliente.darBoleta(pBoleta);
 			Cliente cliente = darCliente(id);
 			System.out.println(cliente);
@@ -1037,14 +1049,18 @@ public class FestivAndesMaster {
 			}
 			nueva = daoCliente.darBoleta(pBoleta);
 			resultado = new NotaDebito(cliente, nueva.getCosto(), nueva.getFuncion(), nueva);
+			conn.commit();
+			conn.setAutoCommit(true);			
 		}
 		catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
+			conn.rollback();
 			throw e;
 		} catch (Exception e) {
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
+			conn.rollback();
 			throw e;
 		} finally {
 			try {
@@ -1069,7 +1085,10 @@ public class FestivAndesMaster {
 		try
 		{
 			this.conn = darConexion();
+			conn.setAutoCommit(false);
+			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			daoCliente.setConn(conn);
+			conn.setSavepoint();
 			ListaBoletas revisar = daoCliente.darBoletasCliente(id);
 			List<Boleta> aBuscar = revisar.getBoletas();
 			Cliente cliente = darCliente(id);
@@ -1102,14 +1121,19 @@ public class FestivAndesMaster {
 				NotaDebito nuevaNota = new NotaDebito(cliente, result.getCosto(), result.getFuncion(), result);
 				notas.add(nuevaNota);
 			}
+			conn.commit();
+			conn.setAutoCommit(true);	
 		}
+		
 		catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
+			conn.rollback();
 			throw e;
 		} catch (Exception e) {
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
+			conn.rollback();
 			throw e;
 		} finally {
 			try {
@@ -1133,7 +1157,10 @@ public class FestivAndesMaster {
 		try 
 		{
 			this.conn = darConexion();
+			conn.setAutoCommit(false);
+			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			daoCliente.setConn(conn);
+			conn.setSavepoint();
 			Funcion fun =darFuncion(idF);
 			if(fun!=null)
 			{
@@ -1146,15 +1173,18 @@ public class FestivAndesMaster {
 					}
 				}
 			}
-
+			conn.commit();
+			conn.setAutoCommit(true);	
 		}
 		catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
+			conn.rollback();
 			throw e;
 		} catch (Exception e) {
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
+			conn.rollback();
 			throw e;
 		} finally {
 			try {
