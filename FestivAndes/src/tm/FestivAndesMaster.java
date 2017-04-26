@@ -644,38 +644,46 @@ public class FestivAndesMaster {
 	public ListaBoletas registrarCompraAbonamiento(ListaBoletas boletas, int id) throws Exception {
 		ArrayList<Boleta> arregloBoletas;
 		DAOTablaCliente daoTablaCliente = new DAOTablaCliente();
+		DAOTablaSitio daoTablaSitio = new DAOTablaSitio();
+		DAOTablaFuncion daoTablaFuncion = new DAOTablaFuncion();
 		try 
 		{
 			//////Transacción
 			this.conn = darConexion();
-			conn.setAutoCommit(true);
+			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			daoTablaCliente.setConn(conn);
+			daoTablaFuncion.setConn(conn);
+			daoTablaSitio.setConn(conn);
 			conn.setSavepoint();
 			boolean antesDeTresSem = true;
 
 			boolean todasDisponibles = true;
 			for (Boleta boleta : boletas.getBoletas()) {
-				Localidad loc = darLocalidad(boleta.getLocalidad().getId());
+				Localidad loc = daoTablaSitio.darLocalidad(boleta.getLocalidad().getId());
 				if(loc.getNumerada()==1)
 					todasDisponibles = todasDisponibles&&daoTablaCliente.boletaNumeradaDisponible(boleta);
 				else if(loc.getNumerada()==0)
 				{
+					System.out.println("AQUI");
 					int ocupadas = daoTablaCliente.ocupadasBoletaNoNumeradas(boleta);
 					int disponibles = loc.getCapacidad() - ocupadas;
 					todasDisponibles = todasDisponibles && (disponibles>0);
 				}
+				System.out.println(todasDisponibles);
 			}
-			Cliente c = darCliente(id);
+			Cliente c = daoTablaCliente.darCliente(id);
 			arregloBoletas = new ArrayList<>();
 			if(antesDeTresSem&&todasDisponibles)
 			{
+				System.out.println("EL FAROLEO");
 				for (Boleta boleta : boletas.getBoletas()) {
-					Localidad loc = darLocalidad(boleta.getLocalidad().getId());
+					Localidad loc = daoTablaSitio.darLocalidad(boleta.getLocalidad().getId());
 					if(loc.getNumerada()==1){
+						System.out.println("NENENE");
 						Boleta b = daoTablaCliente.comprarBoletaNumerada(boleta, id,true);
 						b.setLocalidad(loc);
-						b.setFuncion(darFuncion(boleta.getFuncion().getId()));
+						b.setFuncion(daoTablaFuncion.darFuncion(boleta.getFuncion().getId()));
 						b.setCliente(c);
 						arregloBoletas.add(b);
 					}
@@ -684,12 +692,14 @@ public class FestivAndesMaster {
 						int ocupadas = daoTablaCliente.ocupadasBoletaNoNumeradas(boleta);
 						Boleta b = daoTablaCliente.comprarBoletasNoNumeradas(boleta, id, 1, ocupadas,true).get(0);
 						b.setLocalidad(loc);
-						b.setFuncion(darFuncion(boleta.getFuncion().getId()));
+						b.setFuncion(daoTablaFuncion.darFuncion(boleta.getFuncion().getId()));
 						b.setCliente(c);
 						arregloBoletas.add(b);
+						System.out.println("DASDASDA");
 					}
 				}
 			}
+			System.out.println("ALA");
 			conn.commit();
 			conn.setAutoCommit(true);
 		} catch (SQLException e) {
