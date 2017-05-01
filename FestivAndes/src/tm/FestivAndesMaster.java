@@ -1030,7 +1030,7 @@ public class FestivAndesMaster {
 
 
 
-	public NotaDebito devolverBoleta(Boleta pBoleta, int id) throws Exception
+	public NotaDebito devolverBoleta(Boleta pBoleta, int id, boolean cerrar) throws Exception
 	{
 		System.out.println(1);
 		DAOTablaCliente daoCliente = new DAOTablaCliente();
@@ -1084,7 +1084,7 @@ public class FestivAndesMaster {
 		} finally {
 			try {
 				daoCliente.cerrarRecursos();
-				if(this.conn!=null)
+				if(this.conn!=null && cerrar)
 					this.conn.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
@@ -1129,16 +1129,11 @@ public class FestivAndesMaster {
 					{
 						if(boleta.getEstado()==2)
 						{
-							daoCliente.devolverBoleta(boleta);
-							resultado.add(boleta);
+							NotaDebito nota =devolverBoleta(boleta, cliente.getId(), false);
+							notas.add(nota);
 						}
 					}
 				}
-			}
-			for (Boleta result : resultado) 
-			{
-				NotaDebito nuevaNota = new NotaDebito(cliente, result.getCosto(), result.getFuncion(), result);
-				notas.add(nuevaNota);
 			}
 			conn.commit();
 			conn.setAutoCommit(true);	
