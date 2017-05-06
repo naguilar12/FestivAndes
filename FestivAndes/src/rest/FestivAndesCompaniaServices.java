@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import tm.FestivAndesMaster;
 import vos.Cliente;
 import vos.ConsultaCompania;
+import vos.Fechas;
 import vos.ListaConsultaCompania;
 
 
@@ -80,13 +81,12 @@ import vos.ListaConsultaCompania;
 		@Path("{idC}/consultarAsistenciaAlFestival")
 		@Consumes(MediaType.APPLICATION_JSON)
 		@Produces(MediaType.APPLICATION_JSON)
-		public Response consultarAsistenciaAlFestival(String fechas, @javax.ws.rs.PathParam("idC") int idC) {
+		public Response consultarAsistenciaAlFestival(Fechas fechas, @javax.ws.rs.PathParam("idC") int idC) {
 			FestivAndesMaster tm = new FestivAndesMaster(getPath());
 			ArrayList<Cliente> resultado;
 			
-			System.out.println("holi "+fechas);
 			try {
-				resultado = tm.asistUsuariosFest(idC, null, null);
+				resultado = tm.asistUsuariosFest(idC, fechas.getFechaInicio(), fechas.getFechaFin());
 			} catch (Exception e) {
 				return Response.status(500).entity(doErrorMessage(e)).build();
 			}
@@ -97,11 +97,11 @@ import vos.ListaConsultaCompania;
 		@Path("{idC}/consultarNoAsistenciaAlFestival")
 		@Consumes(MediaType.APPLICATION_JSON)
 		@Produces(MediaType.APPLICATION_JSON)
-		public Response consultarNoAsistenciaAlFestival(String fechas, @javax.ws.rs.PathParam("idC") int idC) {
+		public Response consultarNoAsistenciaAlFestival(Fechas fechas, @javax.ws.rs.PathParam("idC") int idC) {
 			FestivAndesMaster tm = new FestivAndesMaster(getPath());
 			ArrayList<Cliente> resultado;
 			try {
-				resultado = tm.asistNoUsuariosFest(idC, null, null);
+				resultado = tm.asistNoUsuariosFest(idC, fechas.getFechaInicio(), fechas.getFechaFin());
 			} catch (Exception e) {
 				return Response.status(500).entity(doErrorMessage(e)).build();
 			}

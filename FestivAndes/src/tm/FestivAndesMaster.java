@@ -1220,9 +1220,8 @@ public class FestivAndesMaster {
 
 	}
 
-	public ArrayList<Cliente> asistUsuariosFest(int idComp, String fechaIni, String fechaFinal) throws Exception
+	public ArrayList<Cliente> asistUsuariosFest(int idComp, Date fechaIni, Date fechaFinal) throws Exception
 	{
-		DAOTablaCliente daoCliente = new DAOTablaCliente();
 		DAOTablaCompañia daoCompania = new DAOTablaCompañia();
 		ArrayList<Cliente> clientesSinCriterio = new ArrayList<>();
 		try
@@ -1231,46 +1230,12 @@ public class FestivAndesMaster {
 			this.conn = darConexion();
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-			daoCliente.setConn(conn);
 			daoCompania.setConn(conn);
-			conn.setSavepoint();
-			CompañiaTeatro compañia = daoCompania.darInfoCompaniasId(idComp);
-			List<Espectaculo> espectaculosCompañia= compañia.getEspectaculos().getEspectaculos();
-			List<Funcion> todasFuncionesCompañia = new ArrayList<>();
-			for (Espectaculo espectaculo : espectaculosCompañia) 
-			{
-				for (Funcion funcion : espectaculo.getFunciones()) 
-				{					
-					todasFuncionesCompañia.add(funcion);
-				}
-			}
-			ArrayList<Boleta> boletas = daoCliente.darTodasBoletas();
-			Cliente meter = null;
-			for (int i = 0; i < boletas.size(); i++) 
-			{
-				Boleta actual = boletas.get(i);
-				boolean encontro = false;
-				for (int j = 0; j < todasFuncionesCompañia.size() && !encontro; j++) 
-				{
-					Funcion actualFun = todasFuncionesCompañia.get(j);
-					if(actual.getFuncion().getId()==actualFun.getId())
-					{
-						if(meter==null)
-						{
-							clientesSinCriterio.add(actual.getCliente());
-							meter = actual.getCliente();
-							encontro=true;
-						}
-						if(actual.getCliente().getId()!=meter.getId())
-						{
-							clientesSinCriterio.add(actual.getCliente());
-							meter = actual.getCliente();
-							encontro=true;
-						}
-
-					}						
-				}
-			}
+			String fechaInicial = fechaIni.getDate() + "/" + (fechaIni.getMonth()+1) + "/" + (fechaIni.getYear()+1900);
+			String fechaFin = fechaFinal.getDate() + "/" + (fechaFinal.getMonth()+1) + "/" + (fechaFinal.getYear()+1900);
+			System.out.println(fechaInicial);
+			System.out.println(fechaFin);
+			clientesSinCriterio = daoCompania.asistUsuariosFest(idComp, fechaInicial, fechaFin);
 
 			conn.commit();
 			conn.setAutoCommit(true);
@@ -1282,7 +1247,7 @@ public class FestivAndesMaster {
 			throw e;
 		} finally {
 			try {
-				daoCliente.cerrarRecursos();
+				
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -1295,51 +1260,20 @@ public class FestivAndesMaster {
 		return clientesSinCriterio;
 	}
 
-	public ArrayList<Cliente> asistNoUsuariosFest(int idComp, String fechaIni, String fechaFinal) throws Exception
+	public ArrayList<Cliente> asistNoUsuariosFest(int idComp, Date fechaIni, Date fechaFinal) throws Exception
 	{
-		DAOTablaCliente daoCliente = new DAOTablaCliente();
 		DAOTablaCompañia daoCompania = new DAOTablaCompañia();
 		ArrayList<Cliente> clientesSinCriterio = new ArrayList<>();
 		try
 		{
+			
 			this.conn = darConexion();
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-			daoCliente.setConn(conn);
 			daoCompania.setConn(conn);
-			conn.setSavepoint();
-			CompañiaTeatro compañia = daoCompania.darInfoCompaniasId(idComp);
-			List<Espectaculo> espectaculosCompañia= compañia.getEspectaculos().getEspectaculos();
-			List<Funcion> todasFuncionesCompañia = new ArrayList<>();
-			for (Espectaculo espectaculo : espectaculosCompañia) 
-			{
-				for (Funcion funcion : espectaculo.getFunciones()) 
-				{					
-					todasFuncionesCompañia.add(funcion);
-				}
-			}
-			ArrayList<Cliente> todosClientes = daoCliente.darClientes();
-			for (int i = 0; i < todosClientes.size(); i++) 
-			{
-				Cliente actual = todosClientes.get(i);
-				List<Boleta> funcionesCliente = daoCliente.darBoletasCliente(actual.getId()).getBoletas();
-				boolean encontrado = false;
-				for (int j = 0; j < funcionesCliente.size(); j++) 
-				{
-					Boleta actualFun = funcionesCliente.get(j);
-					for (int k = 0; k < todasFuncionesCompañia.size() && !encontrado; k++) 
-					{
-						if(actualFun.getFuncion().getId()==todasFuncionesCompañia.get(k).getId())
-						{
-							encontrado= true;
-						}
-					}
-				}
-				if(!encontrado)
-				{
-					clientesSinCriterio.add(actual);
-				}
-			}
+			String fechaInicial = fechaIni.getDate() + "/" + (fechaIni.getMonth()+1) + "/" + (fechaIni.getYear()+1900);
+			String fechaFin = fechaFinal.getDate() + "/" + (fechaFinal.getMonth()+1) + "/" + (fechaFinal.getYear()+1900);
+			clientesSinCriterio = daoCompania.asistNoUsuariosFest(idComp, fechaInicial, fechaFin);
 
 			conn.commit();
 			conn.setAutoCommit(true);
@@ -1351,7 +1285,7 @@ public class FestivAndesMaster {
 			throw e;
 		} finally {
 			try {
-				daoCliente.cerrarRecursos();
+				
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -1363,5 +1297,7 @@ public class FestivAndesMaster {
 
 		return clientesSinCriterio;
 	}
+	
+	
 
 }

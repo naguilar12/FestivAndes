@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import vos.Cliente;
 import vos.CompañiaTeatro;
 import vos.Espectaculo;
 import vos.Festival;
@@ -257,5 +258,56 @@ public class DAOTablaCompañia {
 		
 		
 		return companiasLista;
+	}
+	
+	public ArrayList<Cliente> asistUsuariosFest(int idC, String FechaIni, String fechaFin) throws SQLException, Exception
+	{
+		ArrayList<Cliente> listaClientes = new ArrayList<>();
+		String sql = "WITH LISTA_FUNCIONES AS (SELECT IDFUN FROM (SELECT ID AS IDFUN FROM FUNCION F INNER JOIN"
+				+ "(SELECT ID AS IDESPECT FROM ESPECTACULO E inner join (" 
+				+ "(SELECT CE.ID_ESPECTACULO FROM COMPANIA_ESPECTACULO CE WHERE CE.ID_COMPANIA =" + idC + " )) H ON E.ID=H.ID_ESPECTACULO)"
+				+ "K ON F.ID_ESPECTACULO = K.IDESPECT) INNER JOIN FUNCION ON IDFUN=ID WHERE FECHA_HORA BETWEEN '"+ FechaIni + "' AND '" + fechaFin +"'),"
+				+ "ID_CLIENTES_FUN AS (SELECT DISTINCT ID_CLIENTE AS ID FROM LISTA_FUNCIONES LF INNER JOIN BOLETA B ON LF.IDFUN = B.ID_FUNCION)"
+				+ "SELECT * FROM (SELECT * FROM ID_CLIENTES_FUN NATURAL JOIN CLIENTE) CL NATURAL JOIN USUARIO U WHERE ID!=99";
+		System.out.println(sql);
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		while(rs.next())
+		{
+			int id = rs.getInt("ID");
+			String nombre = rs.getString("NOMBRE");
+			String mail = rs.getString("MAIL");
+			String rol = rs.getString("ROL");
+			String contrasena = rs.getString("CONTRASENA");
+			Cliente nuevo = new Cliente(id, nombre, mail, rol, contrasena, null);
+			listaClientes.add(nuevo);
+		}
+		return listaClientes;
+	}
+	
+	public ArrayList<Cliente> asistNoUsuariosFest(int idC, String FechaIni, String fechaFin) throws SQLException, Exception
+	{
+		ArrayList<Cliente> listaClientes = new ArrayList<>();
+		String sql = "WITH LISTA_FUNCIONES AS (SELECT IDFUN FROM (SELECT ID AS IDFUN FROM FUNCION F INNER JOIN"
+				+ "(SELECT ID AS IDESPECT FROM ESPECTACULO E inner join ("
+				+ "(SELECT CE.ID_ESPECTACULO FROM COMPANIA_ESPECTACULO CE WHERE CE.ID_COMPANIA =" + idC + " )) H ON E.ID=H.ID_ESPECTACULO)"
+				+ "K ON F.ID_ESPECTACULO = K.IDESPECT) INNER JOIN FUNCION ON IDFUN=ID WHERE FECHA_HORA BETWEEN '"+ FechaIni + "' AND '" + fechaFin +"'),"
+				+ "ID_CLIENTES_FUN AS (SELECT DISTINCT ID_CLIENTE AS ID FROM LISTA_FUNCIONES LF INNER JOIN BOLETA B ON LF.IDFUN = B.ID_FUNCION)"
+				+ "SELECT * FROM (SELECT DISTINCT * FROM (SELECT ID FROM CLIENTE MINUS SELECT * FROM ID_CLIENTES_FUN)) NATURAL JOIN CLIENTE NATURAL JOIN USUARIO WHERE ID!=99";
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		while(rs.next())
+		{
+			int id = rs.getInt("ID");
+			String nombre = rs.getString("NOMBRE");
+			String mail = rs.getString("MAIL");
+			String rol = rs.getString("ROL");
+			String contrasena = rs.getString("CONTRASENA");
+			Cliente nuevo = new Cliente(id, nombre, mail, rol, contrasena, null);
+			listaClientes.add(nuevo);
+		}
+		return listaClientes;
 	}
 }
