@@ -1220,7 +1220,7 @@ public class FestivAndesMaster {
 
 	}
 
-	public ArrayList<Cliente> asistUsuariosFest(int idComp, Date fechaIni, Date fechaFinal) throws Exception
+	public ArrayList<Cliente> asistUsuariosFest(int idComp, Date fechaIni, Date fechaFinal,String pCriterio) throws Exception
 	{
 		DAOTablaCompañia daoCompania = new DAOTablaCompañia();
 		ArrayList<Cliente> clientesSinCriterio = new ArrayList<>();
@@ -1233,9 +1233,12 @@ public class FestivAndesMaster {
 			daoCompania.setConn(conn);
 			String fechaInicial = fechaIni.getDate() + "/" + (fechaIni.getMonth()+1) + "/" + (fechaIni.getYear()+1900);
 			String fechaFin = fechaFinal.getDate() + "/" + (fechaFinal.getMonth()+1) + "/" + (fechaFinal.getYear()+1900);
-			System.out.println(fechaInicial);
-			System.out.println(fechaFin);
-			clientesSinCriterio = daoCompania.asistUsuariosFest(idComp, fechaInicial, fechaFin);
+			String criterio = "' '";
+			if(pCriterio.equalsIgnoreCase("nombre")||pCriterio.equalsIgnoreCase("rol")||pCriterio.equalsIgnoreCase("id")||pCriterio.equalsIgnoreCase("mail"))
+			{
+				criterio = pCriterio;
+			}
+			clientesSinCriterio = daoCompania.asistUsuariosFest(idComp, fechaInicial, fechaFin, criterio);
 
 			conn.commit();
 			conn.setAutoCommit(true);
@@ -1260,7 +1263,7 @@ public class FestivAndesMaster {
 		return clientesSinCriterio;
 	}
 
-	public ArrayList<Cliente> asistNoUsuariosFest(int idComp, Date fechaIni, Date fechaFinal) throws Exception
+	public ArrayList<Cliente> asistNoUsuariosFest(int idComp, Date fechaIni, Date fechaFinal, String pCriterio) throws Exception
 	{
 		DAOTablaCompañia daoCompania = new DAOTablaCompañia();
 		ArrayList<Cliente> clientesSinCriterio = new ArrayList<>();
@@ -1273,7 +1276,12 @@ public class FestivAndesMaster {
 			daoCompania.setConn(conn);
 			String fechaInicial = fechaIni.getDate() + "/" + (fechaIni.getMonth()+1) + "/" + (fechaIni.getYear()+1900);
 			String fechaFin = fechaFinal.getDate() + "/" + (fechaFinal.getMonth()+1) + "/" + (fechaFinal.getYear()+1900);
-			clientesSinCriterio = daoCompania.asistNoUsuariosFest(idComp, fechaInicial, fechaFin);
+			String criterio = "' '";
+			if(pCriterio.equalsIgnoreCase("nombre")||pCriterio.equalsIgnoreCase("rol")||pCriterio.equalsIgnoreCase("id")||pCriterio.equalsIgnoreCase("mail"))
+			{
+				criterio = pCriterio;
+			}
+			clientesSinCriterio = daoCompania.asistNoUsuariosFest(idComp, fechaInicial, fechaFin, criterio);
 
 			conn.commit();
 			conn.setAutoCommit(true);
