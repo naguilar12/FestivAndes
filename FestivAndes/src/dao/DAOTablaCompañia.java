@@ -70,7 +70,6 @@ public class DAOTablaCompañia {
 
 		String sql = "SELECT * FROM COMPANIA_TEATRO";
 		sql += " WHERE ID = " + idC;
-		System.out.println(sql);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
@@ -85,7 +84,6 @@ public class DAOTablaCompañia {
 
 			String sql1 = "SELECT * FROM COMPANIA_ESPECTACULO";
 			sql1 += " WHERE ID_COMPANIA = " + idC;
-			System.out.println(sql1);
 			PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
 			recursos.add(prepStmt1);
 			ResultSet rs1 = prepStmt1.executeQuery();
@@ -95,14 +93,12 @@ public class DAOTablaCompañia {
 
 				String sql2 = "SELECT * FROM ESPECTACULO";
 				sql2 += " WHERE ID = " + id;
-				System.out.println(sql2);
 				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
 				recursos.add(prepStmt2);
 				ResultSet rs2 = prepStmt2.executeQuery();
 
 				if(rs2.next())
 				{
-					System.out.println("aqui");
 					int idEsp = rs2.getInt("ID");
 					String nombre = rs2.getString("NOMBRE");
 					double duracion = rs2.getDouble("DURACION");
@@ -119,7 +115,6 @@ public class DAOTablaCompañia {
 					
 					String sql3 = "SELECT * FROM FUNCION";
 					sql3 += " WHERE ID_ESPECTACULO = " + idEsp;
-					System.out.println(sql3);
 					PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
 					recursos.add(prepStmt3);
 					ResultSet rs3 = prepStmt3.executeQuery();
@@ -136,7 +131,6 @@ public class DAOTablaCompañia {
 						
 						String sql4 = "SELECT * FROM SITIO";
 						sql4 += " WHERE ID = " + idSit;
-						System.out.println(sql4);
 						PreparedStatement prepStmt4 = conn.prepareStatement(sql4);
 						recursos.add(prepStmt4);
 						ResultSet rs4 = prepStmt4.executeQuery();
@@ -152,7 +146,7 @@ public class DAOTablaCompañia {
 						}
 						Funcion nuevaFun = new Funcion(idFun, fechaHora, costo, sillasOcupadas, yaSeRealizo, null, nuevosit);
 						funciones.add(nuevaFun);
-						System.out.println("jola");
+						
 						
 					}
 					Espectaculo nuevoEspect = new Espectaculo(idEsp, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, tradSubt, tradAud, descripcion, pubObj, null, null, null, funciones);

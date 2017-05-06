@@ -224,5 +224,5 @@ public class FestivAndesClienteServices {
 		return Response.status(200).entity(resultado).build();
 	}
 
-
+	
 }

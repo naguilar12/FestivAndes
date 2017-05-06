@@ -11,7 +11,7 @@ public class Cliente extends Usuario
 	@JsonProperty(value="festival")
 	private Festival festival;
 	
-	public Cliente(	@JsonProperty(value="festival") Festival festival, @JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre,@JsonProperty(value="mail") String mail,@JsonProperty(value="rol") String rol, @JsonProperty(value="contrasena")String contrasena) {
+	public Cliente(	@JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre,@JsonProperty(value="mail") String mail,@JsonProperty(value="rol") String rol, @JsonProperty(value="contrasena")String contrasena, @JsonProperty(value="festival") Festival festival) {
 		super(id, nombre, mail, rol);
 		this.contrasena = contrasena;
 		this.festival = festival;		

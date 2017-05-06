@@ -168,7 +168,7 @@ public class DAOTablaFuncion {
 				{
 					String contrasena = rs2.getString("CONTRASENA");
 					Festival nuevoFest = null;
-					resultado = new Cliente(nuevoFest, idCliente, nombre, mail, rol, contrasena);
+					resultado = new Cliente(idCliente, nombre, mail, rol, contrasena, nuevoFest);
 				}
 			}
 			Boleta bol = new Boleta(ubicacion, estado, costo, localidad, funcion, resultado); 
