@@ -19,7 +19,6 @@ import dao.DAOTablaEspectaculos;
 import dao.DAOTablaFuncion;
 import dao.DAOTablaOrganizador;
 import dao.DAOTablaSitio;
-import oracle.sql.DATE;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
@@ -1228,6 +1227,7 @@ public class FestivAndesMaster {
 		ArrayList<Cliente> clientesSinCriterio = new ArrayList<>();
 		try
 		{
+			
 			this.conn = darConexion();
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);

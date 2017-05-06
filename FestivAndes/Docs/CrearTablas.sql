@@ -10,7 +10,9 @@ CREATE TABLE FESTIVAL
     pais VARCHAR(50),
     fechaInicio DATE,
     fechaFin DATE,
-    CONSTRAINT festival_pk PRIMARY KEY(id)
+    CONSTRAINT festival_pk PRIMARY KEY(id),
+    CONSTRAINT ck_id CHECK (id>0),
+    CONSTRAINT ck_anio CHECK (anio>1950 and anio<2035)
 );
 
 CREATE TABLE COMPANIAS_EN_FESTIVAL
@@ -27,14 +29,16 @@ CREATE TABLE COMPANIA_TEATRO
     nombre VARCHAR(50),
     fecha_llegada DATE,
     fecha_salida DATE,
-    CONSTRAINT compania_teatro_pk PRIMARY KEY(id)
+    CONSTRAINT compania_teatro_pk PRIMARY KEY(id),
+    CONSTRAINT ck_id CHECK (id>0)
 );
 
 CREATE TABLE REPRESENTANTE
 (
     id INTEGER NOT NULL,
     pagina VARCHAR(50),
-    CONSTRAINT representante_pk PRIMARY KEY(id)
+    CONSTRAINT representante_pk PRIMARY KEY(id),
+    CONSTRAINT ck_id CHECK (id>0)
 );
 
 CREATE TABLE ESPECTACULO
@@ -51,7 +55,10 @@ CREATE TABLE ESPECTACULO
     traduccion_audifonos NUMBER(1,0),
     descripcion VARCHAR(50),
     publico_objetivo VARCHAR(50),
-    CONSTRAINT espectaculo_pk PRIMARY KEY(id)
+    CONSTRAINT espectaculo_pk PRIMARY KEY(id),
+    CONSTRAINT ck_id CHECK (id>0)
+    CONSTRAINT ck_costo CHECK (costo_realizacion>0)
+    CONSTRAINT ck_duracion CHECK (duracion>0)
 );
 
 CREATE TABLE COMPANIA_ESPECTACULO
@@ -84,7 +91,10 @@ CREATE TABLE FUNCION
     sillas_ocupadas INTEGER,
     fecha_hora TIMESTAMP,
     ya_se_realizo NUMBER(1,0),
-    CONSTRAINT funcion_pk PRIMARY KEY(id)
+    CONSTRAINT funcion_pk PRIMARY KEY(id),
+    CONSTRAINT ck_id CHECK (id>0),
+    CONSTRAINT ck_costo CHECK (costo>0),
+    CONSTRAINT ck_sillas_ocupadas CHECK (sillas_ocupadas>0)
 );
 
 CREATE TABLE SITIO
@@ -98,7 +108,9 @@ CREATE TABLE SITIO
     fin_horario TIMESTAMP,
     proteccion_lluvia NUMBER(1,0),
     efectos_atmosfericos NUMBER(1,0),
-    CONSTRAINT sitio_pk PRIMARY KEY(id)
+    CONSTRAINT sitio_pk PRIMARY KEY(id),
+    CONSTRAINT ck_id CHECK (id>0),
+    CONSTRAINT ck_capacidad CHECK (capacidad>0)
 );
 
 CREATE TABLE BOLETA
@@ -109,7 +121,10 @@ CREATE TABLE BOLETA
     ubicacion INTEGER,
     estado INTEGER,
     costo DOUBLE PRECISION,
-    CONSTRAINT boleta_pk PRIMARY KEY(id_localidad, id_funcion, id_cliente, ubicacion)
+    CONSTRAINT boleta_pk PRIMARY KEY(id_localidad, id_funcion, id_cliente, ubicacion),
+    CONSTRAINT ck_costo CHECK (costo>0),
+    CONSTRAINT ck_estado CHECK (estado >= 0 and estado <= 3),
+    CONSTRAINT ck_ubicacion CHECK (ubicacion>0)
 );
 
 CREATE TABLE LOCALIDAD
@@ -119,7 +134,9 @@ CREATE TABLE LOCALIDAD
     nombre VARCHAR(50),
     capacidad INTEGER,
     numerada NUMBER(1,0),
-    CONSTRAINT localidad_pk PRIMARY KEY(id)
+    CONSTRAINT localidad_pk PRIMARY KEY(id),
+    CONSTRAINT ck_id CHECK (id>0),
+    CONSTRAINT ck_capacidad CHECK (capacidad>0)
 );
 
 CREATE TABLE REQUERIMIENTOS_SITIO
@@ -140,7 +157,8 @@ CREATE TABLE ORGANIZADOR
 (
     id INTEGER NOT NULL,
     id_festival INTEGER,
-    CONSTRAINT organizador_pk PRIMARY KEY(id)
+    CONSTRAINT organizador_pk PRIMARY KEY(id),
+    CONSTRAINT ck_id CHECK (id>0)
 );
 
 CREATE TABLE USUARIO
@@ -149,7 +167,8 @@ CREATE TABLE USUARIO
     nombre VARCHAR(50),
     mail VARCHAR(50) UNIQUE,
     rol VARCHAR(50),
-    CONSTRAINT usuario_pk PRIMARY KEY(id)
+    CONSTRAINT usuario_pk PRIMARY KEY(id),
+    CONSTRAINT ck_id CHECK (id>0)
 );
 
 CREATE TABLE CLIENTE
@@ -157,7 +176,8 @@ CREATE TABLE CLIENTE
     id INTEGER NOT NULL,
     id_festival INTEGER,
     contrasena VARCHAR(50),
-    CONSTRAINT cliente_pk PRIMARY KEY(id)
+    CONSTRAINT cliente_pk PRIMARY KEY(id),
+    CONSTRAINT ck_id CHECK (id>0)
 );
 
 CREATE TABLE PREFERENCIA
@@ -165,14 +185,16 @@ CREATE TABLE PREFERENCIA
     id INTEGER NOT NULL,
     preferencia VARCHAR(50) NOT NULL,
     tipo VARCHAR(50),
-    CONSTRAINT preferencia_pk PRIMARY KEY(id, preferencia)
+    CONSTRAINT preferencia_pk PRIMARY KEY(id, preferencia),
+    CONSTRAINT ck_id CHECK (id>0)
 );
 
 CREATE TABLE OPERARIO
 (
     id INTEGER NOT NULL,
     id_festival INTEGER,
-    CONSTRAINT operario_pk PRIMARY KEY(id)
+    CONSTRAINT operario_pk PRIMARY KEY(id),
+    CONSTRAINT ck_id CHECK (id>0)
 );
 
 
