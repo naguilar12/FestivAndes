@@ -114,6 +114,7 @@ public class DAOTablaOrganizador {
 			sql+= " NOMBRE = "+"'" + filtro.getTipoLocalidad()+"'";
 		sql += "), ";
 
+		
 
 		sql += " FILTRO_RANGO_FECHA AS (SELECT * FROM FILTRO_LOCALIDAD ";
 		if(filtro.getFechaInicio()!= null && filtro.getFechaFin()!=null)
