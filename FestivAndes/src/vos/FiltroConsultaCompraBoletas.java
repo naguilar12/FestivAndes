@@ -6,9 +6,6 @@ import java.util.Date;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 public class FiltroConsultaCompraBoletas {
-
-	@JsonProperty(value="Id festival")
-	private int idFestival;
 	
 	@JsonProperty(value="Fecha inicio")
 	private String fechaInicio;
@@ -31,10 +28,9 @@ public class FiltroConsultaCompraBoletas {
 	@JsonProperty(value="Dia")
 	private String dia;
 
-	public FiltroConsultaCompraBoletas(	@JsonProperty(value="Id festival")int idFestival, @JsonProperty(value="Fecha inicio")String fechaInicio,@JsonProperty(value="Fecha fin") String fechaFin,@JsonProperty(value="Requerimiento escenario") String requerimientoEscenario,
+	public FiltroConsultaCompraBoletas(@JsonProperty(value="Fecha inicio")String fechaInicio,@JsonProperty(value="Fecha fin") String fechaFin,@JsonProperty(value="Requerimiento escenario") String requerimientoEscenario,
 			@JsonProperty(value="Tipo localidad") String tipoLocalidad, @JsonProperty(value="Dia")String dia,@JsonProperty(value="Hora inicio")int horaInicio ,@JsonProperty(value="Hora fin")int horaFin ) {
 		super();
-		this.idFestival = idFestival;
 		this.fechaInicio = fechaInicio;
 		this.fechaFin = fechaFin;
 		this.requerimientoEscenario = requerimientoEscenario;
@@ -82,14 +78,6 @@ public class FiltroConsultaCompraBoletas {
 
 	public void setDia(String dia) {
 		this.dia = dia;
-	}
-
-	public int getIdFestival() {
-		return idFestival;
-	}
-
-	public void setIdFestival(int idFestival) {
-		this.idFestival = idFestival;
 	}
 
 	public int getHoraInicio() {

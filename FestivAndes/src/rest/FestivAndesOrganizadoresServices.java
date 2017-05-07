@@ -16,6 +16,7 @@ import tm.FestivAndesMaster;
 import vos.ConsultaFuncion;
 import vos.FiltroConsultaCompraBoletas;
 import vos.Funcion;
+import vos.ListaClientes;
 import vos.ListaNotasDebito;
 import vos.RespuestaConsultaCompraBoletas;
 import vos.Resultado;
@@ -70,7 +71,7 @@ public class FestivAndesOrganizadoresServices {
 		}
 		return Response.status(200).entity(resultado).build();
 	}
-	
+
 	/////////////////////////////////////////RF14/////////////////////////////////////////////////////////////////
 
 	@GET
@@ -89,9 +90,9 @@ public class FestivAndesOrganizadoresServices {
 		}
 		return Response.status(200).entity(resultado).build();
 	}
-	
+
 	/////////////////////////////////////////RFC11/////////////////////////////////////////////////////////////////
-	
+
 	@PUT
 	@Path("{idO}/consultarCompraBoletas/")
 	@Produces (MediaType.APPLICATION_JSON )
@@ -101,8 +102,7 @@ public class FestivAndesOrganizadoresServices {
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		ArrayList<RespuestaConsultaCompraBoletas> resultado;
 		try {
-			System.out.println("DADASDSA"  + tm.esGerenteGeneral(idO, filtro.getIdFestival()));
-			if(tm.esGerenteGeneral(idO, filtro.getIdFestival()))
+			if(tm.esGerenteGeneral(idO))
 				resultado = tm.consultarCompraBoletas(filtro);
 			else
 				resultado = null;
@@ -112,5 +112,26 @@ public class FestivAndesOrganizadoresServices {
 		return Response.status(200).entity(resultado).build();
 	}
 
+	/////////////////////////////////////////RFC12/////////////////////////////////////////////////////////////////
+	
+	@PUT
+	@Path("{idO}/consultarBuenosClientes/{n}")
+	@Produces (MediaType.APPLICATION_JSON )
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response consultarBuenosClientes(@javax.ws.rs.PathParam("idO") int idO, @javax.ws.rs.PathParam("n") int n)
+	{
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaClientes resultado;
+		try {
+			if(tm.esGerenteGeneral(idO))
+				resultado = tm.consultarBuenosClientes(n);
+			else
+				resultado = null;
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resultado).build();
+	}
+	
 	
 }

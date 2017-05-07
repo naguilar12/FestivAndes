@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import oracle.sql.DATE;
 import vos.Cliente;
 import vos.Festival;
@@ -161,5 +163,38 @@ public class DAOTablaOrganizador {
 		}
 
 		return respuesta;
+	}
+	
+	public ArrayList<Cliente> consultarBuenosClientes(int n) throws Exception{
+		ArrayList<Cliente> resultado = new ArrayList<>();
+		
+		String sql = " WITH BOLETA_LOCALIDAD AS (SELECT * FROM(BOLETA INNER JOIN LOCALIDAD ON ID_LOCALIDAD=ID)), "
+					+" BOLETAS_VIP AS(SELECT ID_CLIENTE, COUNT(*) AS BOLETAS_COMPRADAS FROM BOLETA_LOCALIDAD WHERE NOMBRE = 'VIP' GROUP BY ID_CLIENTE), "
+					+" BOLETAS_POR_CLIENTE AS (SELECT ID_CLIENTE, COUNT(*) AS BOLETAS_COMPRADAS FROM BOLETA GROUP BY ID_CLIENTE), "
+					+" BUENOS_CLIENTES AS (SELECT * FROM (BOLETAS_VIP NATURAL JOIN BOLETAS_POR_CLIENTE) WHERE ID_CLIENTE != 99 AND BOLETAS_COMPRADAS > "+n+"), "
+					+" INFO_BUENOS_USUARIOS AS (SELECT* FROM(BUENOS_CLIENTES INNER JOIN USUARIO ON ID_CLIENTE = ID)), "
+					+" INFO_BUENOS_CLIENTES AS (SELECT * FROM (INFO_BUENOS_USUARIOS INNER JOIN CLIENTE ON CLIENTE.ID = ID_CLIENTE)) ";
+		
+		sql += " SELECT * FROM INFO_BUENOS_CLIENTES ";
+		
+		System.out.println("SQL stmt:" + sql);
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		
+		while(rs.next())
+		{
+			int id = rs.getInt("ID");
+			String nombre = rs.getString("NOMBRE");
+			String mail = rs.getString("MAIL");
+			String rol = rs.getString("ROL");
+			String contrasena = rs.getString("CONTRASENA");
+			Festival festival = null;
+			
+			Cliente cliente = new Cliente(id, nombre, mail, rol, contrasena, festival);
+			resultado.add(cliente);
+		}
+		
+		return resultado;
 	}
 }
