@@ -142,7 +142,7 @@ public class DAOTablaOrganizador {
 			+" BOLETAS_CONTADAS AS (SELECT * FROM (NOMBRE_ESPECTACULO NE INNER JOIN (SELECT ID_FUNCION AS FUNCION_ID ,COUNT(ID_FUNCION) AS BOLETAS_VENDIDAS FROM NOMBRE_ESPECTACULO GROUP BY ID_FUNCION)  A ON NE.ID_FUNCION = A.FUNCION_ID )), "
 			+" CLIENTES_CONTADOS AS (SELECT * FROM (BOLETAS_CONTADAS NE INNER JOIN (SELECT FUNCION_ID,COUNT(FUNCION_ID) AS CLIENTES_REGISTRADOS FROM BOLETAS_CONTADAS WHERE ID_CLIENTE != 99 GROUP BY FUNCION_ID) A ON NE.ID_FUNCION = A.FUNCION_ID ))";
 		
-		sql += "SELECT DISTINCT ID_FUNCION, NOMBRE_ESPECTACULO, CAST(FECHA_HORA AS DATE) AS FECHA_FUNCION, BOLETAS_VENDIDAS, CLIENTES_REGISTRADOS FROM CLIENTES_CONTADOS";
+		sql += "SELECT DISTINCT ID_FUNCION, NOMBRE_ESPECTACULO, NOMBRE_SITIO,CAST(FECHA_HORA AS DATE) AS FECHA_FUNCION, BOLETAS_VENDIDAS, CLIENTES_REGISTRADOS FROM CLIENTES_CONTADOS";
 		
 		System.out.println("SQL stmt:" + sql);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
@@ -153,11 +153,8 @@ public class DAOTablaOrganizador {
 		{
 			String espectaculo = rs.getString("NOMBRE_ESPECTACULO");
 			String fecha = rs.getString("FECHA_FUNCION");
-			/*
-			 * Falta el sitio
-			*/
 			int idFuncion = rs.getInt("ID_FUNCION");
-			String sitio = "Sitio";
+			String sitio = rs.getString("NOMBRE_SITIO");
 			int boletasVendidas = rs.getInt("BOLETAS_VENDIDAS");
 			int usuariosRegistrados = rs.getInt("CLIENTES_REGISTRADOS");
 			RespuestaConsultaCompraBoletas res = new RespuestaConsultaCompraBoletas(idFuncion,espectaculo, fecha, sitio, boletasVendidas, usuariosRegistrados);

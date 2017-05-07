@@ -11,7 +11,7 @@ CREATE TABLE FESTIVAL
     fechaInicio DATE,
     fechaFin DATE,
     CONSTRAINT festival_pk PRIMARY KEY(id),
-    CONSTRAINT ck_id CHECK (id>0),
+    CONSTRAINT ck_idFestival CHECK (id>0),
     CONSTRAINT ck_anio CHECK (anio>1950 and anio<2035)
 );
 
@@ -30,7 +30,7 @@ CREATE TABLE COMPANIA_TEATRO
     fecha_llegada DATE,
     fecha_salida DATE,
     CONSTRAINT compania_teatro_pk PRIMARY KEY(id),
-    CONSTRAINT ck_id CHECK (id>0)
+    CONSTRAINT ck_idCompania CHECK (id>0)
 );
 
 CREATE TABLE REPRESENTANTE
@@ -38,7 +38,7 @@ CREATE TABLE REPRESENTANTE
     id INTEGER NOT NULL,
     pagina VARCHAR(50),
     CONSTRAINT representante_pk PRIMARY KEY(id),
-    CONSTRAINT ck_id CHECK (id>0)
+    CONSTRAINT ck_idRepresentante CHECK (id>0)
 );
 
 CREATE TABLE ESPECTACULO
@@ -56,8 +56,8 @@ CREATE TABLE ESPECTACULO
     descripcion VARCHAR(50),
     publico_objetivo VARCHAR(50),
     CONSTRAINT espectaculo_pk PRIMARY KEY(id),
-    CONSTRAINT ck_id CHECK (id>0)
-    CONSTRAINT ck_costo CHECK (costo_realizacion>0)
+    CONSTRAINT ck_idEspectaculo CHECK (id>0),
+    CONSTRAINT ck_costoEspectaculo CHECK (costo_realizacion>0),
     CONSTRAINT ck_duracion CHECK (duracion>0)
 );
 
@@ -92,14 +92,15 @@ CREATE TABLE FUNCION
     fecha_hora TIMESTAMP,
     ya_se_realizo NUMBER(1,0),
     CONSTRAINT funcion_pk PRIMARY KEY(id),
-    CONSTRAINT ck_id CHECK (id>0),
-    CONSTRAINT ck_costo CHECK (costo>0),
+    CONSTRAINT ck_idFuncion CHECK (id>0),
+    CONSTRAINT ck_costoFuncion CHECK (costo>0),
     CONSTRAINT ck_sillas_ocupadas CHECK (sillas_ocupadas>0)
 );
 
 CREATE TABLE SITIO
 (
     id INTEGER NOT NULL,
+    nombre_sitio VARCHAR(50),
     direccion VARCHAR(50),
     capacidad INTEGER,
     lugar_abierto NUMBER(1,0),
@@ -109,8 +110,8 @@ CREATE TABLE SITIO
     proteccion_lluvia NUMBER(1,0),
     efectos_atmosfericos NUMBER(1,0),
     CONSTRAINT sitio_pk PRIMARY KEY(id),
-    CONSTRAINT ck_id CHECK (id>0),
-    CONSTRAINT ck_capacidad CHECK (capacidad>0)
+    CONSTRAINT ck_idSitio CHECK (id>0),
+    CONSTRAINT ck_capacidadCapacidad CHECK (capacidad>0)
 );
 
 CREATE TABLE BOLETA
@@ -122,7 +123,7 @@ CREATE TABLE BOLETA
     estado INTEGER,
     costo DOUBLE PRECISION,
     CONSTRAINT boleta_pk PRIMARY KEY(id_localidad, id_funcion, id_cliente, ubicacion),
-    CONSTRAINT ck_costo CHECK (costo>0),
+    CONSTRAINT ck_costoBoleta CHECK (costo>0),
     CONSTRAINT ck_estado CHECK (estado >= 0 and estado <= 3),
     CONSTRAINT ck_ubicacion CHECK (ubicacion>0)
 );
@@ -135,8 +136,8 @@ CREATE TABLE LOCALIDAD
     capacidad INTEGER,
     numerada NUMBER(1,0),
     CONSTRAINT localidad_pk PRIMARY KEY(id),
-    CONSTRAINT ck_id CHECK (id>0),
-    CONSTRAINT ck_capacidad CHECK (capacidad>0)
+    CONSTRAINT ck_idLocalidad CHECK (id>0),
+    CONSTRAINT ck_capacidadLocalidad CHECK (capacidad>0)
 );
 
 CREATE TABLE REQUERIMIENTOS_SITIO
@@ -158,7 +159,7 @@ CREATE TABLE ORGANIZADOR
     id INTEGER NOT NULL,
     id_festival INTEGER,
     CONSTRAINT organizador_pk PRIMARY KEY(id),
-    CONSTRAINT ck_id CHECK (id>0)
+    CONSTRAINT ck_idOrganizador CHECK (id>0)
 );
 
 CREATE TABLE USUARIO
@@ -168,7 +169,7 @@ CREATE TABLE USUARIO
     mail VARCHAR(50) UNIQUE,
     rol VARCHAR(50),
     CONSTRAINT usuario_pk PRIMARY KEY(id),
-    CONSTRAINT ck_id CHECK (id>0)
+    CONSTRAINT ck_idUsuario CHECK (id>0)
 );
 
 CREATE TABLE CLIENTE
@@ -177,7 +178,7 @@ CREATE TABLE CLIENTE
     id_festival INTEGER,
     contrasena VARCHAR(50),
     CONSTRAINT cliente_pk PRIMARY KEY(id),
-    CONSTRAINT ck_id CHECK (id>0)
+    CONSTRAINT ck_idCliente CHECK (id>0)
 );
 
 CREATE TABLE PREFERENCIA
@@ -186,7 +187,7 @@ CREATE TABLE PREFERENCIA
     preferencia VARCHAR(50) NOT NULL,
     tipo VARCHAR(50),
     CONSTRAINT preferencia_pk PRIMARY KEY(id, preferencia),
-    CONSTRAINT ck_id CHECK (id>0)
+    CONSTRAINT ck_idPreferencia CHECK (id>0)
 );
 
 CREATE TABLE OPERARIO
@@ -194,7 +195,7 @@ CREATE TABLE OPERARIO
     id INTEGER NOT NULL,
     id_festival INTEGER,
     CONSTRAINT operario_pk PRIMARY KEY(id),
-    CONSTRAINT ck_id CHECK (id>0)
+    CONSTRAINT ck_idOperario CHECK (id>0)
 );
 
 
