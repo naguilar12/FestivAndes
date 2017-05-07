@@ -35,6 +35,7 @@ import vos.FiltroConsultaCompraBoletas;
 import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaCategorias;
+import vos.ListaClientes;
 import vos.ListaCompañias;
 import vos.ListaConsultaCompania;
 import vos.ListaEspectaculos;
@@ -1221,7 +1222,7 @@ public class FestivAndesMaster {
 		return new ListaNotasDebito(resultado);
 	}
 	
-	public boolean esGerenteGeneral(int id, int idFest) throws Exception
+	public boolean esGerenteGeneral(int id) throws Exception
 	{
 		boolean esGerenteGeneral = false;
 		DAOTablaOrganizador daoTablaOrganizador = new DAOTablaOrganizador();
@@ -1232,7 +1233,7 @@ public class FestivAndesMaster {
 			daoTablaOrganizador.setConn(conn);
 			
 			Organizador org = daoTablaOrganizador.darOrganizador(id);
-			esGerenteGeneral = org.getRol().equals("Gerente general") && (org.getFestival().getId() == idFest);
+			esGerenteGeneral = org.getRol().equals("Gerente general");
 			
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -1287,6 +1288,39 @@ public class FestivAndesMaster {
 		}
 		return respuesta;
 	}
+	
+	public ListaClientes consultarBuenosClientes(int n) throws Exception{
+		ArrayList<Cliente> clientes = new ArrayList<Cliente>();
+		DAOTablaOrganizador daoTablaOrganizador = new DAOTablaOrganizador();
+		try
+		{
+			//////TransacciÃ³n
+			this.conn = darConexion();
+			daoTablaOrganizador.setConn(conn);		
+			clientes = daoTablaOrganizador.consultarBuenosClientes(n);
+			
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaOrganizador.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaClientes(clientes);
+	}
+
 
 	public ArrayList<Cliente> asistUsuariosFest(int idComp, Date fechaIni, Date fechaFinal,String pCriterio) throws Exception
 	{
