@@ -108,6 +108,7 @@ public class DAOTablaOrganizador {
 			sql+= "REQUERIMIENTOS = "+"'" + filtro.getRequerimiento()+"'";
 		sql += "), ";
 
+		
 
 		sql+= " FILTRO_LOCALIDAD AS (SELECT * FROM (FILTRO_ELEMENTOS FE INNER JOIN LOCALIDAD L ON FE.ID_LOCALIDAD = L.ID ) WHERE ";
 		if(filtro.getTipoLocalidad()== null)
