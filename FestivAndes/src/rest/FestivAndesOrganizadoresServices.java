@@ -3,7 +3,9 @@ package rest;
 import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -12,8 +14,10 @@ import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
 import vos.ConsultaFuncion;
+import vos.FiltroConsultaCompraBoletas;
 import vos.Funcion;
 import vos.ListaNotasDebito;
+import vos.RespuestaConsultaCompraBoletas;
 import vos.Resultado;
 
 @Path("organizadores")
@@ -86,5 +90,27 @@ public class FestivAndesOrganizadoresServices {
 		return Response.status(200).entity(resultado).build();
 	}
 	
+	/////////////////////////////////////////RFC11/////////////////////////////////////////////////////////////////
+	
+	@PUT
+	@Path("{idO}/consultarCompraBoletas/")
+	@Produces (MediaType.APPLICATION_JSON )
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response consultarCompraBoletas(FiltroConsultaCompraBoletas filtro, @javax.ws.rs.PathParam("idO") int idO)
+	{
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ArrayList<RespuestaConsultaCompraBoletas> resultado;
+		try {
+			System.out.println("DADASDSA"  + tm.esGerenteGeneral(idO, filtro.getIdFestival()));
+			if(tm.esGerenteGeneral(idO, filtro.getIdFestival()))
+				resultado = tm.consultarCompraBoletas(filtro);
+			else
+				resultado = null;
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resultado).build();
+	}
 
+	
 }

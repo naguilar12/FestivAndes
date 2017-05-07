@@ -31,6 +31,7 @@ import vos.ConsultaCompania;
 import vos.ConsultaFuncion;
 import vos.Espectaculo;
 import vos.Festival;
+import vos.FiltroConsultaCompraBoletas;
 import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaCategorias;
@@ -44,6 +45,7 @@ import vos.Localidad;
 import vos.NotaDebito;
 import vos.Organizador;
 import vos.Preferencia;
+import vos.RespuestaConsultaCompraBoletas;
 import vos.Resultado;
 import vos.Sitio;
 import vos.Video;
@@ -1217,7 +1219,73 @@ public class FestivAndesMaster {
 		}
 
 		return new ListaNotasDebito(resultado);
-
+	}
+	
+	public boolean esGerenteGeneral(int id, int idFest) throws Exception
+	{
+		boolean esGerenteGeneral = false;
+		DAOTablaOrganizador daoTablaOrganizador = new DAOTablaOrganizador();
+		try 
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoTablaOrganizador.setConn(conn);
+			
+			Organizador org = daoTablaOrganizador.darOrganizador(id);
+			esGerenteGeneral = org.getRol().equals("Gerente general") && (org.getFestival().getId() == idFest);
+			
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaOrganizador.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return esGerenteGeneral;
+	}
+	
+	public ArrayList<RespuestaConsultaCompraBoletas> consultarCompraBoletas(FiltroConsultaCompraBoletas filtro) throws Exception{
+		ArrayList<RespuestaConsultaCompraBoletas> respuesta = new ArrayList<>();
+		DAOTablaOrganizador daoTablaOrganizador = new DAOTablaOrganizador();
+		try
+		{
+			//////Transacción
+			this.conn = darConexion();
+			daoTablaOrganizador.setConn(conn);		
+			respuesta = daoTablaOrganizador.consultarCompraBoletas(filtro);
+			
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaOrganizador.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return respuesta;
 	}
 
 	public ArrayList<Cliente> asistUsuariosFest(int idComp, Date fechaIni, Date fechaFinal,String pCriterio) throws Exception
