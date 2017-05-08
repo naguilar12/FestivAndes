@@ -180,7 +180,6 @@ public class DAOTablaOrganizador {
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
-
 		while(rs.next())
 		{
 			int id = rs.getInt("ID");
