@@ -34,6 +34,7 @@ public class VideoAndesDistributed
 	
 	private static VideoAndesDistributed instance;
 	
+	
 	private VideoAndesMaster tm;
 	
 	private QueueConnectionFactory queueFactory;
