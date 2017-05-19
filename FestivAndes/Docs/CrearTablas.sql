@@ -4,7 +4,6 @@
 CREATE TABLE FESTIVAL
 (
     id INTEGER NOT NULL,
-    id_organizador INTEGER,
     name VARCHAR(50),
     anio INTEGER,
     pais VARCHAR(50),
@@ -309,7 +308,7 @@ ALTER TABLE ORGANIZADOR
     ADD    FOREIGN KEY (id_festival)
     REFERENCES FESTIVAL(id)
 ;
-    
+
 ALTER TABLE OPERARIO
     ADD    FOREIGN KEY (id)
     REFERENCES USUARIO(id)
