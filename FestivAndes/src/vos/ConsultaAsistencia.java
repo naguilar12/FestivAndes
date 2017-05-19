@@ -6,7 +6,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class ConsultaAsistencia {
 	
-	@JsonProperty(value="fechaIncio")
+	@JsonProperty(value="fechaInicio")
 	private Date fechaInicio;
 	
 	@JsonProperty(value="fechaFin")
@@ -14,8 +14,11 @@ public class ConsultaAsistencia {
 	
 	@JsonProperty(value="criterio")
 	private String criterio;
+	
+	@JsonProperty(value="agrupamiento")
+	private String agrupamiento;
 
-	public ConsultaAsistencia(@JsonProperty(value="fechaIncio") Date fechaInicio, @JsonProperty(value="fechaFin") Date fechaFin, @JsonProperty(value="criterio")String criterio) {
+	public ConsultaAsistencia(@JsonProperty(value="fechaInicio") Date fechaInicio, @JsonProperty(value="fechaFin") Date fechaFin, @JsonProperty(value="criterio")String criterio) {
 		super();
 		this.fechaInicio = fechaInicio;
 		this.fechaFin = fechaFin;
@@ -45,5 +48,15 @@ public class ConsultaAsistencia {
 	public void setCriterio(String criterio) {
 		this.criterio = criterio;
 	}
+
+	public String getAgrupamiento() {
+		return agrupamiento;
+	}
+
+	public void setAgrupamiento(String agrupamiento) {
+		this.agrupamiento = agrupamiento;
+	}
+	
+	
 	
 }

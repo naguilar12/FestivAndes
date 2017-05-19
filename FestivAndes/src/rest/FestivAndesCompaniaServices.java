@@ -84,9 +84,8 @@ import vos.ListaConsultaCompania;
 		public Response consultarAsistenciaAlFestival(ConsultaAsistencia info, @javax.ws.rs.PathParam("idC") int idC) {
 			FestivAndesMaster tm = new FestivAndesMaster(getPath());
 			ArrayList<Cliente> resultado;
-			
 			try {
-				resultado = tm.asistUsuariosFest(idC, info.getFechaInicio(), info.getFechaFin(), info.getCriterio());
+				resultado = tm.asistUsuariosFest(idC, info.getFechaInicio(), info.getFechaFin(), info.getCriterio(), info.getAgrupamiento());
 			} catch (Exception e) {
 				return Response.status(500).entity(doErrorMessage(e)).build();
 			}
@@ -100,8 +99,9 @@ import vos.ListaConsultaCompania;
 		public Response consultarNoAsistenciaAlFestival(ConsultaAsistencia info, @javax.ws.rs.PathParam("idC") int idC) {
 			FestivAndesMaster tm = new FestivAndesMaster(getPath());
 			ArrayList<Cliente> resultado;
+			System.out.println(info.getAgrupamiento());
 			try {
-				resultado = tm.asistNoUsuariosFest(idC, info.getFechaInicio(), info.getFechaFin(), info.getCriterio());
+				resultado = tm.asistNoUsuariosFest(idC, info.getFechaInicio(), info.getFechaFin(), info.getCriterio(), info.getAgrupamiento());
 			} catch (Exception e) {
 				return Response.status(500).entity(doErrorMessage(e)).build();
 			}

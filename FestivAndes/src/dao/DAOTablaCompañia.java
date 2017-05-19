@@ -260,7 +260,7 @@ public class DAOTablaCompañia {
 		return companiasLista;
 	}
 	
-	public ArrayList<Cliente> asistUsuariosFest(int idC, String FechaIni, String fechaFin, String criterio) throws SQLException, Exception
+	public ArrayList<Cliente> asistUsuariosFest(int idC, String FechaIni, String fechaFin, String criterio, String agrupar) throws SQLException, Exception
 	{
 		ArrayList<Cliente> listaClientes = new ArrayList<>();
 		String sql = "WITH LISTA_FUNCIONES AS (SELECT IDFUN FROM (SELECT ID AS IDFUN FROM FUNCION F INNER JOIN"
@@ -268,7 +268,7 @@ public class DAOTablaCompañia {
 				+ "(SELECT CE.ID_ESPECTACULO FROM COMPANIA_ESPECTACULO CE WHERE CE.ID_COMPANIA =" + idC + " )) H ON E.ID=H.ID_ESPECTACULO)"
 				+ "K ON F.ID_ESPECTACULO = K.IDESPECT) INNER JOIN FUNCION ON IDFUN=ID WHERE FECHA_HORA BETWEEN '"+ FechaIni + "' AND '" + fechaFin +"'),"
 				+ "ID_CLIENTES_FUN AS (SELECT DISTINCT ID_CLIENTE AS ID FROM LISTA_FUNCIONES LF INNER JOIN BOLETA B ON LF.IDFUN = B.ID_FUNCION)"
-				+ "SELECT * FROM (SELECT * FROM ID_CLIENTES_FUN NATURAL JOIN CLIENTE) CL NATURAL JOIN USUARIO U WHERE ID!=99 ORDER BY " + criterio;
+				+ "SELECT * FROM (SELECT * FROM ID_CLIENTES_FUN NATURAL JOIN CLIENTE) CL NATURAL JOIN USUARIO U WHERE ID!=99 "+ agrupar +" ORDER BY " + criterio;
 		System.out.println(sql);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -286,7 +286,7 @@ public class DAOTablaCompañia {
 		return listaClientes;
 	}
 	
-	public ArrayList<Cliente> asistNoUsuariosFest(int idC, String FechaIni, String fechaFin, String criterio) throws SQLException, Exception
+	public ArrayList<Cliente> asistNoUsuariosFest(int idC, String FechaIni, String fechaFin, String criterio, String agrupar) throws SQLException, Exception
 	{
 		ArrayList<Cliente> listaClientes = new ArrayList<>();
 		String sql = "WITH LISTA_FUNCIONES AS (SELECT IDFUN FROM (SELECT ID AS IDFUN FROM FUNCION F INNER JOIN"
@@ -294,7 +294,7 @@ public class DAOTablaCompañia {
 				+ "(SELECT CE.ID_ESPECTACULO FROM COMPANIA_ESPECTACULO CE WHERE CE.ID_COMPANIA =" + idC + " )) H ON E.ID=H.ID_ESPECTACULO)"
 				+ "K ON F.ID_ESPECTACULO = K.IDESPECT) INNER JOIN FUNCION ON IDFUN=ID WHERE FECHA_HORA BETWEEN '"+ FechaIni + "' AND '" + fechaFin +"'),"
 				+ "ID_CLIENTES_FUN AS (SELECT DISTINCT ID_CLIENTE AS ID FROM LISTA_FUNCIONES LF INNER JOIN BOLETA B ON LF.IDFUN = B.ID_FUNCION)"
-				+ "SELECT * FROM (SELECT DISTINCT * FROM (SELECT ID FROM CLIENTE MINUS SELECT * FROM ID_CLIENTES_FUN)) NATURAL JOIN CLIENTE NATURAL JOIN USUARIO WHERE ID!=99 ORDER BY "+ criterio;
+				+ "SELECT * FROM (SELECT DISTINCT * FROM (SELECT ID FROM CLIENTE MINUS SELECT * FROM ID_CLIENTES_FUN)) NATURAL JOIN CLIENTE NATURAL JOIN USUARIO WHERE ID!=99 "+ agrupar +" ORDER BY "+ criterio;
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();

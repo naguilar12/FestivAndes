@@ -1322,7 +1322,7 @@ public class FestivAndesMaster {
 	}
 
 
-	public ArrayList<Cliente> asistUsuariosFest(int idComp, Date fechaIni, Date fechaFinal,String pCriterio) throws Exception
+	public ArrayList<Cliente> asistUsuariosFest(int idComp, Date fechaIni, Date fechaFinal,String pCriterio, String pAgrupamiento) throws Exception
 	{
 		DAOTablaCompañia daoCompania = new DAOTablaCompañia();
 		ArrayList<Cliente> clientesSinCriterio = new ArrayList<>();
@@ -1340,7 +1340,16 @@ public class FestivAndesMaster {
 			{
 				criterio = pCriterio;
 			}
-			clientesSinCriterio = daoCompania.asistUsuariosFest(idComp, fechaInicial, fechaFin, criterio);
+			String agrupamiento = "";
+			if(pAgrupamiento.contains("-"))
+			{
+				String[] ids = pAgrupamiento.split("-");
+				agrupamiento = "AND ID >" + ids[0] + " AND ID < " + ids[1];
+			}
+			else
+				agrupamiento= "WHERE 1=1";
+			
+			clientesSinCriterio = daoCompania.asistUsuariosFest(idComp, fechaInicial, fechaFin, criterio, agrupamiento);
 
 			conn.commit();
 			conn.setAutoCommit(true);
@@ -1365,7 +1374,7 @@ public class FestivAndesMaster {
 		return clientesSinCriterio;
 	}
 
-	public ArrayList<Cliente> asistNoUsuariosFest(int idComp, Date fechaIni, Date fechaFinal, String pCriterio) throws Exception
+	public ArrayList<Cliente> asistNoUsuariosFest(int idComp, Date fechaIni, Date fechaFinal, String pCriterio, String pAgrupamiento) throws Exception
 	{
 		DAOTablaCompañia daoCompania = new DAOTablaCompañia();
 		ArrayList<Cliente> clientesSinCriterio = new ArrayList<>();
@@ -1383,7 +1392,17 @@ public class FestivAndesMaster {
 			{
 				criterio = pCriterio;
 			}
-			clientesSinCriterio = daoCompania.asistNoUsuariosFest(idComp, fechaInicial, fechaFin, criterio);
+			String agrupamiento = "";
+			if(pAgrupamiento.contains("-"))
+			{
+				String[] ids = pAgrupamiento.split("-");
+				System.out.println(ids[0]);
+				System.out.println(ids[1]);
+				agrupamiento = "AND ID >" + ids[0] + " AND ID < " + ids[1];
+			}
+			else
+				agrupamiento= "WHERE 1=1";
+			clientesSinCriterio = daoCompania.asistNoUsuariosFest(idComp, fechaInicial, fechaFin, criterio, agrupamiento);
 
 			conn.commit();
 			conn.setAutoCommit(true);
