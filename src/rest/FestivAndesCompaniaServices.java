@@ -107,4 +107,20 @@ import vos.ListaConsultaCompania;
 			}
 			return Response.status(200).entity(resultado).build();
 		}
+		
+		@POST
+		@Path("/rentabilidad/{id}")
+		@Consumes(MediaType.APPLICATION_JSON)
+		@Produces(MediaType.APPLICATION_JSON)
+		public Response getRentabilidad(Rentabilidad rent, @javax.ws.rs.PathParam("id")Long idCompania ) {
+			FestivAndesMaster tm = new FestivAndesMaster(getPath());
+			ListaRentabilidad rentabilidades;
+			try {
+				//rentabilidades = tm.darRentabilidad(rent);
+				rentabilidades = new ListaRentabilidad(tm.darRentabilidadCompania(rent, idCompania));
+			} catch (Exception e) {
+				return Response.status(500).entity(doErrorMessage(e)).build();
+			}
+			return Response.status(200).entity(rentabilidades).build();
+		}
 }
