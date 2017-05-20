@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -18,6 +19,8 @@ import vos.FiltroConsultaCompraBoletas;
 import vos.Funcion;
 import vos.ListaClientes;
 import vos.ListaNotasDebito;
+import vos.ListaRentabilidad;
+import vos.Rentabilidad;
 import vos.RespuestaConsultaCompraBoletas;
 import vos.Resultado;
 
@@ -132,6 +135,24 @@ public class FestivAndesOrganizadoresServices {
 		}
 		return Response.status(200).entity(resultado).build();
 	}
+	
+	@POST
+	@Path("/rentabilidad")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRentabilidad(Rentabilidad rent) {
+		FestivAndesMaster tm = new FestivAndesMaster(getPath());
+		ListaRentabilidad rentabilidades;
+		try {
+
+			//rentabilidades = tm.darRentabilidad(rent);
+			rentabilidades = new ListaRentabilidad(tm.darRentabilidad(rent));
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(rentabilidades).build();
+	}
+
 	
 	
 }

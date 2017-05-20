@@ -46,6 +46,7 @@ import vos.Localidad;
 import vos.NotaDebito;
 import vos.Organizador;
 import vos.Preferencia;
+import vos.Rentabilidad;
 import vos.RespuestaConsultaCompraBoletas;
 import vos.Resultado;
 import vos.Sitio;
@@ -1408,6 +1409,77 @@ public class FestivAndesMaster {
 		return clientesSinCriterio;
 	}
 	
+	public List<Rentabilidad> darRentabilidadCompania( Rentabilidad rent, Long idCompania) throws SQLException
+	{
+		ArrayList<Rentabilidad> rentabilidad;
+		DAOTablaCompañia daoCompañia = new DAOTablaCompañia();
+		try 
+		{
+			//////TransacciÃ³n
+			this.conn = darConexion();
+			daoCompañia.setConn(conn);
+			rentabilidad = daoCompañia.darRentabilidadCompania(rent,idCompania);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoCompañia.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return rentabilidad;
+
+	}
+	
+	public List<Rentabilidad> darRentabilidad( Rentabilidad rent) throws SQLException
+	{
+		ArrayList<Rentabilidad> rentabilidad;
+		DAOTablaCompañia daoFestival = new DAOTablaCompañia();
+		try 
+		{
+			//////TransacciÃ³n
+			this.conn = darConexion();
+			daoFestival.setConn(conn);
+			rentabilidad = daoFestival.darRentabilidad(rent);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoFestival.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return rentabilidad;
+
+	}
+
+
 	
 
 }
