@@ -14,7 +14,7 @@ import java.util.Properties;
 
 import dao.DAOTablaCategorias;
 import dao.DAOTablaCliente;
-import dao.DAOTablaCompañia;
+import dao.DAOTablaCompa�ia;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaFuncion;
 import dao.DAOTablaOrganizador;
@@ -26,7 +26,7 @@ import dao.DAOTablaEspectaculos;
 import vos.Boleta;
 import vos.Categoria;
 import vos.Cliente;
-import vos.CompañiaTeatro;
+import vos.Compa�iaTeatro;
 import vos.ConsultaCompania;
 import vos.ConsultaFuncion;
 import vos.Espectaculo;
@@ -36,7 +36,7 @@ import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaCategorias;
 import vos.ListaClientes;
-import vos.ListaCompañias;
+import vos.ListaCompa�ias;
 import vos.ListaConsultaCompania;
 import vos.ListaEspectaculos;
 import vos.ListaNotasDebito;
@@ -46,6 +46,7 @@ import vos.Localidad;
 import vos.NotaDebito;
 import vos.Organizador;
 import vos.Preferencia;
+import vos.Rentabilidad;
 import vos.RespuestaConsultaCompraBoletas;
 import vos.Resultado;
 import vos.Sitio;
@@ -372,16 +373,16 @@ public class FestivAndesMaster {
 	}
 
 	public ConsultaCompania darInfoCompaniasId(int idE) throws Exception {
-		CompañiaTeatro compañias;
-		DAOTablaCompañia daoTablaCompañias = new DAOTablaCompañia();
+		Compa�iaTeatro compa�ias;
+		DAOTablaCompa�ia daoTablaCompa�ias = new DAOTablaCompa�ia();
 		ConsultaCompania entrega = null;
 		try 
 		{
 			//////TransacciÃ³n
 			this.conn = darConexion();
-			daoTablaCompañias.setConn(conn);
-			compañias = daoTablaCompañias.darInfoCompaniasId(idE);
-			ListaEspectaculos espectaculos = compañias.getEspectaculos();
+			daoTablaCompa�ias.setConn(conn);
+			compa�ias = daoTablaCompa�ias.darInfoCompaniasId(idE);
+			ListaEspectaculos espectaculos = compa�ias.getEspectaculos();
 			ArrayList<String> asistenciaEspect = new ArrayList<>();
 			String dineroTaquilla = "";
 			ArrayList<String> porcentajeOcupacion = new ArrayList<>();
@@ -413,7 +414,7 @@ public class FestivAndesMaster {
 				asistenciaEspect.add(asistenciaEspect1);
 			}
 			dineroTaquilla = "El dinero total generado en la taquilla fue de " + dinero;
-			entrega = new ConsultaCompania(compañias.getNombre(), asistenciaEspect, dineroTaquilla, porcentajeOcupacion);
+			entrega = new ConsultaCompania(compa�ias.getNombre(), asistenciaEspect, dineroTaquilla, porcentajeOcupacion);
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
@@ -424,7 +425,7 @@ public class FestivAndesMaster {
 			throw e;
 		} finally {
 			try {
-				daoTablaCompañias.cerrarRecursos();
+				daoTablaCompa�ias.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -437,18 +438,18 @@ public class FestivAndesMaster {
 	}
 
 	public ListaConsultaCompania darInfoCompanias() throws Exception {
-		ArrayList<CompañiaTeatro> companias;
-		DAOTablaCompañia daoTablaCompañias = new DAOTablaCompañia();
+		ArrayList<Compa�iaTeatro> companias;
+		DAOTablaCompa�ia daoTablaCompa�ias = new DAOTablaCompa�ia();
 		ArrayList<ConsultaCompania> resultado = new ArrayList<ConsultaCompania>();
 		try 
 		{
 			//////TransacciÃ³n
 			this.conn = darConexion();
-			daoTablaCompañias.setConn(conn);
-			companias = daoTablaCompañias.darInfoCompanias();
-			for (CompañiaTeatro compañiaTeatro : companias) {
+			daoTablaCompa�ias.setConn(conn);
+			companias = daoTablaCompa�ias.darInfoCompanias();
+			for (Compa�iaTeatro compa�iaTeatro : companias) {
 
-				ListaEspectaculos espectaculos = compañiaTeatro.getEspectaculos();
+				ListaEspectaculos espectaculos = compa�iaTeatro.getEspectaculos();
 				ArrayList<String> asistenciaEspect = new ArrayList<>();
 				String dineroTaquilla = "";
 				ArrayList<String> porcentajeOcupacion = new ArrayList<>();
@@ -481,7 +482,7 @@ public class FestivAndesMaster {
 					asistenciaEspect.add(asistenciaEspect1);
 				}
 				dineroTaquilla = "El dinero total generado en la taquilla fue de " + dinero;
-				ConsultaCompania entrega = new ConsultaCompania(compañiaTeatro.getNombre(), asistenciaEspect, dineroTaquilla, porcentajeOcupacion);
+				ConsultaCompania entrega = new ConsultaCompania(compa�iaTeatro.getNombre(), asistenciaEspect, dineroTaquilla, porcentajeOcupacion);
 				resultado.add(entrega);
 			}
 
@@ -495,7 +496,7 @@ public class FestivAndesMaster {
 			throw e;
 		} finally {
 			try {
-				daoTablaCompañias.cerrarRecursos();
+				daoTablaCompa�ias.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -1323,7 +1324,7 @@ public class FestivAndesMaster {
 
 	public ArrayList<Cliente> asistUsuariosFest(int idComp, Date fechaIni, Date fechaFinal,String pCriterio, String pAgrupamiento) throws Exception
 	{
-		DAOTablaCompañia daoCompania = new DAOTablaCompañia();
+		DAOTablaCompa�ia daoCompania = new DAOTablaCompa�ia();
 		ArrayList<Cliente> clientesSinCriterio = new ArrayList<>();
 		try
 		{
@@ -1375,7 +1376,7 @@ public class FestivAndesMaster {
 
 	public ArrayList<Cliente> asistNoUsuariosFest(int idComp, Date fechaIni, Date fechaFinal, String pCriterio, String pAgrupamiento) throws Exception
 	{
-		DAOTablaCompañia daoCompania = new DAOTablaCompañia();
+		DAOTablaCompa�ia daoCompania = new DAOTablaCompa�ia();
 		ArrayList<Cliente> clientesSinCriterio = new ArrayList<>();
 		try
 		{
@@ -1489,7 +1490,7 @@ public class FestivAndesMaster {
 	public List<NotaDebito> retirarCompania(int idC) throws Exception
 	{
 		DAOTablaFuncion daoFuncion = new DAOTablaFuncion();
-		DAOTablaCompañia daoTablaCompañia = new DAOTablaCompañia();
+		DAOTablaCompa�ia daoTablaCompa�ia = new DAOTablaCompa�ia();
 		List<NotaDebito> listaFin = new ArrayList<NotaDebito>();
 		try 
 		{
@@ -1497,10 +1498,10 @@ public class FestivAndesMaster {
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			daoFuncion.setConn(conn);
-			daoTablaCompañia.setConn(conn);
+			daoTablaCompa�ia.setConn(conn);
 			conn.setSavepoint();
 			List<NotaDebito> nueva = new ArrayList<NotaDebito>();
-			CompañiaTeatro compa = daoTablaCompañia.darInfoCompaniasId(idC);
+			Compa�iaTeatro compa = daoTablaCompa�ia.darInfoCompaniasId(idC);
 			List<Espectaculo> listaEspect = compa.getEspectaculos().getEspectaculos();
 			ArrayList<Funcion> listaFun = new ArrayList<>();
 			for (Espectaculo espectaculo : listaEspect) {
@@ -1514,7 +1515,7 @@ public class FestivAndesMaster {
 				}
 				
 			}
-			daoTablaCompañia.cancelarCompania(compa.getId());
+			daoTablaCompa�ia.cancelarCompania(compa.getId());
 			conn.commit();
 			conn.setAutoCommit(true);	
 		}
@@ -1545,13 +1546,13 @@ public class FestivAndesMaster {
 	public List<Rentabilidad> darRentabilidadCompania( Rentabilidad rent, Long idCompania) throws SQLException
 	{
 		ArrayList<Rentabilidad> rentabilidad;
-		DAOTablaCompañia daoCompañia = new DAOTablaCompañia();
+		DAOTablaCompa�ia daoCompa�ia = new DAOTablaCompa�ia();
 		try 
 		{
 			//////TransacciÃ³n
 			this.conn = darConexion();
-			daoCompañia.setConn(conn);
-			rentabilidad = daoCompañia.darRentabilidadCompania(rent,idCompania);
+			daoCompa�ia.setConn(conn);
+			rentabilidad = daoCompa�ia.darRentabilidadCompania(rent,idCompania);
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -1564,7 +1565,7 @@ public class FestivAndesMaster {
 			throw e;
 		} finally {
 			try {
-				daoCompañia.cerrarRecursos();
+				daoCompa�ia.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -1580,7 +1581,7 @@ public class FestivAndesMaster {
 	public List<Rentabilidad> darRentabilidad( Rentabilidad rent) throws SQLException
 	{
 		ArrayList<Rentabilidad> rentabilidad;
-		DAOTablaCompañia daoFestival = new DAOTablaCompañia();
+		DAOTablaCompa�ia daoFestival = new DAOTablaCompa�ia();
 		try 
 		{
 			//////TransacciÃ³n
