@@ -9,12 +9,12 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import vos.Cliente;
-import vos.Compa�iaTeatro;
+import vos.CompañiaTeatro;
 import vos.Espectaculo;
 import vos.Festival;
 import vos.Funcion;
 import vos.ListaCategorias;
-import vos.ListaCompa�ias;
+import vos.ListaCompañias;
 import vos.ListaEspectaculos;
 import vos.ListaFestivales;
 import vos.ListaRequerimientos;
@@ -22,28 +22,28 @@ import vos.Preferencia;
 import vos.Representante;
 import vos.Sitio;
 
-public class DAOTablaCompa�ia {
+public class DAOTablaCompañia {
 
 	/**
-	 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
+	 * Arraylits de recursos que se usan para la ejecuciÃ³n de sentencias SQL
 	 */
 	private ArrayList<Object> recursos;
 
 	/**
-	 * Atributo que genera la conexión a la base de datos
+	 * Atributo que genera la conexiÃ³n a la base de datos
 	 */
 	private Connection conn;
 
 	/**
-	 * Método constructor que crea DAOVideo
+	 * MÃ©todo constructor que crea DAOVideo
 	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
 	 */
-	public DAOTablaCompa�ia() {
+	public DAOTablaCompañia() {
 		recursos = new ArrayList<Object>();
 	}
 
 	/**
-	 * Método que cierra todos los recursos que estan enel arreglo de recursos
+	 * MÃ©todo que cierra todos los recursos que estan enel arreglo de recursos
 	 * <b>post: </b> Todos los recurso del arreglo de recursos han sido cerrados
 	 */
 	public void cerrarRecursos() {
@@ -58,16 +58,16 @@ public class DAOTablaCompa�ia {
 	}
 
 	/**
-	 * Método que inicializa la connection del DAO a la base de datos con la conexión que entra como parámetro.
+	 * MÃ©todo que inicializa la connection del DAO a la base de datos con la conexiÃ³n que entra como parÃ¡metro.
 	 * @param con  - connection a la base de datos
 	 */
 	public void setConn(Connection con){
 		this.conn = con;
 	}
 
-	public Compa�iaTeatro darInfoCompaniasId(int idC) throws SQLException, Exception {
+	public CompañiaTeatro darInfoCompaniasId(int idC) throws SQLException, Exception {
 
-		Compa�iaTeatro compania = null;
+		CompañiaTeatro compania = null;
 
 		String sql = "SELECT * FROM COMPANIA_TEATRO";
 		sql += " WHERE ID = " + idC;
@@ -156,14 +156,14 @@ public class DAOTablaCompa�ia {
 
 			}
 			
-			compania = new Compa�iaTeatro(idComp, nombreCom, fechaLLeg, fechaSali, null , null, new ListaEspectaculos(listaEspec));
+			compania = new CompañiaTeatro(idComp, nombreCom, fechaLLeg, fechaSali, null , null, new ListaEspectaculos(listaEspec));
 		}
 		return compania;
 	}
 
-	public ArrayList<Compa�iaTeatro> darInfoCompanias() throws SQLException, Exception
+	public ArrayList<CompañiaTeatro> darInfoCompanias() throws SQLException, Exception
 	{
-		ArrayList<Compa�iaTeatro> companiasLista = new ArrayList<Compa�iaTeatro>();
+		ArrayList<CompañiaTeatro> companiasLista = new ArrayList<CompañiaTeatro>();
 		String sql = "SELECT * FROM COMPANIA_TEATRO";
 		System.out.println(sql);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
@@ -252,7 +252,7 @@ public class DAOTablaCompa�ia {
 				}
 
 			}
-			Compa�iaTeatro compania = new Compa�iaTeatro(idComp, nombreCom, fechaLLeg, fechaSali, null , null, new ListaEspectaculos(listaEspec));
+			CompañiaTeatro compania = new CompañiaTeatro(idComp, nombreCom, fechaLLeg, fechaSali, null , null, new ListaEspectaculos(listaEspec));
 			companiasLista.add(compania);
 		}
 		
@@ -324,4 +324,81 @@ public class DAOTablaCompa�ia {
 
 
 	}
+	
+		public ArrayList<Rentabilidad> darRentabilidadCompania(Rentabilidad rent, Long idCompania) throws SQLException
+	{
+		ArrayList<Rentabilidad> listaRentabilidad = new ArrayList<>();
+		String sql = " WITH RANGO_FECHAS AS (SELECT ID, FECHA_HORA, ID_ESPECTACULO, ID_SITIO FROM FUNCION WHERE FECHA_HORA BETWEEN '"+ rent.getFechaInicial()+  "' AND '"+ rent.getFechaFinal() + "'), "
+				+ " FUNCION_ESPECTACULO AS (SELECT R.ID, FECHA_HORA, ID_ESPECTACULO, NOMBRE, ID_SITIO FROM (RANGO_FECHAS R INNER JOIN ESPECTACULO E ON R.ID_ESPECTACULO = E.ID)), "
+				+ " ESPECTACULO_COMPANIA AS (SELECT ID, FECHA_HORA, C.ID_ESPECTACULO, NOMBRE, ID_SITIO, ID_COMPANIA FROM (FUNCION_ESPECTACULO F INNER JOIN COMPANIA_ESPECTACULO C ON F.ID_ESPECTACULO = C.ID_ESPECTACULO AND C.ID_COMPANIA= "+idCompania+")), "
+				+ " CON_SITIO AS (SELECT E.ID, FECHA_HORA, ID_ESPECTACULO, NOMBRE, ID_SITIO,NOMBRE_SITIO, LUGAR_ABIERTO, ID_COMPANIA, CAPACIDAD FROM (ESPECTACULO_COMPANIA E INNER JOIN SITIO S ON E.ID_SITIO = S.ID)), "
+				+ " CON_CATEGORIA AS (SELECT ID AS ID_FUNCION, FECHA_HORA, C.ID_ESPECTACULO, NOMBRE AS NOMBRE_ESPECTACULO, CATEGORIA, ID_SITIO, NOMBRE_SITIO, LUGAR_ABIERTO, ID_COMPANIA, CAPACIDAD FROM(CON_SITIO C INNER JOIN CATEGORIA_ESPECTACULO CE ON C.ID_ESPECTACULO = CE.ID_ESPECTACULO)), "
+				+ " VENDIDAS AS (SELECT C.ID_FUNCION, FECHA_HORA, ID_ESPECTACULO, NOMBRE_ESPECTACULO, CATEGORIA, ID_SITIO, NOMBRE_SITIO, LUGAR_ABIERTO, CAPACIDAD, ID_COMPANIA, COUNT(ID_CLIENTE) AS BOLETAS_VENDIDAS, COUNT(ID_CLIENTE) AS ASISTENTES, SUM(B.COSTO) AS TOTAL_FACTURADO FROM(CON_CATEGORIA C INNER JOIN BOLETA B ON C.ID_FUNCION = B.ID_FUNCION AND (B.ESTADO = 2 OR B.ESTADO = 1))  GROUP BY C.ID_FUNCION, FECHA_HORA, ID_ESPECTACULO, NOMBRE_ESPECTACULO, CATEGORIA, ID_SITIO, NOMBRE_SITIO, LUGAR_ABIERTO, ID_COMPANIA, CAPACIDAD ), "
+				+ " PROPORCION AS (SELECT ID_FUNCION, FECHA_HORA, ID_ESPECTACULO, NOMBRE_ESPECTACULO, CATEGORIA, ID_SITIO, NOMBRE_SITIO, LUGAR_ABIERTO, ASISTENTES/CAPACIDAD AS PROPORCION, ID_COMPANIA, BOLETAS_VENDIDAS, ASISTENTES, TOTAL_FACTURADO FROM VENDIDAS), "
+				+ " NOMBRE_COMPANIA AS (SELECT ID_FUNCION, FECHA_HORA, ID_ESPECTACULO, NOMBRE_ESPECTACULO, CATEGORIA, ID_SITIO, NOMBRE_SITIO, LUGAR_ABIERTO, PROPORCION, ID_COMPANIA, BOLETAS_VENDIDAS, ASISTENTES, TOTAL_FACTURADO, NOMBRE FROM (PROPORCION P INNER JOIN COMPANIA_TEATRO CT ON P.ID_COMPANIA = CT.ID)) "
+				+ " SELECT * FROM NOMBRE_COMPANIA";
+
+		System.out.println("SQL stmt:" + sql);
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		while(rs.next())
+		{
+			String fechaInicial = rent.getFechaInicial();
+			String fechaFinal = rent.getFechaFinal();
+			String nombreCompania = rs.getString("NOMBRE");
+			Long idEspectaculo = Long.parseLong(rs.getString("ID_ESPECTACULO"));
+			int totalClientes = Integer.parseInt(rs.getString("ASISTENTES"));
+			int totalBoletas = Integer.parseInt(rs.getString("BOLETAS_VENDIDAS"));
+			Long idSitio = Long.parseLong(rs.getString("ID_SITIO"));
+			char tipo = (rs.getString("LUGAR_ABIERTO")).charAt(0);
+			double proporcion = Double.parseDouble(rs.getString("PROPORCION"));
+			int precio = Integer.parseInt(rs.getString("TOTAL_FACTURADO"));
+			String idCat = rs.getString("CATEGORIA");
+			String fecha = rs.getString("FECHA_HORA");
+			listaRentabilidad.add(new Rentabilidad(fechaInicial, fechaFinal, idEspectaculo, totalClientes,
+					totalBoletas, idSitio, tipo, proporcion, precio,idCat,fecha, nombreCompania));
+		}
+
+		return listaRentabilidad;
+	}
+
+	public ArrayList<Rentabilidad> darRentabilidad(Rentabilidad rent) throws SQLException
+	{
+		ArrayList<Rentabilidad> listaRentabilidad = new ArrayList<>();
+		String sql = " WITH RANGO_FECHAS AS (SELECT ID, FECHA_HORA, ID_ESPECTACULO, ID_SITIO FROM FUNCION WHERE FECHA_HORA BETWEEN '"+ rent.getFechaInicial()+  "' AND '"+ rent.getFechaFinal() + "'), "
+				+ " FUNCION_ESPECTACULO AS (SELECT R.ID, FECHA_HORA, ID_ESPECTACULO, NOMBRE, ID_SITIO FROM (RANGO_FECHAS R INNER JOIN ESPECTACULO E ON R.ID_ESPECTACULO = E.ID)), "
+				+ " ESPECTACULO_COMPANIA AS (SELECT ID, FECHA_HORA, C.ID_ESPECTACULO, NOMBRE, ID_SITIO, ID_COMPANIA FROM (FUNCION_ESPECTACULO F INNER JOIN COMPANIA_ESPECTACULO C ON F.ID_ESPECTACULO = C.ID_ESPECTACULO )), "
+				+ " CON_SITIO AS (SELECT E.ID, FECHA_HORA, ID_ESPECTACULO, NOMBRE, ID_SITIO,NOMBRE_SITIO, LUGAR_ABIERTO, ID_COMPANIA, CAPACIDAD FROM (ESPECTACULO_COMPANIA E INNER JOIN SITIO S ON E.ID_SITIO = S.ID)), "
+				+ " CON_CATEGORIA AS (SELECT ID AS ID_FUNCION, FECHA_HORA, C.ID_ESPECTACULO, NOMBRE AS NOMBRE_ESPECTACULO, CATEGORIA, ID_SITIO, NOMBRE_SITIO, LUGAR_ABIERTO, ID_COMPANIA, CAPACIDAD FROM(CON_SITIO C INNER JOIN CATEGORIA_ESPECTACULO CE ON C.ID_ESPECTACULO = CE.ID_ESPECTACULO)), "
+				+ " VENDIDAS AS (SELECT C.ID_FUNCION, FECHA_HORA, ID_ESPECTACULO, NOMBRE_ESPECTACULO, CATEGORIA, ID_SITIO, NOMBRE_SITIO, LUGAR_ABIERTO, CAPACIDAD, ID_COMPANIA, COUNT(ID_CLIENTE) AS BOLETAS_VENDIDAS, COUNT(ID_CLIENTE) AS ASISTENTES, SUM(B.COSTO) AS TOTAL_FACTURADO FROM(CON_CATEGORIA C INNER JOIN BOLETA B ON C.ID_FUNCION = B.ID_FUNCION AND (B.ESTADO = 2 OR B.ESTADO = 1))  GROUP BY C.ID_FUNCION, FECHA_HORA, ID_ESPECTACULO, NOMBRE_ESPECTACULO, CATEGORIA, ID_SITIO, NOMBRE_SITIO, LUGAR_ABIERTO, ID_COMPANIA, CAPACIDAD ), "
+				+ " PROPORCION AS (SELECT ID_FUNCION, FECHA_HORA, ID_ESPECTACULO, NOMBRE_ESPECTACULO, CATEGORIA, ID_SITIO, NOMBRE_SITIO, LUGAR_ABIERTO, ASISTENTES/CAPACIDAD AS PROPORCION, ID_COMPANIA, BOLETAS_VENDIDAS, ASISTENTES, TOTAL_FACTURADO FROM VENDIDAS), "
+				+ " NOMBRE_COMPANIA AS (SELECT ID_FUNCION, FECHA_HORA, ID_ESPECTACULO, NOMBRE_ESPECTACULO, CATEGORIA, ID_SITIO, NOMBRE_SITIO, LUGAR_ABIERTO, PROPORCION, ID_COMPANIA, BOLETAS_VENDIDAS, ASISTENTES, TOTAL_FACTURADO, NOMBRE FROM (PROPORCION P INNER JOIN COMPANIA_TEATRO CT ON P.ID_COMPANIA = CT.ID)) "
+				+ " SELECT * FROM NOMBRE_COMPANIA";
+
+		System.out.println("SQL stmt:" + sql);
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		while(rs.next())
+		{
+			String fechaInicial = rent.getFechaInicial();
+			String fechaFinal = rent.getFechaFinal();
+			String nombreCompania = rs.getString("NOMBRE");
+			Long idEspectaculo = Long.parseLong(rs.getString("ID_ESPECTACULO"));
+			int totalClientes = Integer.parseInt(rs.getString("ASISTENTES"));
+			int totalBoletas = Integer.parseInt(rs.getString("BOLETAS_VENDIDAS"));
+			Long idSitio = Long.parseLong(rs.getString("ID_SITIO"));
+			char tipo = (rs.getString("LUGAR_ABIERTO")).charAt(0);
+			double proporcion = Double.parseDouble(rs.getString("PROPORCION"));
+			int precio = Integer.parseInt(rs.getString("TOTAL_FACTURADO"));
+			String idCat = rs.getString("CATEGORIA");
+			String fecha = rs.getString("FECHA_HORA");
+			listaRentabilidad.add(new Rentabilidad(fechaInicial, fechaFinal, idEspectaculo, totalClientes,
+					totalBoletas, idSitio, tipo, proporcion, precio,idCat,fecha, nombreCompania));
+		}
+
+		return listaRentabilidad;	
+	}
+
 }
