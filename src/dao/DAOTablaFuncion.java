@@ -328,6 +328,7 @@ public class DAOTablaFuncion {
 				sql3 += " AND ID_FUNCION = " + idFuncion;
 
 				PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
+				
 				recursos.add(prepStmt3);
 				prepStmt3.executeQuery();
 				prepStmt3.close();
