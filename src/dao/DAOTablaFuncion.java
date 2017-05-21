@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import vos.Abonamiento;
 import vos.Boleta;
 import vos.Cliente;
 import vos.CompañiaTeatro;
@@ -23,6 +24,7 @@ import vos.ListaCategorias;
 import vos.ListaCompañias;
 import vos.ListaRequerimientos;
 import vos.Localidad;
+import vos.Sitio;
 
 public class DAOTablaFuncion {
 
@@ -276,8 +278,54 @@ public class DAOTablaFuncion {
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
-
-
 	}
+	
+	public boolean boletaDisponible(Long idFuncion, String localidad) throws SQLException, Exception
+	{
+		boolean boletaDisponible = false;
+		
+		String sql = " WITH NUMERO_BOLETAS_LOCALIDAD AS (SELECT ID_FUNCION, ID_SITIO, ID_LOCALIDAD, NOMBRE, CAPACIDAD, COUNT(*) AS OCUPADAS FROM (BOLETA B INNER JOIN LOCALIDAD L ON B.ID_LOCALIDAD = L.ID AND (B.ESTADO = 0 OR B.ESTADO = 1) AND B.ID_FUNCION ="+ idFuncion +" AND L.NOMBRE = '"+localidad+"') GROUP BY ID_FUNCION, ID_SITIO, ID_LOCALIDAD, NOMBRE, CAPACIDAD), "
+				   + " DISPONIBLES AS (SELECT ID_FUNCION, ID_SITIO, ID_LOCALIDAD, NOMBRE, CAPACIDAD, OCUPADAS, CAPACIDAD-OCUPADAS AS DISPONIBLES FROM NUMERO_BOLETAS_LOCALIDAD) "
+			       + " SELECT * FROM DISPONIBLES";
 
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt1 = conn.prepareStatement(sql);
+		recursos.add(prepStmt1);
+		ResultSet rs = prepStmt1.executeQuery();
+		if (rs.next()) 
+		{
+			if(rs.getInt("DISPONIBLES")>0)
+				boletaDisponible = true;
+		}
+		
+		return boletaDisponible;
+	}
+	
+	public Boleta darBoletaDisponible(Long idFuncion, String localidad) throws SQLException, Exception
+	{
+		Boleta b = null;
+		
+		String sql = " WITH RESPUESTA AS (SELECT * FROM (BOLETA B INNER JOIN LOCALIDAD L ON B.ID_LOCALIDAD = L.ID AND (B.ESTADO = 0 OR B.ESTADO = 3) AND NOMBRE = '"+localidad+"' AND B.ID_FUNCION = "+idFuncion+")) "
+				   + " SELECT * FROM RESPUESTA ";
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt1 = conn.prepareStatement(sql);
+		recursos.add(prepStmt1);
+		ResultSet rs = prepStmt1.executeQuery();
+		if (rs.next()) 
+		{
+			ListaBoletas list = null;
+			Sitio s = null;
+			Espectaculo e = null;
+			Localidad l = new Localidad(Integer.parseInt(rs.getString("ID_LOCALIDAD")), 0, 0, localidad, list, s);
+			Funcion f = new Funcion(rs.getInt("ID_FUNCION"), new Timestamp(0), 0, 0, 0, e, s);
+			Cliente c =null;
+			b = new Boleta(rs.getInt("UBICACION"), rs.getInt("ESTADO"), rs.getDouble("COSTO"), l , f, c);
+		}
+		
+		return b;
+		
+	}
 }

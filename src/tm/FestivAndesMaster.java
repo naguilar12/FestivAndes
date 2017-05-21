@@ -23,6 +23,7 @@ import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
+import vos.Abonamiento;
 import vos.Boleta;
 import vos.Categoria;
 import vos.Cliente;
@@ -644,7 +645,7 @@ public class FestivAndesMaster {
 		return new ListaBoletas(arregloBoletas);
 	}
 
-	public ListaBoletas registrarCompraAbonamiento(ListaBoletas boletas, int id) throws Exception {
+	public ListaBoletas registrarCompraAbonamientoOriginal(ListaBoletas boletas, int id) throws Exception {
 		ArrayList<Boleta> arregloBoletas;
 		DAOTablaCliente daoTablaCliente = new DAOTablaCliente();
 		DAOTablaSitio daoTablaSitio = new DAOTablaSitio();
@@ -1486,7 +1487,7 @@ public class FestivAndesMaster {
 
 		return listaFunciones;
 	}
-	
+
 	public List<NotaDebito> retirarCompania(int idC) throws Exception
 	{
 		DAOTablaFuncion daoFuncion = new DAOTablaFuncion();
@@ -1513,7 +1514,7 @@ public class FestivAndesMaster {
 					}
 					daoFuncion.cancelarFuncion(funcion.getId());
 				}
-				
+
 			}
 			daoTablaCompa�ia.cancelarCompania(compa.getId());
 			conn.commit();
@@ -1542,7 +1543,7 @@ public class FestivAndesMaster {
 
 		return listaFin;
 	}
-	
+
 	public List<Rentabilidad> darRentabilidadCompania( Rentabilidad rent, Long idCompania) throws SQLException
 	{
 		ArrayList<Rentabilidad> rentabilidad;
@@ -1577,7 +1578,7 @@ public class FestivAndesMaster {
 		return rentabilidad;
 
 	}
-	
+
 	public List<Rentabilidad> darRentabilidad( Rentabilidad rent) throws SQLException
 	{
 		ArrayList<Rentabilidad> rentabilidad;
@@ -1610,7 +1611,66 @@ public class FestivAndesMaster {
 			}
 		}
 		return rentabilidad;
-
 	}
+
+	public ListaBoletas registrarCompraAbonamiento(Abonamiento abonamiento, int id) throws Exception {
+		ArrayList<Boleta> arregloBoletas;
+		DAOTablaCliente daoTablaCliente = new DAOTablaCliente();
+		DAOTablaSitio daoTablaSitio = new DAOTablaSitio();
+		DAOTablaFuncion daoTablaFuncion = new DAOTablaFuncion();
+		try 
+		{
+			//////TransacciÃ³n
+			this.conn = darConexion();
+			conn.setAutoCommit(false);
+			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+			daoTablaCliente.setConn(conn);
+			daoTablaFuncion.setConn(conn);
+			daoTablaSitio.setConn(conn);
+			conn.setSavepoint();
+			boolean antesDeTresSem = true;
+
+			boolean todasDisponibles = true;
+			for(int i = 0; i < abonamiento.getIdsFunciones().size(); i++)
+				todasDisponibles = todasDisponibles && daoTablaFuncion.boletaDisponible(abonamiento.getIdsFunciones().get(i), abonamiento.getIdsLocalidades().get(i));
+
+			Cliente c = daoTablaCliente.darCliente(id);
+			arregloBoletas = new ArrayList<>();
+			if(antesDeTresSem&&todasDisponibles)
+			{
+				for(int i = 0; i < abonamiento.getIdsFunciones().size(); i++){
+					Boleta aComprar = daoTablaFuncion.darBoletaDisponible(abonamiento.getIdsFunciones().get(i), abonamiento.getIdsLocalidades().get(i));
+					Boleta b = daoTablaCliente.comprarBoletaNumerada(aComprar, id,true);
+					Localidad loc = daoTablaSitio.darLocalidad(aComprar.getLocalidad().getId());
+					b.setLocalidad(loc);
+					b.setFuncion(daoTablaFuncion.darFuncion(aComprar.getFuncion().getId()));
+					b.setCliente(c);
+					arregloBoletas.add(b);
+				}
+			}
+			conn.commit();
+			conn.setAutoCommit(true);
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoTablaCliente.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return new ListaBoletas(arregloBoletas);
+	}
+
 
 }

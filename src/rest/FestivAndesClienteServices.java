@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
+import vos.Abonamiento;
 import vos.Boleta;
 import vos.Cliente;
 import vos.ConsultaAsistencia;
@@ -163,12 +164,12 @@ public class FestivAndesClienteServices {
 	@Path("{id}/registrarCompraAbonamiento")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response registrarCompraAbonamiento(ListaBoletas boletas,@javax.ws.rs.PathParam("id") int id)
+	public Response registrarCompraAbonamiento(Abonamiento abonamiento,@javax.ws.rs.PathParam("id") int id)
 	{
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		ListaBoletas resultado;
 		try{
-			resultado = tm.registrarCompraAbonamiento(boletas, id);					
+			resultado = tm.registrarCompraAbonamiento(abonamiento, id);					
 
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
