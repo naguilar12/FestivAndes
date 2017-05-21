@@ -12,34 +12,36 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import vos.Abonamiento;
 import vos.Boleta;
 import vos.Cliente;
-import vos.Compa�iaTeatro;
+import vos.CompañiaTeatro;
 import vos.Espectaculo;
 import vos.Festival;
 import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaCategorias;
-import vos.ListaCompa�ias;
+import vos.ListaCompañias;
 import vos.ListaRequerimientos;
 import vos.Localidad;
 import vos.NotaDebito;
+import vos.Sitio;
 
 public class DAOTablaFuncion {
 
 
 	/**
-	 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
+	 * Arraylits de recursos que se usan para la ejecuciÃ³n de sentencias SQL
 	 */
 	private ArrayList<Object> recursos;
 
 	/**
-	 * Atributo que genera la conexión a la base de datos
+	 * Atributo que genera la conexiÃ³n a la base de datos
 	 */
 	private Connection conn;
 
 	/**
-	 * Método constructor que crea DAOVideo
+	 * MÃ©todo constructor que crea DAOVideo
 	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
 	 */
 	public DAOTablaFuncion() {
@@ -47,7 +49,7 @@ public class DAOTablaFuncion {
 	}
 
 	/**
-	 * Método que cierra todos los recursos que estan enel arreglo de recursos
+	 * MÃ©todo que cierra todos los recursos que estan enel arreglo de recursos
 	 * <b>post: </b> Todos los recurso del arreglo de recursos han sido cerrados
 	 */
 	public void cerrarRecursos() {
@@ -62,7 +64,7 @@ public class DAOTablaFuncion {
 	}
 
 	/**
-	 * Método que inicializa la connection del DAO a la base de datos con la conexión que entra como parámetro.
+	 * MÃ©todo que inicializa la connection del DAO a la base de datos con la conexiÃ³n que entra como parÃ¡metro.
 	 * @param con  - connection a la base de datos
 	 */
 	public void setConn(Connection con){
@@ -136,10 +138,10 @@ public class DAOTablaFuncion {
 					String descripcion= rs2.getString("DESCRIPCION");
 					String publicoObjetivo= rs2.getString("PUBLICO_OBJETIVO");
 
-					ListaCompa�ias compa�ias = null;
+					ListaCompañias compañias = null;
 					ListaCategorias categorias = null;
 					ListaRequerimientos requerimientos = null;
-					espectaculo = new Espectaculo(idEspectaculo, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compa�ias, categorias, requerimientos,null);
+					espectaculo = new Espectaculo(idEspectaculo, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compañias, categorias, requerimientos,null);
 
 				}
 				funcion =  new Funcion(id, fechaHora, costo, sillasreservadas, realizada, espectaculo, null);
@@ -281,13 +283,13 @@ public class DAOTablaFuncion {
 			String publicoObjetivo= rs.getString("PUBLICO_OBJETIVO");
 
 
-			List<Compa�iaTeatro> lista = new ArrayList<>();
-			lista.add(new Compa�iaTeatro(idCompania, "", null, null, null, null, null));
-			ListaCompa�ias compa�ias = new ListaCompa�ias(lista);
+			List<CompañiaTeatro> lista = new ArrayList<>();
+			lista.add(new CompañiaTeatro(idCompania, "", null, null, null, null, null));
+			ListaCompañias compañias = new ListaCompañias(lista);
 			ListaCategorias categorias = null;
 			ListaRequerimientos requerimientos = null;
 
-			Espectaculo espectaculo = new Espectaculo(idEspectaculo, nombre, duracion, intermedio, pidioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compa�ias, categorias, requerimientos, null);
+			Espectaculo espectaculo = new Espectaculo(idEspectaculo, nombre, duracion, intermedio, pidioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compañias, categorias, requerimientos, null);
 			listafuncion.add(new Funcion(idFun, fechaHora, costo, sillasreservadas, realizada, espectaculo, null));
 
 		}
@@ -342,5 +344,54 @@ public class DAOTablaFuncion {
 		}
 		return notas;
 	}
+	
+	public boolean boletaDisponible(Long idFuncion, String localidad) throws SQLException, Exception
+	{
+		boolean boletaDisponible = false;
+		
+		String sql = " WITH NUMERO_BOLETAS_LOCALIDAD AS (SELECT ID_FUNCION, ID_SITIO, ID_LOCALIDAD, NOMBRE, CAPACIDAD, COUNT(*) AS OCUPADAS FROM (BOLETA B INNER JOIN LOCALIDAD L ON B.ID_LOCALIDAD = L.ID AND (B.ESTADO = 0 OR B.ESTADO = 1) AND B.ID_FUNCION ="+ idFuncion +" AND L.NOMBRE = '"+localidad+"') GROUP BY ID_FUNCION, ID_SITIO, ID_LOCALIDAD, NOMBRE, CAPACIDAD), "
+				   + " DISPONIBLES AS (SELECT ID_FUNCION, ID_SITIO, ID_LOCALIDAD, NOMBRE, CAPACIDAD, OCUPADAS, CAPACIDAD-OCUPADAS AS DISPONIBLES FROM NUMERO_BOLETAS_LOCALIDAD) "
+			       + " SELECT * FROM DISPONIBLES";
 
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt1 = conn.prepareStatement(sql);
+		recursos.add(prepStmt1);
+		ResultSet rs = prepStmt1.executeQuery();
+		if (rs.next()) 
+		{
+			if(rs.getInt("DISPONIBLES")>0)
+				boletaDisponible = true;
+		}
+		
+		return boletaDisponible;
+	}
+	
+	public Boleta darBoletaDisponible(Long idFuncion, String localidad) throws SQLException, Exception
+	{
+		Boleta b = null;
+		
+		String sql = " WITH RESPUESTA AS (SELECT * FROM (BOLETA B INNER JOIN LOCALIDAD L ON B.ID_LOCALIDAD = L.ID AND (B.ESTADO = 0 OR B.ESTADO = 3) AND NOMBRE = '"+localidad+"' AND B.ID_FUNCION = "+idFuncion+")) "
+				   + " SELECT * FROM RESPUESTA ";
+
+		System.out.println("SQL stmt:" + sql);
+
+		PreparedStatement prepStmt1 = conn.prepareStatement(sql);
+		recursos.add(prepStmt1);
+		ResultSet rs = prepStmt1.executeQuery();
+		if (rs.next()) 
+		{
+			ListaBoletas list = null;
+			Sitio s = null;
+			Espectaculo e = null;
+			Localidad l = new Localidad(Integer.parseInt(rs.getString("ID_LOCALIDAD")), 0, 0, localidad, list, s);
+			Funcion f = new Funcion(rs.getInt("ID_FUNCION"), new Timestamp(0), 0, 0, 0, e, s);
+			Cliente c =null;
+			b = new Boleta(rs.getInt("UBICACION"), rs.getInt("ESTADO"), rs.getDouble("COSTO"), l , f, c);
+		}
+		
+		return b;
+		
+	}
 }
