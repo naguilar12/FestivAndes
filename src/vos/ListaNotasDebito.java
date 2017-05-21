@@ -7,19 +7,19 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class ListaNotasDebito 
 {
 	@JsonProperty(value="notasDebito")
-	private List<NotaDebito> notasDebito;
+	private List<NotaDebitoJM> notasDebito;
 
-	public ListaNotasDebito(@JsonProperty(value="notasDebito") List<NotaDebito> notasDebito) 
+	public ListaNotasDebito(@JsonProperty(value="notasDebito") List<NotaDebitoJM> notasDebito) 
 	{
 		super();
 		this.notasDebito = notasDebito;
 	}
 
-	public List<NotaDebito> getNotasDebito() {
+	public List<NotaDebitoJM> getNotasDebito() {
 		return notasDebito;
 	}
 
-	public void setNotasDebito(List<NotaDebito> notasDebito) {
+	public void setNotasDebito(List<NotaDebitoJM> notasDebito) {
 		this.notasDebito = notasDebito;
 	}
 	

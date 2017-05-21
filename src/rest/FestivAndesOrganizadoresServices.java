@@ -20,6 +20,7 @@ import vos.Funcion;
 import vos.ListaClientes;
 import vos.ListaNotasDebito;
 import vos.NotaDebito;
+import vos.NotaDebitoJM;
 import vos.RespuestaConsultaCompraBoletas;
 import vos.Resultado;
 

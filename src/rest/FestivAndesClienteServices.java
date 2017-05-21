@@ -24,7 +24,7 @@ import vos.ListaBoletas;
 import vos.ListaCompañias;
 import vos.ListaNotasDebito;
 import vos.ListaPreferencias;
-import vos.NotaDebito;
+import vos.NotaDebitoJM;
 import vos.Preferencia;
 import vos.RFC1;
 import vos.Resultado;
@@ -184,7 +184,7 @@ public class FestivAndesClienteServices {
 	public Response devolverBoletas(Boleta pBoleta,@javax.ws.rs.PathParam("id") int id){
 		System.out.println("llegue aqui");
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
-		NotaDebito result;
+		NotaDebitoJM result;
 		try{
 			result = tm.devolverBoleta(pBoleta, id, true);					
 

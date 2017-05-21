@@ -44,6 +44,7 @@ import vos.ListaPreferencias;
 import vos.ListaVideos;
 import vos.Localidad;
 import vos.NotaDebito;
+import vos.NotaDebitoJM;
 import vos.Organizador;
 import vos.Preferencia;
 import vos.RespuestaConsultaCompraBoletas;
@@ -1032,13 +1033,13 @@ public class FestivAndesMaster {
 
 
 
-	public NotaDebito devolverBoleta(Boleta pBoleta, int id, boolean cerrar) throws Exception
+	public NotaDebitoJM devolverBoleta(Boleta pBoleta, int id, boolean cerrar) throws Exception
 	{
 		System.out.println(1);
 		DAOTablaCliente daoCliente = new DAOTablaCliente();
 		Boleta devolver = null;
 		Boleta nueva = null;
-		NotaDebito resultado = null;
+		NotaDebitoJM resultado = null;
 		try 
 		{
 			this.conn = darConexion();
@@ -1068,7 +1069,7 @@ public class FestivAndesMaster {
 					daoCliente.devolverBoleta(pBoleta);
 				}
 				nueva = daoCliente.darBoleta(pBoleta);
-				resultado = new NotaDebito(cliente, nueva.getCosto(), nueva.getFuncion(), nueva);
+				resultado = new NotaDebitoJM(cliente, nueva.getCosto(), nueva.getFuncion(), nueva);
 			}
 			conn.commit();
 			conn.setAutoCommit(true);			
@@ -1102,7 +1103,7 @@ public class FestivAndesMaster {
 		System.out.println(1);
 		DAOTablaCliente daoCliente = new DAOTablaCliente();
 		ArrayList<Boleta> resultado = new ArrayList<Boleta>();
-		List<NotaDebito> notas = new ArrayList<NotaDebito>();
+		List<NotaDebitoJM> notas = new ArrayList<NotaDebitoJM>();
 		try
 		{
 			this.conn = darConexion();
@@ -1131,7 +1132,7 @@ public class FestivAndesMaster {
 					{
 						if(boleta.getEstado()==2)
 						{
-							NotaDebito nota =devolverBoleta(boleta, cliente.getId(), false);
+							NotaDebitoJM nota =devolverBoleta(boleta, cliente.getId(), false);
 							notas.add(nota);
 						}
 					}
@@ -1169,7 +1170,7 @@ public class FestivAndesMaster {
 	{
 		DAOTablaCliente daoCliente = new DAOTablaCliente();
 		DAOTablaFuncion daoFuncion = new DAOTablaFuncion();
-		List<NotaDebito> resultado = new ArrayList<NotaDebito>();
+		List<NotaDebitoJM> resultado = new ArrayList<NotaDebitoJM>();
 		try 
 		{
 			this.conn = darConexion();
@@ -1188,7 +1189,7 @@ public class FestivAndesMaster {
 						if(boleta.getEstado()==1 || boleta.getEstado()==2)
 						{
 							daoCliente.devolverBoleta(boleta);
-							resultado.add(new NotaDebito(boleta.getCliente(), boleta.getCosto(), boleta.getFuncion(), boleta));							
+							resultado.add(new NotaDebitoJM(boleta.getCliente(), boleta.getCosto(), boleta.getFuncion(), boleta));							
 						}
 					}
 				}
@@ -1208,6 +1209,7 @@ public class FestivAndesMaster {
 			throw e;
 		} finally {
 			try {
+				daoFuncion.cerrarRecursos();
 				daoCliente.cerrarRecursos();
 				if(this.conn!=null && cerrar)
 					this.conn.close();
@@ -1488,6 +1490,7 @@ public class FestivAndesMaster {
 	
 	public List<NotaDebito> retirarCompania(int idC) throws Exception
 	{
+		DAOTablaCliente daoCliente = new DAOTablaCliente();
 		DAOTablaFuncion daoFuncion = new DAOTablaFuncion();
 		DAOTablaCompañia daoTablaCompañia = new DAOTablaCompañia();
 		List<NotaDebito> listaFin = new ArrayList<NotaDebito>();
@@ -1498,23 +1501,10 @@ public class FestivAndesMaster {
 			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			daoFuncion.setConn(conn);
 			daoTablaCompañia.setConn(conn);
+			daoCliente.setConn(conn);
 			conn.setSavepoint();
-			List<NotaDebito> nueva = new ArrayList<NotaDebito>();
-			CompañiaTeatro compa = daoTablaCompañia.darInfoCompaniasId(idC);
-			List<Espectaculo> listaEspect = compa.getEspectaculos().getEspectaculos();
-			ArrayList<Funcion> listaFun = new ArrayList<>();
-			for (Espectaculo espectaculo : listaEspect) {
-				listaFun = espectaculo.getFunciones();
-				for (Funcion funcion : listaFun) {
-					nueva= cancelarFuncion(funcion.getId(), false).getNotasDebito();
-					for (NotaDebito nota : nueva) {
-						listaFin.add(nota);
-					}
-					daoFuncion.cancelarFuncion(funcion.getId());
-				}
-				
-			}
-			daoTablaCompañia.cancelarCompania(compa.getId());
+			daoTablaCompañia.cancelarCompania(idC);
+			listaFin = daoFuncion.cancelarFuncion(idC);
 			conn.commit();
 			conn.setAutoCommit(true);	
 		}
