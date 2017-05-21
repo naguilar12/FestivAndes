@@ -22,6 +22,7 @@ import vos.ListaClientes;
 import vos.ListaNotasDebito;
 import vos.ListaRentabilidad;
 import vos.NotaDebito;
+import vos.NotaDebitoJM;
 import vos.Rentabilidad;
 import vos.RespuestaConsultaCompraBoletas;
 import vos.Resultado;

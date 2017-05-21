@@ -355,6 +355,7 @@ public class DAOTablaCliente {
 		sql += " AND ID_LOCALIDAD = " + pBoleta.getLocalidad().getId();
 		sql += " AND ID_FUNCION = " + pBoleta.getFuncion().getId();
 
+		System.out.println(sql);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();

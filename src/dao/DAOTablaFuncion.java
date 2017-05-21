@@ -15,32 +15,33 @@ import java.util.ListIterator;
 import vos.Abonamiento;
 import vos.Boleta;
 import vos.Cliente;
-import vos.Compa�iaTeatro;
+import vos.CompañiaTeatro;
 import vos.Espectaculo;
 import vos.Festival;
 import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaCategorias;
-import vos.ListaCompa�ias;
+import vos.ListaCompañias;
 import vos.ListaRequerimientos;
 import vos.Localidad;
+import vos.NotaDebito;
 import vos.Sitio;
 
 public class DAOTablaFuncion {
 
 
 	/**
-	 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
+	 * Arraylits de recursos que se usan para la ejecuciÃ³n de sentencias SQL
 	 */
 	private ArrayList<Object> recursos;
 
 	/**
-	 * Atributo que genera la conexión a la base de datos
+	 * Atributo que genera la conexiÃ³n a la base de datos
 	 */
 	private Connection conn;
 
 	/**
-	 * Método constructor que crea DAOVideo
+	 * MÃ©todo constructor que crea DAOVideo
 	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
 	 */
 	public DAOTablaFuncion() {
@@ -48,7 +49,7 @@ public class DAOTablaFuncion {
 	}
 
 	/**
-	 * Método que cierra todos los recursos que estan enel arreglo de recursos
+	 * MÃ©todo que cierra todos los recursos que estan enel arreglo de recursos
 	 * <b>post: </b> Todos los recurso del arreglo de recursos han sido cerrados
 	 */
 	public void cerrarRecursos() {
@@ -63,7 +64,7 @@ public class DAOTablaFuncion {
 	}
 
 	/**
-	 * Método que inicializa la connection del DAO a la base de datos con la conexión que entra como parámetro.
+	 * MÃ©todo que inicializa la connection del DAO a la base de datos con la conexiÃ³n que entra como parÃ¡metro.
 	 * @param con  - connection a la base de datos
 	 */
 	public void setConn(Connection con){
@@ -102,39 +103,66 @@ public class DAOTablaFuncion {
 		Funcion funcion = null;
 
 		String sql = "SELECT * FROM FUNCION WHERE ID = " + idF;
-		
-		System.out.println("SQL stmt:" + sql);
-
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
+		try{
+			if (rs.next()) {
 
-		if (rs.next()) {
+				int id = Integer.parseInt(rs.getString("id"));
+				int idEspectaculo = Integer.parseInt(rs.getString("id_espectaculo"));
+				Timestamp fechaHora = rs.getTimestamp("fecha_hora");
+				double costo = Double.parseDouble(rs.getString("costo"));
+				int sillasreservadas = Integer.parseInt(rs.getString("sillas_ocupadas"));
+				int  realizada = Integer.parseInt(rs.getString("ya_se_realizo"));
 
-			int id = Integer.parseInt(rs.getString("id"));
-			int idEspectaculo = Integer.parseInt(rs.getString("id_espectaculo"));
-			Timestamp fechaHora = rs.getTimestamp("fecha_hora");
-			double costo = Double.parseDouble(rs.getString("costo"));
-			int sillasreservadas = Integer.parseInt(rs.getString("sillas_ocupadas"));
-			int  realizada = Integer.parseInt(rs.getString("ya_se_realizo"));
-			
-			ListaCompa�ias compa�ias = null;
-			ListaCategorias categorias = null;
-			ListaRequerimientos requerimientos = null;
-			
-			Espectaculo espectaculo = new Espectaculo(idEspectaculo, "", 0, 0, "", "", 0, 0, 0, 0, "", "", compa�ias, categorias, requerimientos, null);
-			funcion =  new Funcion(id, fechaHora, costo, sillasreservadas, realizada, espectaculo, null);
+				Espectaculo espectaculo = null;
 
+				String sql2 = "SELECT * FROM ESPECTACULO WHERE ID=" + idEspectaculo;
+
+
+				PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+				recursos.add(prepStmt2);
+				ResultSet rs2 = prepStmt2.executeQuery();
+				if (rs2.next()) {
+
+					String nombre = rs2.getString("NOMBRE");
+					double duracion = Double.parseDouble(rs2.getString("DURACION"));
+					int  intermedio= Integer.parseInt(rs2.getString("INTERMEDIO"));
+					String idioma= rs2.getString("IDIOMA");
+					String clasificacion= rs2.getString("CLASIFICACION");
+					double costoRealizacion = Double.parseDouble(rs2.getString("COSTO_REALIZACION"));
+					int  publicoActivo= Integer.parseInt(rs2.getString("PUBLICO_ACTIVO"));
+					int  traduccionSubtitulos = Integer.parseInt(rs2.getString("TRADUCCION_SUBTITULOS"));
+					int  traduccionAudifonos = Integer.parseInt(rs2.getString("TRADUCCION_AUDIFONOS"));
+					String descripcion= rs2.getString("DESCRIPCION");
+					String publicoObjetivo= rs2.getString("PUBLICO_OBJETIVO");
+
+					ListaCompañias compañias = null;
+					ListaCategorias categorias = null;
+					ListaRequerimientos requerimientos = null;
+					espectaculo = new Espectaculo(idEspectaculo, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compañias, categorias, requerimientos,null);
+
+				}
+				funcion =  new Funcion(id, fechaHora, costo, sillasreservadas, realizada, espectaculo, null);
+				rs2.close();
+				prepStmt2.close();
+			}
 		}
+		finally {
+			rs.close();
+			prepStmt.close();
+		}
+
 		return funcion;
 	}
-	
+
 	public ListaBoletas darBoletasFuncion (int idF) throws SQLException, Exception
 	{
 		ArrayList<Boleta> boletas = new ArrayList<>();
 
 		String sql = "SELECT * FROM BOLETA WHERE ID_FUNCION =" + idF;
-		
+
 		System.out.println(sql);
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
@@ -145,14 +173,14 @@ public class DAOTablaFuncion {
 			int idLocalidad = rs.getInt("ID_LOCALIDAD");
 			int idFuncion = rs.getInt("ID_FUNCION");
 			int idCliente = rs.getInt("ID_CLIENTE");
-			
+
 			int ubicacion = rs.getInt("UBICACION");
 			int estado = rs.getInt("ESTADO");
 			double costo = rs.getDouble("COSTO");
 
 			Localidad localidad =  new Localidad(idLocalidad, 0, 0, "", null, null);
-			Funcion funcion = new Funcion(idFuncion, null, 0, 0, 0, null,null);
-			
+			Funcion funcion = darFuncion(idFuncion);
+
 			Cliente resultado = null;
 
 			String sql1 = "SELECT * FROM USUARIO WHERE ID ="+idCliente;
@@ -179,17 +207,17 @@ public class DAOTablaFuncion {
 				}
 			}
 			Boleta bol = new Boleta(ubicacion, estado, costo, localidad, funcion, resultado); 
-			
+
 			boletas.add(bol);
 		}
-		
+
 
 		return new ListaBoletas(boletas);
 
 	}
-	
+
 	public ArrayList<Funcion> darFunciones(String fechas, String compa, String idioma, String traduccion) throws SQLException, Exception {
-		
+
 		ArrayList<Funcion> listafuncion = new ArrayList<>();
 		String sql = "WITH LISTA_FUNCION AS (SELECT F.ID AS IDFUN, ID_ESPECTACULO, ID_SITIO, COSTO, SILLAS_OCUPADAS, FECHA_HORA, YA_SE_REALIZO, ESTADO FROM FUNCION F)"
 				+ "SELECT * FROM (LISTA_FUNCION D INNER JOIN ESPECTACULO E ON D.ID_ESPECTACULO = E.ID) NATURAL JOIN COMPANIA_ESPECTACULO C WHERE 1=1 ";
@@ -201,7 +229,7 @@ public class DAOTablaFuncion {
 		{
 			sql+=fechas;
 		}
-		
+
 		if(compa.isEmpty())
 		{
 			sql += "AND 1=1 ";
@@ -210,7 +238,7 @@ public class DAOTablaFuncion {
 		{
 			sql+=compa;
 		}
-		
+
 		if(idioma.isEmpty())
 		{
 			sql += "AND 1=1 ";
@@ -219,7 +247,7 @@ public class DAOTablaFuncion {
 		{
 			sql+=idioma;
 		}
-		
+
 		if(traduccion.isEmpty())
 		{
 			sql += "AND 1=1 ";
@@ -253,31 +281,68 @@ public class DAOTablaFuncion {
 			int  traduccionAudifonos = Integer.parseInt(rs.getString("TRADUCCION_AUDIFONOS"));
 			String descripcion= rs.getString("DESCRIPCION");
 			String publicoObjetivo= rs.getString("PUBLICO_OBJETIVO");
-			
-			
-			List<Compa�iaTeatro> lista = new ArrayList<>();
-			lista.add(new Compa�iaTeatro(idCompania, "", null, null, null, null, null));
-			ListaCompa�ias compa�ias = new ListaCompa�ias(lista);
+
+
+			List<CompañiaTeatro> lista = new ArrayList<>();
+			lista.add(new CompañiaTeatro(idCompania, "", null, null, null, null, null));
+			ListaCompañias compañias = new ListaCompañias(lista);
 			ListaCategorias categorias = null;
 			ListaRequerimientos requerimientos = null;
-			
-			Espectaculo espectaculo = new Espectaculo(idEspectaculo, nombre, duracion, intermedio, pidioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compa�ias, categorias, requerimientos, null);
+
+			Espectaculo espectaculo = new Espectaculo(idEspectaculo, nombre, duracion, intermedio, pidioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compañias, categorias, requerimientos, null);
 			listafuncion.add(new Funcion(idFun, fechaHora, costo, sillasreservadas, realizada, espectaculo, null));
 
 		}
 		return listafuncion;
 	}
 
-	public void cancelarFuncion(int idFun) throws SQLException, Exception
+	public List<NotaDebito> cancelarFuncion(int idC) throws SQLException, Exception
 	{
+		List<NotaDebito> notas = new ArrayList<>();
 
-
-		String sql = "UPDATE BOLETA SET ESTADO = 0";
-		sql += " WHERE ID = " + idFun;
-
+		String sql = "UPDATE FUNCION FUN SET ESTADO = 0 WHERE EXISTS ";
+		sql += " (SELECT * FROM (SELECT ID AS IDFUN  FROM(SELECT ID_ESPECTACULO FROM COMPANIA_ESPECTACULO E WHERE E.ID_COMPANIA = " + idC + " ) ";
+		sql += "NATURAL JOIN FUNCION E )IDFUN WHERE IDFUN.IDFUN = FUN.ID AND FUN.YA_SE_REALIZO=0)";
+		System.out.println(sql);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
+
+		String sql2 = "SELECT * FROM BOLETA BOL INNER JOIN (SELECT * FROM (SELECT ID AS IDFUN  FROM(SELECT ID_ESPECTACULO FROM COMPANIA_ESPECTACULO E WHERE E.ID_COMPANIA = 1) "
+				+ "NATURAL JOIN FUNCION E)IDFUN ) ON BOL.ID_FUNCION= IDFUN";
+		PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+		recursos.add(prepStmt2);
+		ResultSet rs =prepStmt2.executeQuery();
+		System.out.println(sql2);
+		try{
+			while (rs.next()) {
+				long codigo = 1;
+				long idLocalidad = rs.getLong("ID_LOCALIDAD");
+				long idUbicacion = rs.getLong("UBICACION");
+				long idFuncion = rs.getLong("ID_FUNCION");
+				long idCliente = rs.getLong("ID_CLIENTE");
+
+				Funcion fun = darFuncion((int)idFuncion);
+
+				String sql3 = "UPDATE BOLETA SET ESTADO = 3";
+				sql3 += " WHERE UBICACION ='" + idUbicacion+"'";
+				sql3 += " AND ID_LOCALIDAD = " + idLocalidad;
+				sql3 += " AND ID_FUNCION = " + idFuncion;
+
+				PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
+				
+				recursos.add(prepStmt3);
+				prepStmt3.executeQuery();
+				prepStmt3.close();
+				NotaDebito nuevaNota = new NotaDebito(codigo, codigo, new Date(), fun.getFechaHora(), idCliente, idFuncion, fun);
+				notas.add(nuevaNota);
+			}
+		}
+		finally {
+			rs.close();
+			prepStmt.close();
+		}
+		return notas;
 	}
 	
 	public boolean boletaDisponible(Long idFuncion, String localidad) throws SQLException, Exception
@@ -287,6 +352,7 @@ public class DAOTablaFuncion {
 		String sql = " WITH NUMERO_BOLETAS_LOCALIDAD AS (SELECT ID_FUNCION, ID_SITIO, ID_LOCALIDAD, NOMBRE, CAPACIDAD, COUNT(*) AS OCUPADAS FROM (BOLETA B INNER JOIN LOCALIDAD L ON B.ID_LOCALIDAD = L.ID AND (B.ESTADO = 0 OR B.ESTADO = 1) AND B.ID_FUNCION ="+ idFuncion +" AND L.NOMBRE = '"+localidad+"') GROUP BY ID_FUNCION, ID_SITIO, ID_LOCALIDAD, NOMBRE, CAPACIDAD), "
 				   + " DISPONIBLES AS (SELECT ID_FUNCION, ID_SITIO, ID_LOCALIDAD, NOMBRE, CAPACIDAD, OCUPADAS, CAPACIDAD-OCUPADAS AS DISPONIBLES FROM NUMERO_BOLETAS_LOCALIDAD) "
 			       + " SELECT * FROM DISPONIBLES";
+
 
 		System.out.println("SQL stmt:" + sql);
 

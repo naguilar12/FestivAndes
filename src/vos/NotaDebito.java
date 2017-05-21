@@ -1,45 +1,81 @@
 package vos;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import java.util.Date;
 
 public class NotaDebito {
 
-	@JsonProperty(value="cliente")
-	private Cliente cliente;
+	private Long idDevolucion;
 	
-	@JsonProperty(value="dinero")
-	private double dinero;
+	private Long idBoleta;
 	
-	@JsonProperty(value="funcion")
+	private Date dateDevolucion;
+	
+	private Date dateFuncion;
+	
+	private Long idCliente;
+	
+	private Long idFuncion;
+	
 	private Funcion funcion;
-	
-	@JsonProperty(value="boleta")
-	private Boleta boleta;
-	
-	
 
-	public NotaDebito(@JsonProperty(value="cliente") Cliente cliente, @JsonProperty(value="dinero") double dinero, @JsonProperty(value="funcion") Funcion funcion, @JsonProperty(value="boleta") Boleta boleta) {
-		super();
-		this.cliente = cliente;
-		this.dinero = dinero;
+	public NotaDebito(Long idDevolucion, Long idBoleta, Date dateDevolucion, Date dateFuncion, Long idCliente,
+			Long idFuncion, Funcion funcion) {
+		
+		this.idDevolucion = idDevolucion;
+		this.idBoleta = idBoleta;
+		this.dateDevolucion = dateDevolucion;
+		this.dateFuncion = dateFuncion;
+		this.idCliente = idCliente;
+		this.idFuncion = idFuncion;
 		this.funcion = funcion;
-		this.boleta = boleta;
 	}
 
-	public Cliente getCliente() {
-		return cliente;
+	public Long getIdDevolucion() {
+		return idDevolucion;
 	}
 
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
+	public void setIdDevolucion(Long idDevolucion) {
+		this.idDevolucion = idDevolucion;
 	}
 
-	public double getDinero() {
-		return dinero;
+	public Long getIdBoleta() {
+		return idBoleta;
 	}
 
-	public void setDinero(double dinero) {
-		this.dinero = dinero;
+	public void setIdBoleta(Long idBoleta) {
+		this.idBoleta = idBoleta;
+	}
+
+	public Date getDateDevolucion() {
+		return dateDevolucion;
+	}
+
+	public void setDateDevolucion(Date dateDevolucion) {
+		this.dateDevolucion = dateDevolucion;
+	}
+
+	public Date getDateFuncion() {
+		return dateFuncion;
+	}
+
+	public void setDateFuncion(Date dateFuncion) {
+		this.dateFuncion = dateFuncion;
+	}
+
+	public Long getIdCliente() {
+		return idCliente;
+	}
+
+	public void setIdCliente(Long idCliente) {
+		this.idCliente = idCliente;
+	}
+
+	public Long getIdFuncion() {
+		return idFuncion;
+	}
+
+	public void setIdFuncion(Long idFuncion) {
+		this.idFuncion = idFuncion;
 	}
 
 	public Funcion getFuncion() {
@@ -49,13 +85,19 @@ public class NotaDebito {
 	public void setFuncion(Funcion funcion) {
 		this.funcion = funcion;
 	}
-
-	public Boleta getBoleta() {
-		return boleta;
-	}
-
-	public void setBoleta(Boleta boleta) {
-		this.boleta = boleta;
+	
+	public String toString()
+	{
+		String retu = "-------------------------------\n"
+				+ "Nota de debito número: " + idDevolucion + "\n"
+				+ "para el usuario identificado con el número: " + idCliente + ".\n"
+				+"\n"
+				+"Fecha solicitud: " + dateDevolucion.toString()+ " :\n"
+				+"Comprobante que solicita la devolución del dinero de la boleta: "+ idBoleta+"\n"
+				+ "para la función: " + idFuncion + " del espectaculo: "+ funcion.getEspectaculo().getNombre() +"\n"
+				+"a realizarse en la fecha: " + funcion.getFechaHora() + ".\n"
+				+  "-------------------------------\n";
+		return retu;
 	}
 	
 	

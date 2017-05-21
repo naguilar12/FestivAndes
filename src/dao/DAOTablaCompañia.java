@@ -316,7 +316,7 @@ public class DAOTablaCompañia {
 	{
 
 
-		String sql = "UPDATE BOLETA SET ESTADO = 0";
+		String sql = "UPDATE COMPANIA_TEATRO SET ESTADO = 0";
 		sql += " WHERE ID = " + idComp;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
