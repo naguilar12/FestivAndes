@@ -15,13 +15,13 @@ import java.util.ListIterator;
 import vos.Abonamiento;
 import vos.Boleta;
 import vos.Cliente;
-import vos.CompañiaTeatro;
+import vos.CompaniaTeatro;
 import vos.Espectaculo;
 import vos.Festival;
 import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaCategorias;
-import vos.ListaCompañias;
+import vos.ListaCompanias;
 import vos.ListaRequerimientos;
 import vos.Localidad;
 import vos.NotaDebito;
@@ -138,10 +138,10 @@ public class DAOTablaFuncion {
 					String descripcion= rs2.getString("DESCRIPCION");
 					String publicoObjetivo= rs2.getString("PUBLICO_OBJETIVO");
 
-					ListaCompañias compañias = null;
+					ListaCompanias companias = null;
 					ListaCategorias categorias = null;
 					ListaRequerimientos requerimientos = null;
-					espectaculo = new Espectaculo(idEspectaculo, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compañias, categorias, requerimientos,null);
+					espectaculo = new Espectaculo(idEspectaculo, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, companias, categorias, requerimientos,null);
 
 				}
 				funcion =  new Funcion(id, fechaHora, costo, sillasreservadas, realizada, espectaculo, null);
@@ -283,13 +283,13 @@ public class DAOTablaFuncion {
 			String publicoObjetivo= rs.getString("PUBLICO_OBJETIVO");
 
 
-			List<CompañiaTeatro> lista = new ArrayList<>();
-			lista.add(new CompañiaTeatro(idCompania, "", null, null, null, null, null));
-			ListaCompañias compañias = new ListaCompañias(lista);
+			List<CompaniaTeatro> lista = new ArrayList<>();
+			lista.add(new CompaniaTeatro(idCompania, "", null, null, null, null, null));
+			ListaCompanias companias = new ListaCompanias(lista);
 			ListaCategorias categorias = null;
 			ListaRequerimientos requerimientos = null;
 
-			Espectaculo espectaculo = new Espectaculo(idEspectaculo, nombre, duracion, intermedio, pidioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compañias, categorias, requerimientos, null);
+			Espectaculo espectaculo = new Espectaculo(idEspectaculo, nombre, duracion, intermedio, pidioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, companias, categorias, requerimientos, null);
 			listafuncion.add(new Funcion(idFun, fechaHora, costo, sillasreservadas, realizada, espectaculo, null));
 
 		}

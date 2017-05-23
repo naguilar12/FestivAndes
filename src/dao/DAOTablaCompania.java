@@ -9,12 +9,12 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import vos.Cliente;
-import vos.CompañiaTeatro;
+import vos.CompaniaTeatro;
 import vos.Espectaculo;
 import vos.Festival;
 import vos.Funcion;
 import vos.ListaCategorias;
-import vos.ListaCompañias;
+import vos.ListaCompanias;
 import vos.ListaEspectaculos;
 import vos.ListaFestivales;
 import vos.ListaRequerimientos;
@@ -23,7 +23,7 @@ import vos.Rentabilidad;
 import vos.Representante;
 import vos.Sitio;
 
-public class DAOTablaCompañia {
+public class DAOTablaCompania {
 
 	/**
 	 * Arraylits de recursos que se usan para la ejecuciÃƒÂ³n de sentencias SQL
@@ -39,7 +39,7 @@ public class DAOTablaCompañia {
 	 * MÃƒÂ©todo constructor que crea DAOVideo
 	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
 	 */
-	public DAOTablaCompañia() {
+	public DAOTablaCompania() {
 		recursos = new ArrayList<Object>();
 	}
 
@@ -66,9 +66,9 @@ public class DAOTablaCompañia {
 		this.conn = con;
 	}
 
-	public CompañiaTeatro darInfoCompaniasId(int idC) throws SQLException, Exception {
+	public CompaniaTeatro darInfoCompaniasId(int idC) throws SQLException, Exception {
 
-		CompañiaTeatro compania = null;
+		CompaniaTeatro compania = null;
 
 		String sql = "SELECT * FROM COMPANIA_TEATRO";
 		sql += " WHERE ID = " + idC;
@@ -157,14 +157,14 @@ public class DAOTablaCompañia {
 
 			}
 			
-			compania = new CompañiaTeatro(idComp, nombreCom, fechaLLeg, fechaSali, null , null, new ListaEspectaculos(listaEspec));
+			compania = new CompaniaTeatro(idComp, nombreCom, fechaLLeg, fechaSali, null , null, new ListaEspectaculos(listaEspec));
 		}
 		return compania;
 	}
 
-	public ArrayList<CompañiaTeatro> darInfoCompanias() throws SQLException, Exception
+	public ArrayList<CompaniaTeatro> darInfoCompanias() throws SQLException, Exception
 	{
-		ArrayList<CompañiaTeatro> companiasLista = new ArrayList<CompañiaTeatro>();
+		ArrayList<CompaniaTeatro> companiasLista = new ArrayList<CompaniaTeatro>();
 		String sql = "SELECT * FROM COMPANIA_TEATRO";
 		System.out.println(sql);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
@@ -253,7 +253,7 @@ public class DAOTablaCompañia {
 				}
 
 			}
-			CompañiaTeatro compania = new CompañiaTeatro(idComp, nombreCom, fechaLLeg, fechaSali, null , null, new ListaEspectaculos(listaEspec));
+			CompaniaTeatro compania = new CompaniaTeatro(idComp, nombreCom, fechaLLeg, fechaSali, null , null, new ListaEspectaculos(listaEspec));
 			companiasLista.add(compania);
 		}
 		

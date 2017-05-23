@@ -14,7 +14,7 @@ import vos.Festival;
 import vos.Funcion;
 import vos.ListaBoletas;
 import vos.ListaClientes;
-import vos.ListaCompañias;
+import vos.ListaCompanias;
 import vos.ListaOrganizadores;
 import vos.Localidad;
 import vos.Preferencia;

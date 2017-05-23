@@ -22,7 +22,7 @@ import vos.ConsultaAsistencia;
 import vos.ConsultaFuncion;
 import vos.Funcion;
 import vos.ListaBoletas;
-import vos.ListaCompañias;
+import vos.ListaCompanias;
 import vos.ListaNotasDebito;
 import vos.ListaPreferencias;
 import vos.NotaDebitoJM;

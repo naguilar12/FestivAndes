@@ -43,7 +43,7 @@ public class Espectaculo {
 	private String publicoObjetivo;
 	
 	@JsonProperty(value="compañias")
-	private ListaCompañias compañias;
+	private ListaCompanias compañias;
 	
 	@JsonProperty(value="categorias")
 	private ListaCategorias categorias;
@@ -56,7 +56,7 @@ public class Espectaculo {
 
 	public Espectaculo(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="duracion")double duracion, @JsonProperty(value="intermedio")int intermedio, @JsonProperty(value="idioma")String idioma, @JsonProperty(value="clasificacion")String clasificacion,
 			@JsonProperty(value="costoRealizacion")double costoRealizacion, @JsonProperty(value="publicoActivo")int publicoActivo, @JsonProperty(value="traduccionSubtitulos")int traduccionSubtitulos, @JsonProperty(value="traduccionAudifonos")int traduccionAudifonos,
-			@JsonProperty(value="descripcion")String descripcion, @JsonProperty(value="publicoObjetivo")String publicoObjetivo, @JsonProperty(value="compañias")ListaCompañias compañias, @JsonProperty(value="categorias")ListaCategorias categorias, @JsonProperty(value="requerimientos")ListaRequerimientos requerimientos, @JsonProperty(value="funciones") ArrayList<Funcion> funciones) {
+			@JsonProperty(value="descripcion")String descripcion, @JsonProperty(value="publicoObjetivo")String publicoObjetivo, @JsonProperty(value="compañias")ListaCompanias compañias, @JsonProperty(value="categorias")ListaCategorias categorias, @JsonProperty(value="requerimientos")ListaRequerimientos requerimientos, @JsonProperty(value="funciones") ArrayList<Funcion> funciones) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -189,11 +189,11 @@ public class Espectaculo {
 		this.publicoObjetivo = publicoObjetivo;
 	}
 
-	public ListaCompañias getCompañias() {
+	public ListaCompanias getCompañias() {
 		return compañias;
 	}
 
-	public void setCompañias(ListaCompañias compañias) {
+	public void setCompañias(ListaCompanias compañias) {
 		this.compañias = compañias;
 	}
 

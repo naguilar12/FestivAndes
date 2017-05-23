@@ -14,7 +14,7 @@ import vos.Cliente;
 import vos.Festival;
 import vos.FiltroConsultaCompraBoletas;
 import vos.ListaClientes;
-import vos.ListaCompañias;
+import vos.ListaCompanias;
 import vos.ListaOrganizadores;
 import vos.Organizador;
 import vos.Requerimiento;
@@ -86,7 +86,7 @@ public class DAOTablaOrganizador {
 			ResultSet rs1 = prepStmt1.executeQuery();
 			if(rs1.next())
 			{
-				ListaCompañias listComp = null;
+				ListaCompanias listComp = null;
 				ListaOrganizadores listOrg = null;
 				ListaClientes listCli = null;
 				Festival fest = new Festival(Integer.parseInt(rs1.getString("ID_FESTIVAL")), "", 0, "", new java.util.Date(), new java.util.Date(), listComp, listOrg, listCli);

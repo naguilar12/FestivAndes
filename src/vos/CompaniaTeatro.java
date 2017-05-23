@@ -4,7 +4,7 @@ import java.sql.Date;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class CompañiaTeatro {
+public class CompaniaTeatro {
 	
 	@JsonProperty(value="id")
 	private int id;
@@ -25,9 +25,9 @@ public class CompañiaTeatro {
 	private Representante representante;
 	
 	@JsonProperty(value="espectaculos")
-	private ListaEspectaculos espectaculos;	
+	private ListaEspectaculos espectaculos;
 
-	public CompañiaTeatro(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="fechaLlegada")Date fechaLlegada, @JsonProperty(value="fechaSalida")Date fechaSalida,@JsonProperty(value="festivales") ListaFestivales festivales,
+	public CompaniaTeatro(@JsonProperty(value="id")int id, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="fechaLlegada")Date fechaLlegada, @JsonProperty(value="fechaSalida")Date fechaSalida,@JsonProperty(value="festivales") ListaFestivales festivales,
 			@JsonProperty(value="representante") Representante representante, @JsonProperty(value="espectaculos") ListaEspectaculos espectaculos) {
 		super();
 		this.id = id;

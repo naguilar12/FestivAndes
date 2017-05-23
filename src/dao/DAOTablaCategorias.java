@@ -7,11 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import vos.Categoria;
-import vos.CompañiaTeatro;
+import vos.CompaniaTeatro;
 import vos.Espectaculo;
 import vos.Funcion;
 import vos.ListaCategorias;
-import vos.ListaCompañias;
+import vos.ListaCompanias;
 import vos.ListaEspectaculos;
 import vos.ListaFestivales;
 import vos.ListaRequerimientos;

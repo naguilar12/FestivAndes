@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import vos.Espectaculo;
 import vos.Funcion;
 import vos.ListaCategorias;
-import vos.ListaCompañias;
+import vos.ListaCompanias;
 import vos.ListaRequerimientos;
 
 public class DAOTablaEspectaculos {	
@@ -114,7 +114,7 @@ public class DAOTablaEspectaculos {
 			String descripcion= rs.getString("DESCRIPCION");
 			String publicoObjetivo= rs.getString("PUBLICO_OBJETIVO");
 			
-			ListaCompañias compañias = null;
+			ListaCompanias compañias = null;
 			ListaCategorias categorias = null;
 			ListaRequerimientos requerimientos = null;
 			espectaculo = new Espectaculo(id, nombre, duracion, intermedio, idioma, clasificacion, costoRealizacion, publicoActivo, traduccionSubtitulos, traduccionAudifonos, descripcion, publicoObjetivo, compañias, categorias, requerimientos,null);
