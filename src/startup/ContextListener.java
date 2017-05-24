@@ -10,7 +10,6 @@ import dtm.FestivAndesDistributed;
 
 
 
-
 @WebListener
 public class ContextListener implements ServletContextListener {
 
