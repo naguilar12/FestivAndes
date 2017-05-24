@@ -52,6 +52,7 @@ import vos.Rentabilidad;
 import vos.RespuestaConsultaCompraBoletas;
 import vos.Resultado;
 import vos.Sitio;
+import vos.VOAbonamiento;
 import vos.Video;
 
 public class FestivAndesMaster {
@@ -1604,7 +1605,7 @@ public class FestivAndesMaster {
 		return rentabilidad;
 	}
 
-	public ListaBoletas registrarCompraAbonamiento(Abonamiento abonamiento, int id) throws Exception {
+	public ListaBoletas registrarCompraAbonamiento(VOAbonamiento abonamiento, int id) throws Exception {
 		ArrayList<Boleta> arregloBoletas;
 		DAOTablaCliente daoTablaCliente = new DAOTablaCliente();
 		DAOTablaSitio daoTablaSitio = new DAOTablaSitio();

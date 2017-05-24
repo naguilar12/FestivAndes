@@ -1,6 +1,7 @@
 package rest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
@@ -15,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import tm.FestivAndesMaster;
-import vos.Abonamiento;
 import vos.Boleta;
 import vos.Cliente;
 import vos.ConsultaAsistencia;
@@ -29,6 +29,8 @@ import vos.NotaDebitoJM;
 import vos.Preferencia;
 import vos.RFC1;
 import vos.Resultado;
+import vos.VOAbonamiento;
+import vos.VOBoleta;
 
 @Path("clientes")
 public class FestivAndesClienteServices {
@@ -164,15 +166,20 @@ public class FestivAndesClienteServices {
 	@Path("{id}/registrarCompraAbonamiento")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response registrarCompraAbonamiento(Abonamiento abonamiento,@javax.ws.rs.PathParam("id") int id)
+	public Response registrarCompraAbonamiento(VOAbonamiento abonamiento,@javax.ws.rs.PathParam("id") int id)
 	{
 		FestivAndesMaster tm = new FestivAndesMaster(getPath());
 		ListaBoletas resultado;
+		List<VOBoleta> boletas = new ArrayList<>();
 		try{
 			resultado = tm.registrarCompraAbonamiento(abonamiento, id);					
 
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		for (Boleta b : resultado.getBoletas()) {
+			
+			boletas.add(new VOBoleta((Long)0L, Long.parseLong(""+b.getFuncion().getId()), (Long)0L, 0, (b.getEstado()+"").charAt(0)));
 		}
 		return Response.status(200).entity(resultado).build();
 	}
