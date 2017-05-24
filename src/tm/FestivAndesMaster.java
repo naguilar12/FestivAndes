@@ -19,6 +19,8 @@ import dao.DAOTablaEspectaculos;
 import dao.DAOTablaFuncion;
 import dao.DAOTablaOrganizador;
 import dao.DAOTablaSitio;
+import dtm.FestivAndesDistributed;
+import jms.NonReplyException;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
 import dao.DAOTablaEspectaculos;
@@ -53,6 +55,7 @@ import vos.RespuestaConsultaCompraBoletas;
 import vos.Resultado;
 import vos.Sitio;
 import vos.VOAbonamiento;
+import vos.VOBoleta;
 import vos.Video;
 
 public class FestivAndesMaster {
@@ -92,6 +95,8 @@ public class FestivAndesMaster {
 	 * ConexiÃƒÂ³n a la base de datos
 	 */
 	private Connection conn;
+	
+	private FestivAndesDistributed dtm;
 
 
 	/**
@@ -1605,11 +1610,14 @@ public class FestivAndesMaster {
 		return rentabilidad;
 	}
 
-	public ListaBoletas registrarCompraAbonamiento(VOAbonamiento abonamiento, int id) throws Exception {
+	public List<VOBoleta> registrarCompraAbonamiento(VOAbonamiento abonamiento, int id) {
 		ArrayList<Boleta> arregloBoletas;
 		DAOTablaCliente daoTablaCliente = new DAOTablaCliente();
 		DAOTablaSitio daoTablaSitio = new DAOTablaSitio();
 		DAOTablaFuncion daoTablaFuncion = new DAOTablaFuncion();
+		List<VOBoleta> boletas = new ArrayList<>();
+		
+		try{
 		try 
 		{
 			//////TransacciÃƒÂ³n
@@ -1661,7 +1669,27 @@ public class FestivAndesMaster {
 				throw exception;
 			}
 		}
-		return new ListaBoletas(arregloBoletas);
+		for (Boleta b : arregloBoletas) {
+
+			boletas.add(new VOBoleta((Long)0L, Long.parseLong(""+b.getFuncion().getId()), (Long)0L, 0, (b.getEstado()+"").charAt(0)));
+		}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return boletas;
+	}
+
+	public ArrayList<VOBoleta> crearAbonamientoGlobal(Long idUsuario, VOAbonamiento abonamiento) throws NonReplyException {
+		// TODO Auto-generated method stub
+		//LOCAL
+		ArrayList<VOBoleta> abonamientos = (ArrayList<VOBoleta>) registrarCompraAbonamiento(abonamiento, Integer.parseInt(""+idUsuario));
+		abonamiento.setIdUsuario(idUsuario);
+		//GLOBAL
+		ArrayList<VOBoleta> abonamientosGlobal = dtm.getAbonamientosGlobal(abonamiento);
+		abonamientos.addAll(abonamientosGlobal);
+		return abonamientos;
 	}
 
 

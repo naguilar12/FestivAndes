@@ -46,7 +46,7 @@ import vos.VOFuncion;
 
 public class GetFuncionesMDB implements MessageListener, ExceptionListener {
 	public final static int TIME_OUT = 5;
-	private final static String APP = "app1";
+	private final static String APP = "app2";
 
 	private final static String GLOBAL_TOPIC_NAME = "java:global/RMQFuncionesGlobal";
 	private final static String LOCAL_TOPIC_NAME = "java:global/RMQFuncionesLocal";
@@ -139,7 +139,8 @@ public class GetFuncionesMDB implements MessageListener, ExceptionListener {
 				if (ex.getStatus().equals(REQUEST)) {
 					FestivAndesDistributed dtm = FestivAndesDistributed.getInstance();
 			
-					List<VOFuncion> funciones = dtm.getFuncionesLocal();
+//					List<VOFuncion> funciones = dtm.getFuncionesLocal();
+					List<VOFuncion> funciones = null;
 					String payload = mapper.writeValueAsString(funciones);
 					Topic t = new RMQDestination("", "funciones.test", ex.getRoutingKey(), "", false);
 					sendMessage(payload, REQUEST_ANSWER, t, id);

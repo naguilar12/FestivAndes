@@ -37,7 +37,7 @@ import vos.Video;
 
 public class RetirarCompaniaMDB implements MessageListener, ExceptionListener {
 	public final static int TIME_OUT = 5;
-	private final static String APP = "app1";
+	private final static String APP = "app2";
 
 	private final static String GLOBAL_TOPIC_NAME = "java:global/RMQRetirarGlobal";
 	private final static String LOCAL_TOPIC_NAME = "java:global/RMQRetirarLocal";

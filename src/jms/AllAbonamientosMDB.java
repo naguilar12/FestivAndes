@@ -50,7 +50,7 @@ import vos.VOAbonamiento;
 public class AllAbonamientosMDB implements MessageListener, ExceptionListener 
 {
 	public final static int TIME_OUT = 5;
-	private final static String APP = "app3";
+	private final static String APP = "app2";
 	
 	private final static String GLOBAL_TOPIC_NAME = "java:global/RMQTopicAllAbonamientos";
 	private final static String LOCAL_TOPIC_NAME = "java:global/RMQAllAbonamientosLocal";
