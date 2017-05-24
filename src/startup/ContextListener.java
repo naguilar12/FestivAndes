@@ -9,6 +9,11 @@ import javax.servlet.annotation.WebListener;
 import dtm.FestivAndesDistributed;
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> origin/Ite5
 @WebListener
 public class ContextListener implements ServletContextListener {
 
